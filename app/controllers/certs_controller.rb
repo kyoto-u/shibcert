@@ -14,7 +14,24 @@ class CertsController < ApplicationController
   def index
     if current_user
       @certs = Cert.where(user_id: current_user.id)
-      @smime_num = Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::NEW_GOT_SERIAL).count() # FIXME: rewrite to cover multiple states
+
+      # FIXME: generating terrible SQL
+      @smime_num = 0
+      @smime_num = Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::NEW_GOT_SERIAL).count()
+      @smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::NEW_REQUESTED_TO_NII).count() 
+      @smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::NEW_RECEIVED_MAIL).count()
+      @smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::NEW_GOT_PIN).count()
+      @smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::NEW_DISPLAYED_PIN).count()
+      @smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::NEW_GOT_SERIAL).count() 
+      @smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::RENEW_REQUESTED_FROM_USER).count()
+      @smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::RENEW_REQUESTED_TO_NII).count()
+      @smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::RENEW_RECEIVED_MAIL).count()
+      @smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::RENEW_GOT_PIN).count()
+      @smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::RENEW_DISPLAYED_PIN).count()
+      @smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::RENEW_GOT_SERIAL).count()
+      @smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::REVOKE_REQUESTED_FROM_USER).count()
+      @smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::REVOKE_REQUESTED_TO_NII).count()
+      @smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::REVOKE_RECEIVED_MAIL).count()
     end
   end
 
@@ -48,7 +65,23 @@ class CertsController < ApplicationController
     #   https://certs.nii.ac.jp/archive/TSV_File_Format/client_tsv/
 
     # S/MIME-multiple-application guard (failsafe)
-    smime_num = Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::NEW_GOT_SERIAL).count() # FIXME: rewrite to cover multiple states
+    # FIXME: generating terrible SQL
+    smime_num = 0
+    smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::NEW_REQUESTED_TO_NII).count() 
+    smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::NEW_RECEIVED_MAIL).count()
+    smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::NEW_GOT_PIN).count()
+    smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::NEW_DISPLAYED_PIN).count()
+    smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::NEW_GOT_SERIAL).count() 
+    smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::RENEW_REQUESTED_FROM_USER).count()
+    smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::RENEW_REQUESTED_TO_NII).count()
+    smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::RENEW_RECEIVED_MAIL).count()
+    smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::RENEW_GOT_PIN).count()
+    smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::RENEW_DISPLAYED_PIN).count()
+    smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::RENEW_GOT_SERIAL).count()
+    smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::REVOKE_REQUESTED_FROM_USER).count()
+    smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::REVOKE_REQUESTED_TO_NII).count()
+    smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::REVOKE_RECIEVED_MAIL).count()
+    
     if (smime_num > 0)
       return # FIXME: need error message
     end
