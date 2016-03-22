@@ -80,7 +80,7 @@ class CertsController < ApplicationController
     smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::RENEW_GOT_SERIAL).count()
     smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::REVOKE_REQUESTED_FROM_USER).count()
     smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::REVOKE_REQUESTED_TO_NII).count()
-    smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::REVOKE_RECIEVED_MAIL).count()
+    smime_num += Cert.where(user_id: current_user.id, purpose_type: 7, state: Cert::State::REVOKE_RECEIVED_MAIL).count()
     
     if (smime_num > 0)
       return # FIXME: need error message
