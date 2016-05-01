@@ -8,6 +8,7 @@
 	<%= SHIBCERT_CONFIG['label']['en']['site_title']  %>
 	<% end %>
   </title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
   <%= csrf_meta_tags %>
@@ -35,9 +36,11 @@
 		  <li><p class="navbar-text"><%= t('nav.user') + ' ' + current_user.name %></p></li>
 		  <li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" ><%= t('nav.menu') %><span class="caret"></a>
-			<ul class="dropdown-menu"> 
+			<ul class="dropdown-menu">
+			  <!--
 			  <li><%= link_to t('nav.help'),
 					  {controller: "certs", action: "index"} %></li>
+			  -->
 			  <li><%= link_to t('nav.logout'), signout_path %></li>	
 			</ul>
 		  </li>
@@ -52,7 +55,9 @@
 	<% else %>
 	<div class="omniauth">
       <%= t('login.logintext')%><%= link_to t('login.loginlink'), "/auth/shibboleth" %><br>
+	  <% if Rails.env == 'development'  %>
       <%= t('login.otherlogintext')%><%= link_to t('login.loginlink'), "/auth/github" %>
+	  <% end %>
 	</div>
     <% end %>
   </div>

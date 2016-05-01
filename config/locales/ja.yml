@@ -32,21 +32,22 @@ ja:
   common:
     backlink: "キャンセルして戻る"
     purpose_type:
-      t5: "クライアント証明書" #5
+      t5: "個人証明書" #5
       t7: "S/MIME証明書" #7
   certs:
     index:
-      dashboard_title: "証明書発行申請ダッシュボード"
-      dashboard_text: "このページでは国立情報学研究所(NII)が発行する個人証明書の発行申請・管理が行えます。"      
+      dashboard_title: "クライアント証明書発行申請ダッシュボード"
+      dashboard_text: "このページではクライント証明書の発行申請・管理が行えます。なお、本システムは国立情報学研究所(NII)のUPKI電子証明書発行サービスを利用しています。" 
       req_title: "証明書の種類を選択して申請"
       req_bt: "%{type}を申請"
       confirm: "発行元(国立情報学研究所)に申請を送信します。よろしいですか？"
       linktext: "を申請"
+      no_multi_smime: "※S/MIME証明書は複数申請できません"
       list_title: "証明書の発行状況 (申請番号をクリックで詳細表示)"
       list_seq: "申請番号"
       list_type: "証明書の種類"
       list_date: "申請日"
-      list_available: "状況"
+      list_available: "申請状況"
       list_memo: "メモ"
       list_action: "アクション"
       list_purpose_type_errror: "証明書タイプに問題が発生しています。担当部署までお問い合わせ下さい。"
@@ -59,17 +60,42 @@ ja:
     request_result:
       title: "申請完了"
       text_html: "証明書の発行元(国立情報学研究所)に対する発行申請を行いました。<br>
-      発行が完了すると、大学のアドレスに対してメールが届きます。<br>
+      <br>
+      発行が完了すると、大学のアドレスに対してダウンロード用のリンクが記されたメールが届きます。<br>
       証明書の利用には、送信されたメールの他に、<b>PIN(Personal Identification Number)</b>が必要となります。<br>
-      PINは発行完了後の一定期間、本ポータルの証明書情報確認画面で確認できます。"
+      <br>
+      PINは<b>証明書をダウンロードする際</b>と<b>証明書をシステムにインストールする際</b>に必要となります。</br>
+      PINは発行完了後の一定期間、本ポータルの証明書情報確認画面で確認できます。<br><br>"
       showlink: "証明書情報確認"
     show:
       title: '証明書の詳細'
       req_seq: '申請番号'
       purpose_type: '証明書タイプ'
-      purpose_type_errror: "証明書タイプに問題が発生しています。担当部署までお問い合わせ下さい。"      
-      cert_status: '発行の状況'
+      purpose_type_errror: "証明書タイプに問題が発生しています。担当部署までお問い合わせ下さい。"
+      cert_status: "申請状況"      
       cert_status_msg:
+        10: '新規申請中'
+        11: '新規申請中'
+        12: '新規申請中'
+        13: '新規申請中'
+        14: '新規申請中'
+        15: '有効'
+        19: '不明 担当部署までお問い合わせください'
+        20: '更新申請中'
+        21: '更新申請中'
+        22: '更新申請中'
+        23: '更新申請中'
+        24: '更新申請中'
+        25: '有効'
+        29: 'エラー 担当部署までお問い合わせください'
+        30: '失効申請中'
+        31: '失効申請中'
+        32: '失効申請中'
+        33: '失効済'
+        39: 'エラー 担当部署までお問い合わせください'
+        -1: '不明 担当部署までお問い合わせください'
+      x509_status: '証明書の状態'
+      x509_status_msg:
         - '申請中'
         - '有効'
         - '期限切れ'
@@ -85,10 +111,13 @@ ja:
       dn: 'DN(識別名)'
       dn_error: 'エラー'
       memo: '用途メモ'
-      memo_placeholder: '(例)iPhoneのメール暗号化用'
+      memo_placeholder_personal: '(例)ノートPCの接続用'
+      memo_placeholder_smime: '(例)iPhoneのメール暗号化用'      
       memo_bt: 'メモを保存'
       cert_error: '指定された証明書が存在しません。何らかのエラーの可能性がありますので、管理担当者までご連絡下さい。'
       to_dashboard: 'ダッシュボードページに戻る'
+    admin:
+      admin_title: "クライアント証明書発行申請管理ページ"
       
 # copy from http://avosalmon.hatenablog.com/entry/2014/06/15/%E3%80%90Rails%E3%80%91date_select%E3%81%A7%22undefined_method_for_translation_missing_ja_date_order_string%22
   date:

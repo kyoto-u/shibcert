@@ -19,7 +19,13 @@
   <tr>
 	<td><strong><%= t('.cert_status') %></strong></td>
 	<td>
-          <%= t('.cert_status_msg')[@cert.x509_state] %>
+          <%= t('.cert_status_msg')[@cert.state] %>
+	</td>
+  </tr>
+  <tr>
+	<td><strong><%= t('.x509_status') %></strong></td>
+	<td>
+          <%= t('.x509_status_msg')[@cert.x509_state] %>
 	</td>
   </tr>
   <tr>
@@ -38,6 +44,7 @@
           <% end %>
 	</td>
   </tr>
+  <% if Rails.env == 'development'  %>  
   <tr>
 	<td><strong><%= t('.issue_date') %></strong></td>
 	<td>
@@ -58,7 +65,8 @@
           <% end %>
 	</td>
   </tr>
-
+  <% end %>
+  
   <tr>
 	<td><strong><%= t('.dn') %></strong></td>
 	<td>
@@ -72,7 +80,13 @@
 	<td>
 	  <%= form_tag({controller: "certs", action: "edit_memo_remote", id: @cert.id, }, remote: true, class: "form-inline") do %>
 	  <div class ="form-group">
-		<%= text_field :cert, :memo, placeholder: t('.memo_placeholder') %>
+		<% if @cert.purpose_type == 5 %>
+		<%= text_field :cert, :memo, placeholder: t('.memo_placeholder_personal') %>
+		<% elsif @cert.purpose_type == 7 %>
+		<%= text_field :cert, :memo, placeholder: t('.memo_placeholder_smime') %>
+		<% else #failssafe %>
+		<%= text_field :cert, :memo %>				
+		<% end %>
 		<%= submit_tag t('.memo_bt'), class:"btn btn-xs btn-default" %>
 	  </div>
 	  <% end %>
@@ -85,4 +99,4 @@
 <p> <%= t('.cert_error') %></p>
 <% end %>
 
-<%= link_to t('.to_dashboard'), {controller: "certs", action: "index"} %>
+<%= link_to t('.to_dashboard'), {controller: "certs", action: "index"}, class:"underlined-text" %>

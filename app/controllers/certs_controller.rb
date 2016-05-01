@@ -1,19 +1,60 @@
 # coding: utf-8
 class CertsController < ApplicationController
   before_action :set_cert, only: [:edit, :update, :destroy]
-  before_action :set_cert_of_user, only: [:show, :edit_memo_remote]
+  before_action :set_cert_of_user, only: [:show, :edit_memo_remote, :request_result]
+
+  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+
+  def record_not_found
+    render file: Rails.root.join('public/404.html'), status: 404, layout: false, content_type: 'text/html'  
+  end
+
+  def working_smime_num(myid)
+    # FIXME: generating terrible SQL    
+    smime_num = Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_GOT_SERIAL).count()
+    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_REQUESTED_TO_NII).count() 
+    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_RECEIVED_MAIL).count()
+    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_GOT_PIN).count()
+    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_DISPLAYED_PIN).count()
+    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_GOT_SERIAL).count() 
+    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::RENEW_REQUESTED_FROM_USER).count()
+    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::RENEW_REQUESTED_TO_NII).count()
+    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::RENEW_RECEIVED_MAIL).count()
+    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::RENEW_GOT_PIN).count()
+    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::RENEW_DISPLAYED_PIN).count()
+    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::RENEW_GOT_SERIAL).count()
+    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::REVOKE_REQUESTED_FROM_USER).count()
+    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::REVOKE_REQUESTED_TO_NII).count()
+    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::REVOKE_RECEIVED_MAIL).count()
+    return smime_num
+  end
+  
   # GET /certs
   # GET /certs.json
   def index
     if current_user
       @certs = Cert.where(user_id: current_user.id)
+      @smime_num = working_smime_num(current_user.id)
+    end
+  end
+
+  def admin
+    @certs = nil
+    if current_user
+      if current_user.admin == true
+        @certs = Cert.all
+      else
+        return
+      end
     end
   end
 
   # GET /certs/1
   # GET /certs/1.json
   def show
-    # FIXME: user authorization needed
+    unless /\d+/.match(params[:id])
+      return 
+    end
   end
 
   # GET /certs/request_select
@@ -21,10 +62,16 @@ class CertsController < ApplicationController
   def request_select
   end
 
-  # POST /certs/request_result
-  def request_result
+  # POST /certs/request_post [with RPG pattern]
+  def request_post
     # purpose_type: profile ID of
     #   https://certs.nii.ac.jp/archive/TSV_File_Format/client_tsv/
+
+
+      # S/MIME-multiple-application guard (failsafe)    
+    if params[:cert]["purpose_type"].to_i == Cert::PurposeType::SMIME_CERTIFICATE and working_smime_num(current_user.id) > 0
+      return # FIXME: need error message
+    end
 
     ActiveRecord::Base.transaction do      
       current_user.cert_serial_max += 1
@@ -53,8 +100,13 @@ class CertsController < ApplicationController
 
     Rails.logger.debug "RaReq.request call: @cert = #{@cert.inspect}"
     RaReq.request(@cert)
+ 
+    redirect_to request_result_path(@cert.id)
+  end
+
+  # POST /certs/request_post [with RPG pattern]
+  def request_result
     
-    @new_cert_id = @cert.id
   end
 
   # GET /certs/new
@@ -124,15 +176,18 @@ class CertsController < ApplicationController
 
   def set_cert_of_user
     # FIXME: fix for not found error
-    begin
-      mycert = Cert.find(params[:id])
-    rescue ActiveRecord::RecordNotFound => e
-      mycert = nil
-    end
+#    begin
+#      mycert = Cert.find(params[:id])
+#    rescue ActiveRecord::RecordNotFound => e
+#      mycert = nil
+    #    end
+
+    mycert = Cert.find(params[:id])
+    
     if mycert and mycert.user_id == current_user.id
       @cert = mycert
     else
-      @cert = nil
+      raise ActiveRecord::RecordNotFound
     end
   end
   
