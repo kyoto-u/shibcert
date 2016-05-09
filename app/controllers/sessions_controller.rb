@@ -17,7 +17,7 @@ class SessionsController < ApplicationController
   end
 
   private
-  def self.update_user(user, auth)
+  def update_user(user, auth)
     user[:name]  = auth[:info][:name]
     user[:email] = auth[:info][:email]
     user.save!
