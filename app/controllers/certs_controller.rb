@@ -80,10 +80,10 @@ class CertsController < ApplicationController
     
     case params[:cert]["purpose_type"].to_i
     when Cert::PurposeType::CLIENT_AUTH_CERTIFICATE
-      dn = "CN=#{current_user.uid},OU=No #{current_user.cert_serial_max.to_s}," + SHIBCERT_CONFIG[Rails.env]['base_dn']
+      dn = "CN=#{current_user.uid},OU=No #{current_user.cert_serial_max.to_s}," + SHIBCERT_CONFIG[Rails.env]['base_dn_auth']
 
     when Cert::PurposeType::SMIME_CERTIFICATE
-      dn = "CN=#{current_user.email},OU=No #{current_user.cert_serial_max.to_s}," + SHIBCERT_CONFIG[Rails.env]['base_dn']
+      dn = "CN=#{current_user.email},OU=No #{current_user.cert_serial_max.to_s}," + SHIBCERT_CONFIG[Rails.env]['base_dn_smime']
     else
       # something wrong. TODO: need error handling
       Rails.logger.info "#{__method__}: unknown purpose_type #{params[:cert]['purpose_type']}"

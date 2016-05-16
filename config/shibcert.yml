@@ -28,7 +28,8 @@ production:
   admin_mail: 'shibcert-sys@iimc.kyoto-u.ac.jp'
   user_ou: 'Institute for Information Management and Communication'
 
-  base_dn: OU=Institute for Information Management and Communication,O=Kyoto University,L=Academe,C=JP
+  base_dn_auth: OU=Kyoto University Integrated Network System,O=Kyoto University,L=Academe,C=JP
+  base_dn_smime: OU=Institute for Information Management and Communication,O=Kyoto University,L=Academe,C=JP
 
 development:
   certificate_file: "config/certificates/client.cer"
@@ -40,7 +41,8 @@ development:
   admin_mail: 'shibcert-sys@iimc.kyoto-u.ac.jp'
   user_ou: 'Institute for Information Management and Communication'
 
-  base_dn: OU=dev,OU=Institute for Information Management and Communication,O=Kyoto University,L=Academe,C=JP
+  base_dn_auth: OU=dev,OU=Kyoto University Integrated Network System,O=Kyoto University,L=Academe,C=JP
+  base_dn_smime: OU=dev,OU=Institute for Information Management and Communication,O=Kyoto University,L=Academe,C=JP
 
 test:
   certificate_file: "config/certificates/client.cer"
@@ -52,4 +54,5 @@ test:
   admin_mail: 'shibcert-sys@iimc.kyoto-u.ac.jp'
   user_ou: 'Institute for Information Management and Communication'
 
-  base_dn: OU=test,OU=Institute for Information Management and Communication,O=Kyoto University,L=Academe,C=JP
+  base_dn_auth: OU=test,OU=Kyoto University Integrated Network System,O=Kyoto University,L=Academe,C=JP
+  base_dn_smime: OU=test,OU=Institute for Information Management and Communication,O=Kyoto University,L=Academe,C=JP
