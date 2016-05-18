@@ -40,9 +40,6 @@
       <th><%= t('.list_date') %></th>
       <th><%= t('.list_available') %></th>
       <th><%= t('.list_memo') %></th>
-      <% if Rails.env == 'development' %>
-	  <th><%= t('.list_action') %></th>
-	  <% end %>
     </tr>
   </thead>
 
@@ -64,26 +61,6 @@
         <%= t('certs.show.cert_status_msg')[cert.state] %>
 	  </td>
       <td><%= cert.memo %></td>
-	  
-	  <% if Rails.env == 'development' %>
-      <td>
-		<% if cert.state == Cert::State::NEW_GOT_SERIAL %>
-		<%= link_to t('.update'), {action: "index"}, {class: "btn btn-primary"} %>
-		<% else %>
-		<div class="btn btn-default" disabled="disabled">
-		  <%= t('.update') %>
-		</div>
-		<% end %>
-		
-		<% if cert.state == Cert::State::NEW_GOT_SERIAL %>
-		<%= link_to t('.disable'), {action: "index"}, {class: "btn btn-primary"} %>
-		<% else %>
-		<div class="btn btn-default" disabled="disabled">
-		  <%= t('.disable') %>
-		</div>
-		<% end %>
-	  </td>		
-	  <% end %>
     </tr>
 	
     <% end %>

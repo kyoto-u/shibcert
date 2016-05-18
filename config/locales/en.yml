@@ -48,14 +48,11 @@ en:
       list_date: "Request Date"
       list_available: "Status"
       list_memo: "Memo"
-      list_action: "Action"
       list_purpose_type_errror: "Error occurred on the certification type. Please contact the system administrator."
       cert_expired: "Expired"
       cert_valid: "Valid"
       cert_invalid: "Invalid"
       cert_requesting: "Requesting"
-      update: "Update"      
-      disable: "Disable"
     request_result:
       title: "Your request has been sent."
       text_html: "Your request has been sent to the issuer of certifications (NII).<br><br>
@@ -63,6 +60,11 @@ en:
       You need both the received mail and PIN(Personal Identification Number) to use your certification. <br><br>
       PIN is required <b>when</b> you download your certificate and <b>when you install the certificate on the system</b>.<br>
       You can see PIN on the certification detail page for a certain period after the completion of certification issue.<br><br>"
+      showlink: "See the Detail"
+    disable_result:
+      title: "Your request has been sent."
+      text_html: "Your disabling request has been sent to the issuer of certifications (NII)<br>
+      <br>"
       showlink: "See the Detail"
     show:
       title: 'Detail of the Certification'
@@ -111,6 +113,9 @@ en:
       memo_placeholder_personal: '(Ex.) to Connect to KUINS'
       memo_placeholder_smime: '(Ex.) for Encryption of iPhone Email'      
       memo_bt: 'Save the Memo'
+      disable_operation: 'Disabling Operation'
+      disable_bt: 'Disable'
+      disable_confirm: "[Warning] You're going to disable the certification. Once you've disabled it, you cannot enable it again. Are you sure?"            
       cert_error: "There's no such certification. Something went wrong, so please contact the support staff."
       to_dashboard: 'Back to the Dashboard'
     admin:
