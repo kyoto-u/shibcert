@@ -89,7 +89,7 @@ class RaReq
         cert.dn,                  # 1
         '','',
         cert.serialnumber,   # 4
-        cert.revoke_reason,       # 5
+        cert.revoke_reason || "0",       # 5
         cert.revoke_comment,      # 6
         '', '', '',
         SHIBCERT_CONFIG[Rails.env]['admin_mail'], # 10
@@ -152,7 +152,7 @@ class RaReq
     end
 
     tsv = generate_tsv(cert, user).encode('cp932')
-    Rails.logger.debug "#{__method__}: tsv #{tsv.inspect}"
+    Rails.logger.info "#{__method__}: tsv #{tsv.inspect}"
 
     if Rails.env == 'development' then
       open("sample.tsv", "w") do |fp|
