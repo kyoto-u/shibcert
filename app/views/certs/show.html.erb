@@ -92,8 +92,20 @@
 	  <% end %>
 	</td>
   </tr>
-
-
+  <tr>
+	<td><strong><%= t('.disable_operation') %></strong></td>
+	<td>
+	  <% if @cert.state == Cert::State::NEW_GOT_SERIAL %>
+	  <%= form_tag({controller: "certs", action: "disable_post", id: @cert.id}, {class: "form-inline"}) do %>
+	  <%= submit_tag(t('.disable_bt'), class: "btn btn-xs btn-warning", data: {confirm: t('.disable_confirm')}) %>
+	  <% end %>
+	<% else %>
+	<div class="btn btn-xs btn-default" disabled="disabled">
+	  <%= t('.disable_bt') %>
+	</div>
+	<% end %>
+	</td>
+  </tr>
 </table>
 <% else %>
 <p> <%= t('.cert_error') %></p>

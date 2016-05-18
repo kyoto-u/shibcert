@@ -8,6 +8,11 @@ Shibcert::Application.routes.draw do
     get "certs/request_result/:id", to: 'certs#request_result', \
         as: 'request_result'
 
+    post "certs/disable_post/:id",  to: 'certs#disable_post', \
+        as: 'disable_post'         
+    get "certs/disable_result/:id", to: 'certs#disable_result', \
+        as: 'disable_result'
+
     get "certs/admin"
     
     resources :certs do

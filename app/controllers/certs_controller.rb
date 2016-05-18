@@ -1,7 +1,7 @@
 # coding: utf-8
 class CertsController < ApplicationController
   before_action :set_cert, only: [:edit, :update, :destroy]
-  before_action :set_cert_of_user, only: [:show, :edit_memo_remote, :request_result]
+  before_action :set_cert_of_user, only: [:show, :edit_memo_remote, :request_result, :disable_post, :disable_result]
 
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
@@ -33,7 +33,7 @@ class CertsController < ApplicationController
   # GET /certs.json
   def index
     if current_user
-      @certs = Cert.where(user_id: current_user.id)
+      @certs = Cert.where(user_id: current_user.id).order("created_at DESC")
       @smime_num = working_smime_num(current_user.id)
     end
   end
@@ -100,12 +100,31 @@ class CertsController < ApplicationController
 
     Rails.logger.debug "RaReq.request call: @cert = #{@cert.inspect}"
     RaReq.request(@cert)
+
  
     redirect_to request_result_path(@cert.id)
   end
 
-  # POST /certs/request_post [with RPG pattern]
+  # GET /certs/request_result [with RPG pattern]
   def request_result
+    
+  end
+
+  # POST /certs/disable_post [with RPG pattern]  
+  def disable_post
+    if @cert
+      @cert.state = Cert::State::REVOKE_REQUESTED_FROM_USER
+      @cert.save
+      
+      Rails.logger.debug "RaReq.request call: @cert = #{@cert.inspect}"    
+      RaReq.request(@cert)
+    end
+
+    redirect_to disable_result_path(@cert.id)    
+  end
+
+  # POST /certs/disable_result [with RPG pattern]
+  def disable_result
     
   end
 
