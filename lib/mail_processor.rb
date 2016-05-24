@@ -20,6 +20,7 @@ class MailProcessor
     @logger.progname = "#{$0}[#{$$}]"
     @logger.info("start")
     @logger.info("Process.(uid,euid)=(#{Process.uid},#{Process.euid})")
+    @logger.info("Rails.env=#{Rails.env}")
   end
 
   def read_from(stream, maxlen=50000)
