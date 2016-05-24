@@ -108,7 +108,7 @@ class CertsController < ApplicationController
   # GET /certs/request_result [with RPG pattern]
   def request_result
     if current_user and current_user.email
-      @maddr = current_user.email　
+      @maddr = current_user.email
     else
       @maddr = 'error: invalid email address'
     end
