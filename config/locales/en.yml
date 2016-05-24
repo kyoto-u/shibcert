@@ -60,6 +60,17 @@ en:
       You need both the received mail and PIN(Personal Identification Number) to use your certification. <br><br>
       PIN is required <b>when</b> you download your certificate and <b>when you install the certificate on the system</b>.<br>
       You can see PIN on the certification detail page for a certain period after the completion of certification issue.<br><br>"
+      text_html: "Your request for an UPKI client certificate has been sent.<br>
+      <br>
+      You can see your PIN(Personal Identification Number) for the certificate on this system in about 5 min. And you will get message with the certificate download link which is sent from CA Support Center &lt ca-support@ml.secom-sts.co.jp&gt; to your mail address &lt;%{mail}&gt. <br>
+      <br>
+      Then, download the certificate via the link in the message using the PIN on this system. Input the PIN again to a passphrase form when you register the certificate to your computer.<br>
+      <br>
+      PIN can be seen on \"Detail of the Certification\" page of this site for a certain period. <br>
+      <br>
+      Finally, download and install the intermediate CA certificate via the following link.<br>
+      https://repo1.secomtrust.net/sppca/nii/odca3/nii-odca3sha2.cer<br>
+      <br>"
       showlink: "See the Detail"
     disable_result:
       title: "Your request has been sent."
