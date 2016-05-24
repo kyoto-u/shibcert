@@ -56,13 +56,19 @@ ja:
       cert_requesting: "未発行"
     request_result:
       title: "申請完了"
-      text_html: "証明書の発行元(国立情報学研究所)に対する発行申請を行いました。<br>
+      text_html: "UPKIクライアント証明書の発行申請を行いました。<br>
       <br>
-      発行が完了すると、大学のアドレスに対してダウンロード用のリンクが記されたメールが届きます。<br>
-      証明書の利用には、送信されたメールの他に、<b>PIN(Personal Identification Number)</b>が必要となります。<br>
+      5分程度で、証明書の利用に必要な PIN (Personal Identification Number) を本システムで確認できるようになります。<br>
+      また、CAサポートセンター &lt;ca-support@ml.secom-sts.co.jp&gt; から、あなたのメールアドレス &lt;%{mail}&gt; 宛てに、<br>
+      証明書ダウンロード用URLが記載されたメールが届きます。<br>
+      本システムで PIN を確認のうえ、メールに記載されたURLにアクセスして、証明書をダウンロードして下さい。<br>
+      ダウンロードした証明書をシステムに登録する際にパスフレーズの入力を求められるので、同じ PIN を入力して下さい。<br>
       <br>
-      PINは<b>証明書をダウンロードする際</b>と<b>証明書をシステムにインストールする際</b>に必要となります。</br>
-      PINは発行完了後の一定期間、本ポータルの証明書情報確認画面で確認できます。<br><br>"
+      PINは発行完了後の一定期間、本ポータルの証明書情報確認画面で確認できます。<br>
+      <br>
+      また、下記URLから、中間CA証明書もダウンロードしてシステムにインストールして下さい。<br>
+      https://repo1.secomtrust.net/sppca/nii/odca3/nii-odca3sha2.cer<br>
+      <br>"
       showlink: "証明書情報確認"
     disable_result:
       title: "申請完了"
