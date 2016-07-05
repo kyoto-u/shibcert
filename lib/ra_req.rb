@@ -135,7 +135,7 @@ class RaReq
 
     form = self.get_upload_form
 
-    form.applyType = state::ApplyType            # 処理内容 1:発行, 2:更新, 3:失効
+    form.applyType = proc::ApplyType            # 処理内容 1:発行, 2:更新, 3:失効
     form.radiobuttons_with(:name => 'errorFlg')[0].check # エラーが有れば全件処理を中止
     form.file_upload_with(:name => 'file'){|form_upload| # TSV をアップロード準備
       form_upload.file_data = tsv                        # アップロードする内容を文字列として渡す
