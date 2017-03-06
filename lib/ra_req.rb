@@ -11,19 +11,10 @@ require 'logger'
 
 class RaReq
   module New
-    def applyType
-      1
-    end
-
-    def nextState
-      Cert::State::NEW_REQUESTED_TO_NII
-    end
-
-    def errorState
-      Cert::State::NEW_ERROR
-    end
-
-    def generate_tsv(cert, user)
+    ApplyType = 1
+    NextState = Cert::State::NEW_REQUESTED_TO_NII
+    ErrorState = Cert::State::NEW_ERROR
+    def self.generate_tsv(cert, user)
       [
         cert.dn,
         cert.purpose_type,
@@ -41,19 +32,10 @@ class RaReq
   end
 
   module Renew
-    def applyType
-      2
-    end
-
-    def nextState
-      Cert::State::RENEW_REQUESTED_TO_NII
-    end
-
-    def errorState
-      Cert::State::RENEW_ERROR
-    end
-
-    def generate_tsv(cert, user)
+    ApplyType = 2
+    NextState = Cert::State::RENEW_REQUESTED_TO_NII
+    ErrorState = Cert::State::RENEW_ERROR
+    def self.generate_tsv(cert, user)
       [
         cert.dn,
         cert.purpose_type,
@@ -72,19 +54,10 @@ class RaReq
   end
 
   module Revoke
-    def applyType
-      3
-    end
-
-    def nextState
-      Cert::State::REVOKE_REQUESTED_TO_NII
-    end
-
-    def errorState
-      Cert::State::REVOKE_ERROR
-    end
-
-    def generate_tsv(cert, user)
+    ApplyType = 3
+    NextState = Cert::State::REVOKE_REQUESTED_TO_NII
+    ErrorState = Cert::State::REVOKE_ERROR
+    def self.generate_tsv(cert, user)
       [
         cert.dn,                  # 1
         '','',
@@ -131,15 +104,15 @@ class RaReq
     form2 = form.submit
     form2.form_with(:name => 'SP1011')
   end
-  
+
   def self.request(cert)
     case cert.state
     when Cert::State::NEW_REQUESTED_FROM_USER
-      extend New
+      proc = New
     when Cert::State::RENEW_REQUESTED_FROM_USER
-      extend Renew
+      proc = Renew
     when Cert::State::REVOKE_REQUESTED_FROM_USER
-      extend Revoke
+      proc = Revoke
     else
       Rails.logger.info "RaReq.request failed because of cert.state is #{cert.state})"
       return nil
@@ -151,7 +124,7 @@ class RaReq
       return nil
     end
 
-    tsv = generate_tsv(cert, user).encode('cp932')
+    tsv = proc.generate_tsv(cert, user).encode('cp932')
     Rails.logger.info "#{__method__}: tsv #{tsv.inspect}"
 
     if Rails.env == 'development' then
@@ -162,7 +135,7 @@ class RaReq
 
     form = self.get_upload_form
 
-    form.applyType = applyType            # 処理内容 1:発行, 2:更新, 3:失効
+    form.applyType = proc::ApplyType            # 処理内容 1:発行, 2:更新, 3:失効
     form.radiobuttons_with(:name => 'errorFlg')[0].check # エラーが有れば全件処理を中止
     form.file_upload_with(:name => 'file'){|form_upload| # TSV をアップロード準備
       form_upload.file_data = tsv                        # アップロードする内容を文字列として渡す
@@ -178,12 +151,12 @@ class RaReq
     end
 
     if Regexp.new("ファイルのアップロード処理が完了しました。").match(submitted_form.body.encode("utf-8", "euc-jp"))
-      cert.state = nextState
+      cert.state = proc::NextState
       cert.save
       Rails.logger.debug "#{__method__}: upload success"
       return cert
     else
-      cert.state = errorState
+      cert.state = proc::ErrorState
       cert.save
       Rails.logger.debug "#{__method__}: upload fail"
       return nil
