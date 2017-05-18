@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160223034307) do
+ActiveRecord::Schema.define(version: 20170306032846) do
 
   create_table "cert_states", force: true do |t|
     t.string   "name"
@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 20160223034307) do
     t.integer  "req_seq"
     t.integer  "revoke_reason"
     t.string   "revoke_comment"
+    t.string   "vlan_id"
   end
 
   create_table "roles", force: true do |t|

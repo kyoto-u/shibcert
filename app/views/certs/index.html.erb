@@ -9,28 +9,46 @@
 <br>
 
 <div class="container">
-	<%= form_tag({controller: "certs", action: "request_post"}, {class: "form-inline"}) do %>
-	<%= hidden_field :cert, :purpose_type, :value => 5 %>
-
-	<%= submit_tag(t('.req_bt', type: t('common.purpose_type.t5')), class: "btn btn-primary", data: {confirm: t('.confirm')}) %>
+        <% if flash[:alert] %>
+        <div class="alert alert-danger">
+          <%= flash[:alert] %>
+        </div>
+	<% end %>
+  <ul>
+    <li>
 	<%= SHIBCERT_CONFIG['label'][ln]['purpose'][5] if SHIBCERT_CONFIG['label']['ja']['purpose'][5] %>
-	<% end %>
-	<br>
-	<%= form_tag({controller: "certs", action: "request_post"}, {class: "form-inline"}) do  %>
-	<%= hidden_field :cert, :purpose_type, :value => 7 %>
- 	<% unless @smime_num > 0 %>	
-	<%= submit_tag(t('.req_bt', type: t('common.purpose_type.t7')), class: "btn btn-primary", data: {confirm: t('.confirm')}) %>
-	<% else %>
-	<div class="btn btn-default" disabled="disabled">
-	<%= t('common.purpose_type.t7') %>
-	</div>
-	<% end %>
+	  <%= form_tag({controller: "certs", action: "request_post"}, {class: "form-inline"}) do %>
+	  <%= submit_tag(t('.req_bt', type: t('common.purpose_type.t5')), class: "btn btn-primary", style: "float: left;", data: {confirm: t('.confirm')}) %>
+	  <%= hidden_field :cert, :purpose_type, :value => 5 %><div id="accordion">
+	    <div id="vlan">&nbsp;</div>
+	    <div id="vlan" style="display: table;">
+	      <p id="vlan"><%= SHIBCERT_CONFIG['label'][ln]['vlan'] if SHIBCERT_CONFIG['label']['ja']['vlan'] %></p>
+	    <p>
+	      <%= radio_button :cert, :vlan, true %> ON 
+	      <%= text_field :cert, :vlan_id, :placeholder => "Enter VLAN ID...", :disabled => true %></p>
+	    <p><%= radio_button :cert, :vlan, false, {:checked => true} %> OFF</p>
+	    </div>
+	    </div>
+	  <% end %>
+    </li><br/>
+    <li>
 	<%= SHIBCERT_CONFIG['label'][ln]['purpose'][7] if SHIBCERT_CONFIG['label']['ja']['purpose'][7] %>
- 	<% if @smime_num > 0 %>
-	<%= t('.no_multi_smime') %>	
-	<% end %>
-	<% end %>
-<br>
+	  <%= form_tag({controller: "certs", action: "request_post"}, {class: "form-inline"}) do  %>
+	  <%= hidden_field :cert, :purpose_type, :value => 7 %>
+ 	  <% unless @smime_num > 0 %>	
+	  <%= submit_tag(t('.req_bt', type: t('common.purpose_type.t7')), class: "btn btn-primary", data: {confirm: t('.confirm')}) %>
+	  <% else %>
+	  <div class="btn btn-default" disabled="disabled">
+	    <%= t('common.purpose_type.t7') %>
+	  </div>
+	  <% end %>
+ 	  <% if @smime_num > 0 %>
+	  <%= t('.no_multi_smime') %>	
+	  <% end %>
+	  <% end %>
+    </li>
+  </ul>
+  <br>
 <h4><%= t('.list_title') %></h4>
 <table class="table table-striped">
   <thead>
@@ -39,6 +57,7 @@
       <th><%= t('.list_type') %></th>
       <th><%= t('.list_date') %></th>
       <th><%= t('.list_available') %></th>
+      <th><%= t('.list_vlan_id') %></th>
       <th><%= t('.list_memo') %></th>
     </tr>
   </thead>
@@ -60,6 +79,7 @@
       <td>
         <%= t('certs.show.cert_status_msg')[cert.state] %>
 	  </td>
+      <td><%= cert.vlan_id %></td>
       <td><%= cert.memo %></td>
     </tr>
 	

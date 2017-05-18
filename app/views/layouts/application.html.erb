@@ -50,13 +50,17 @@
 	</div>
   </div>
   <div class="container">
+    <% ln = params[:locale] == 'ja' ? 'ja': 'en' %>
 	<% if current_user %>
 	<%= yield %>	
 	<% else %>
+    <p><%= t('certs.index.dashboard_text')%></p>
+    <p><%= SHIBCERT_CONFIG['label'][ln]['intro_text'] %></p>
+    <br>
 	<div class="omniauth">
-      <%= t('login.logintext')%><%= link_to t('login.loginlink'), "/auth/shibboleth" %><br>
+	  <%= t('login.logintext')%> <%= link_to t('login.loginlink'), "/auth/shibboleth", class: 'btn btn-primary' %><br>
 	  <% if Rails.env == 'development'  %>
-      <%= t('login.otherlogintext')%><%= link_to t('login.loginlink'), "/auth/github" %>
+	  <%= t('login.otherlogintext')%> <%= link_to t('login.loginlink'), "/auth/github", class: 'btn btn-primary' %>
 	  <% end %>
 	</div>
     <% end %>

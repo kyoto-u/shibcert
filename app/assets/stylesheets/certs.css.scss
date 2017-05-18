@@ -1,3 +1,23 @@
 // Place all the styles related to the Certs controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+// .vlan {
+// 	width: 250px;
+// }
+
+#vlan.ui-state-default {
+    display: table;
+}
+
+#vlan.ui-state-active {
+    background: #f6f6f6;
+    color: #454545;
+    border: 1px solid #c5c5c5;
+    display: table;
+}
+
+#vlan.ui-accordion-content {
+    border: 1px solid #dddddd;
+    overflow: auto;
+    display: table;
+}

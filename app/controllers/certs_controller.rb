@@ -73,6 +73,20 @@ class CertsController < ApplicationController
       return # FIXME: need error message
     end
 
+    if params[:cert]["purpose_type"].to_i == Cert::PurposeType::CLIENT_AUTH_CERTIFICATE
+      if params[:cert]["vlan"] == "true"
+        vlan_id = params[:cert]["vlan_id"].strip.to_i || 0
+        if vlan_id == 0
+          flash[:alert] = "VLAN ID is invalid."
+          return redirect_to :action => "index"
+        else
+          cn = "CN=#{current_user.uid}" + "@" + params[:cert]["vlan_id"]
+        end
+      else
+        cn = "CN=#{current_user.uid}"
+      end
+    end
+
     ActiveRecord::Base.transaction do      
       current_user.cert_serial_max += 1
       current_user.save # TODO: need error check
@@ -80,8 +94,7 @@ class CertsController < ApplicationController
     
     case params[:cert]["purpose_type"].to_i
     when Cert::PurposeType::CLIENT_AUTH_CERTIFICATE
-      dn = "CN=#{current_user.uid},OU=No #{current_user.cert_serial_max.to_s}," + SHIBCERT_CONFIG[Rails.env]['base_dn_auth']
-
+      dn = cn + ",OU=No #{current_user.cert_serial_max.to_s}," + SHIBCERT_CONFIG[Rails.env]['base_dn_auth']
     when Cert::PurposeType::SMIME_CERTIFICATE
       dn = "CN=#{current_user.email},OU=No #{current_user.cert_serial_max.to_s}," + SHIBCERT_CONFIG[Rails.env]['base_dn_smime']
     else
@@ -94,6 +107,7 @@ class CertsController < ApplicationController
       {user_id: current_user.id,
        state: Cert::State::NEW_REQUESTED_FROM_USER,
        dn: dn,
+       vlan_id: vlan_id,
        req_seq: current_user.cert_serial_max})
     @cert = Cert.new(request_params)
     @cert.save
@@ -216,6 +230,6 @@ class CertsController < ApplicationController
   
   # Never trust parameters from the scary internet, only allow the white list through.
     def cert_params
-      params.require(:cert).permit(:memo, :get_at, :expire_at, :pin, :pin_get_at, :user_id, :cert_state_id, :cert_type_id, :purpose_type)
+      params.require(:cert).permit(:vlan_id, :memo, :get_at, :expire_at, :pin, :pin_get_at, :user_id, :cert_state_id, :cert_type_id, :purpose_type)
     end
 end

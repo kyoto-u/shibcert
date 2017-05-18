@@ -47,6 +47,7 @@ en:
       list_type: "Type of the Cert"
       list_date: "Request Date"
       list_available: "Status"
+      list_vlan_id: "VLAN ID"
       list_memo: "Memo"
       list_purpose_type_errror: "Error occurred on the certification type. Please contact the system administrator."
       cert_expired: "Expired"
@@ -70,6 +71,11 @@ en:
       <br>
       Finally, download and install the intermediate CA certificate via the following link.<br>
       https://repo1.secomtrust.net/sppca/nii/odca3/nii-odca3sha2.cer<br>
+      <br>"
+      showlink: "See the Detail"
+    disable_result:
+      title: "Your request has been sent."
+      text_html: "Your disabling request has been sent to the issuer of certifications (NII)<br>
       <br>"
       showlink: "See the Detail"
     disable_result:

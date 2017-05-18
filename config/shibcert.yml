@@ -9,6 +9,7 @@ label:
       5: "学内ネットワーク(KUINS) 接続用"  
       7: "全学メール(KUMAIL,KUMOI) 署名・暗号化用"
     intro_text: "クライアント証明書とは、PC・タブレット・スマートフォンなどのコンピュータにインストールして電子的な本人確認ができるようにするデジタル証明書です。京都大学では、無線LANサービスのKUINS-AirやPPTPなどのVPN接続に利用できる「個人証明書」と、Eメールの署名・暗号化用途で利用できる「S/MIME証明書」を提供しています。"
+    vlan: "VLAN固定接続"
   en:
     site_title: "Client Certificate Issue Request System of Kyoto University"  
     purpose:
@@ -17,6 +18,7 @@ label:
       5: "for Connecting to Campus Network(KUINS)"  
       7: "for Signing/Encrypting Campus Mail(KUMAIL, KUMOI)"
     intro_text: "\"Client Certificate\" is a digital certificate for personal identification which can be installed on computers like PCs/tablets/smartphones. Kyoto University provides \"Personal Certificates\" and \"S/MIME Certificates\". Clients certificates can be used for connecting to the campus WiFi service (KUINS-Air) or the VPN service (PPTP), and S/MIME certificates can be used for signing or encrypting e-mails."
+    vlan: "Connecting to a Particular VLAN"
 
 production:
   certificate_file: "config/certificates/client.cer"
