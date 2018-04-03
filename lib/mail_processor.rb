@@ -48,13 +48,13 @@ class MailProcessor
     end
 
     case @mail.subject
-    when '[UPKI] アクセスPIN発行通知'
+    when /^\[UPKI\] アクセスPIN発行通知.*/
       @logger.info("mail type: access PIN")
       self.get_pin
-    when '[UPKI] クライアント証明書取得通知'
+    when /^\[UPKI\] クライアント証明書取得通知.*/
       @logger.info("mail type: serial number")
       self.get_serial
-    when '[UPKI] クライアント証明書失効完了通知'
+    when /^\[UPKI\] クライアント証明書失効完了通知.*/
       @logger.info("mail type: revoked")
       self.get_revoked_serial
     else
@@ -123,7 +123,7 @@ Subject: [UPKI] クライアント証明書取得通知
 =end
 
     mail_text_part = @mail.text_part.decoded
-    mail_text_part.match(/^【対象証明書DN】\n　---------------------------------------------\n(.*)\n　---------------------------------------------$/m)
+    mail_text_part.match(/^【対象証明書DN】\n　---------------------------------------------\n(.*?)\n　---------------------------------------------$/m)
     dn = Regexp.last_match(1).delete('　').split("\n").join(',')
 
     mail_text_part.match(/^【対象証明書シリアル番号】\n　(\d+)$/m)
@@ -138,8 +138,25 @@ Subject: [UPKI] クライアント証明書取得通知
   end
 
   def get_revoked_serial
+
+=begin
+日英併記になったバージョン (2018/03〜)       
+
+[UPKI] クライアント証明書失効完了通知 / [UPKI] client certificate revocation completion notification
+
+【失効証明書DN】
+　---------------------------------------------
+　CN=taro000kyoto
+　OU=No 1
+　OU=Kyoto University Integrated Information Network System
+　O=Kyoto University
+　L=Academe
+　C=JP
+　---------------------------------------------
+=end
+    
     mail_text_part = @mail.text_part.decoded
-    mail_text_part.match(/^【失効証明書DN】\n　---------------------------------------------\n(.*)\n　---------------------------------------------$/m)
+    mail_text_part.match(/^【失効証明書DN】\n　---------------------------------------------\n(.*?)\n　---------------------------------------------$/m)
     dn = Regexp.last_match(1).delete('　').split("\n").join(',')
 
     mail_text_part.match(/^【失効証明書シリアル番号】\n　(\d+)$/m)
