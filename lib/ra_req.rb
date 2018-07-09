@@ -167,7 +167,7 @@ end
 
 =begin
 # TSV format https://certs.nii.ac.jp/archive/TSV_File_Format/client_tsv/
-TSV = ['CN=example,OU=001,OU=Example OU,O=Kyoto University,L=Academe,C=JP', # No.1 certificate DN
+TSV = ['CN=example,OU=001,OU=Example OU,O=Kyoto University,ST=Kyoto,C=JP', # No.1 certificate DN
        '5',                     # No.2 Profile - 4:client(sha1), 5:client(sha256), 6:S/MIME(sha1), 7:S/MIME(sha256)
        '1',                     # No.3 Download Type - 1:P12個別, 2:P12一括, 3:ブラウザ個別
        '',                      # No.4 -

@@ -114,7 +114,7 @@ Subject: [UPKI] クライアント証明書取得通知
 　OU=001
 　OU=Kyoto University Integrated Information Network System
 　O=Kyoto University
-　L=Academe
+　ST=Kyoto
 　C=JP
 　---------------------------------------------
 
@@ -150,7 +150,7 @@ Subject: [UPKI] クライアント証明書取得通知
 　OU=No 1
 　OU=Kyoto University Integrated Information Network System
 　O=Kyoto University
-　L=Academe
+　ST=Kyoto
 　C=JP
 　---------------------------------------------
 =end
