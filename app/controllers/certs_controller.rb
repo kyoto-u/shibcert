@@ -105,7 +105,7 @@ class CertsController < ApplicationController
     
     request_params = params.require(:cert).permit(:purpose_type).merge(
       {user_id: current_user.id,
-       state: Cert::State::NEW_GOT_PIN,
+       state: Cert::State::NEW_REQUESTED_FROM_USER,
        dn: dn,
        pin: generate_random_pin,
        vlan_id: vlan_id,

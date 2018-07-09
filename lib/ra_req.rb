@@ -12,7 +12,7 @@ require 'logger'
 class RaReq
   module New
     ApplyType = 1
-    NextState = Cert::State::NEW_REQUESTED_TO_NII
+    NextState = Cert::State::NEW_GOT_PIN
     ErrorState = Cert::State::NEW_ERROR
     def self.generate_tsv(cert, user)
       [
@@ -34,7 +34,7 @@ class RaReq
 
   module Renew
     ApplyType = 2
-    NextState = Cert::State::RENEW_REQUESTED_TO_NII
+    NextState = Cert::State::RENEW_GOT_PIN
     ErrorState = Cert::State::RENEW_ERROR
     def self.generate_tsv(cert, user)
       [
