@@ -48,6 +48,7 @@ ja:
       list_type: "証明書の種類"
       list_date: "申請日"
       list_available: "申請状況"
+      list_expire_at: "有効期限"
       list_vlan_id: "VLAN ID"
       list_memo: "メモ"
       list_purpose_type_errror: "証明書タイプに問題が発生しています。担当部署までお問い合わせ下さい。"
@@ -59,7 +60,8 @@ ja:
       title: "申請完了"
       text_html: "UPKIクライアント証明書の発行申請を行いました。<br>
       <br>
-      5分程度で、証明書の利用に必要な PIN (Personal Identification Number) を本システムで確認できるようになります。<br>
+      <strong>5分程度で、証明書の利用に必要な PIN (Personal Identification Number) を本システムで確認できるようになります。<br>
+      PIN はメールでは届きませんのでご注意ください。</strong><br>
       また、CAサポートセンター &lt;ca-support@ml.secom-sts.co.jp&gt; から、あなたのメールアドレス &lt;%{mail}&gt; 宛てに、<br>
       証明書ダウンロード用URLが記載されたメールが届きます。<br>
       本システムで PIN を確認のうえ、メールに記載されたURLにアクセスして、証明書をダウンロードして下さい。<br>
@@ -116,6 +118,7 @@ ja:
         - '失効'
         - 'エラー発生 担当部署までお問い合わせください'
         - '不明 担当部署までお問い合わせください'
+      expire_at: '有効期限'
       pin_number: 'PIN番号'
       pin_wait: 'まだPIN番号は発行されていません。申請完了メール送信までお待ちください。'
       date: '申請日時'

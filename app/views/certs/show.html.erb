@@ -23,6 +23,14 @@
 	</td>
   </tr>
   <tr>
+	<td><strong><%= t('.expire_at') %></strong></td>
+	<td>
+          <% if @cert.expire_at %>
+            <%= I18n.l Date.parse(@cert.expire_at.to_s) %>
+          <% end %>
+	</td>
+  </tr>
+  <tr>
 	<td><strong><%= t('.x509_status') %></strong></td>
 	<td>
           <%= t('.x509_status_msg')[@cert.x509_state] %>

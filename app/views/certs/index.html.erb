@@ -57,6 +57,7 @@
       <th><%= t('.list_type') %></th>
       <th><%= t('.list_date') %></th>
       <th><%= t('.list_available') %></th>
+      <th><%= t('.list_expire_at') %></th>
       <th><%= t('.list_vlan_id') %></th>
       <th><%= t('.list_memo') %></th>
     </tr>
@@ -79,6 +80,7 @@
       <td>
         <%= t('certs.show.cert_status_msg')[cert.state] %>
 	  </td>
+      <td><% if cert.expire_at %><%= I18n.l Date.parse(cert.expire_at.to_s) %><% end %></td>	  
       <td><%= cert.vlan_id %></td>
       <td><%= cert.memo %></td>
     </tr>
