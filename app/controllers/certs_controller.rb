@@ -107,7 +107,6 @@ class CertsController < ApplicationController
       {user_id: current_user.id,
        state: Cert::State::NEW_REQUESTED_FROM_USER,
        dn: dn,
-       pin: generate_random_pin,
        vlan_id: vlan_id,
        req_seq: current_user.cert_serial_max})
     @cert = Cert.new(request_params)
@@ -233,10 +232,4 @@ class CertsController < ApplicationController
     def cert_params
       params.require(:cert).permit(:vlan_id, :memo, :get_at, :expire_at, :pin, :pin_get_at, :user_id, :cert_state_id, :cert_type_id, :purpose_type)
     end
-
-  private
-  def generate_random_pin(length=16)
-    character = ('0'..'9').to_a + ('A'..'Z').to_a + ('a'..'z').to_a
-    character.shuffle.first(length).join
-  end
 end

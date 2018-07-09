@@ -12,7 +12,7 @@ require 'logger'
 class RaReq
   module New
     ApplyType = 1
-    NextState = Cert::State::NEW_GOT_PIN
+    NextState = Cert::State::NEW_REQUESTED_TO_NII
     ErrorState = Cert::State::NEW_ERROR
     def self.generate_tsv(cert, user)
       [
@@ -27,14 +27,14 @@ class RaReq
         'NIIcert' + Time.now.strftime("%Y%m%d-%H%M%S"),
         SHIBCERT_CONFIG[Rails.env]['user_ou'],
         user.email,
-        cert.pin,
+        '', # PIN
       ].join("\t")
     end
   end
 
   module Renew
     ApplyType = 2
-    NextState = Cert::State::RENEW_GOT_PIN
+    NextState = Cert::State::RENEW_REQUESTED_TO_NII
     ErrorState = Cert::State::RENEW_ERROR
     def self.generate_tsv(cert, user)
       [
@@ -50,7 +50,7 @@ class RaReq
         'NIIcert' + Time.now.strftime("%Y%m%d-%H%M%S"),
         SHIBCERT_CONFIG[Rails.env]['user_ou'],
         user.email,
-        cert.pin,
+        '', # PIN
       ].join("\t")
     end
   end
