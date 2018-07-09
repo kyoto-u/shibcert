@@ -27,6 +27,7 @@ class RaReq
         'NIIcert' + Time.now.strftime("%Y%m%d-%H%M%S"),
         SHIBCERT_CONFIG[Rails.env]['user_ou'],
         user.email,
+        '', # PIN
       ].join("\t")
     end
   end
@@ -49,6 +50,7 @@ class RaReq
         'NIIcert' + Time.now.strftime("%Y%m%d-%H%M%S"),
         SHIBCERT_CONFIG[Rails.env]['user_ou'],
         user.email,
+        '', # PIN
       ].join("\t")
     end
   end
