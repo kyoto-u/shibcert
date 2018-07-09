@@ -116,13 +116,13 @@ class RaReq
     when Cert::State::REVOKE_REQUESTED_FROM_USER
       proc = Revoke
     else
-      Rails.logger.info "RaReq.request failed because of cert.state is #{cert.state})"
+      Rails.logger.err "RaReq.request failed because of cert.state is #{cert.state}"
       return nil
     end
 
     user = User.find_by(id: cert.user_id)
     unless user
-      Rails.logger.info "RaReq.request failed because of User.find_by(id: #{cert.user_id}) == nil"
+      Rails.logger.err "RaReq.request failed because of User.find_by(id: #{cert.user_id}) == nil"
       return nil
     end
 
@@ -155,12 +155,12 @@ class RaReq
     if Regexp.new("ファイルのアップロード処理が完了しました。").match(submitted_form.body.encode("utf-8", "euc-jp"))
       cert.state = proc::NextState
       cert.save
-      Rails.logger.debug "#{__method__}: upload success"
+      Rails.logger.info "#{__method__}: upload success"
       return cert
     else
       cert.state = proc::ErrorState
       cert.save
-      Rails.logger.debug "#{__method__}: upload fail"
+      Rails.logger.err "#{__method__}: upload fail"
       return nil
     end
   end
