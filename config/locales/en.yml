@@ -140,3 +140,5 @@ en:
     admin:
       admin_title: "Request System Issuing Certification"
     
+  maintenance_mode:
+    sorry: "Sorry, maintenance in progress"

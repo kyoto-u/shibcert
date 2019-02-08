@@ -50,6 +50,10 @@
 	</div>
   </div>
   <div class="container">
+   <% if SHIBCERT_CONFIG['maintenance_mode'] == true %>
+    <% ln = params[:locale] == 'ja' ? 'ja': 'en' %>
+    <%= t('maintenance_mode.sorry')%>
+   <% else %>
     <% ln = params[:locale] == 'ja' ? 'ja': 'en' %>
 	<% if current_user %>
 	<%= yield %>	
@@ -64,6 +68,7 @@
 	  <% end %>
 	</div>
     <% end %>
+   <% end %>
   </div>
 </body>
 </html>

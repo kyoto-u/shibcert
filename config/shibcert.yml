@@ -1,5 +1,7 @@
 # shibcert.yml: shibcert application user-specific configuration
 
+maintenance_mode: true
+
 label:
   ja:
     site_title: "京都大学 クライアント証明書発行申請システム"
