@@ -70,6 +70,7 @@ class RaReq
         SHIBCERT_CONFIG[Rails.env]['admin_mail'], # 10
         '', '', '',
         user.email,               # 14
+        '', # PIN
       ].join("\t")
     end
   end
@@ -116,13 +117,13 @@ class RaReq
     when Cert::State::REVOKE_REQUESTED_FROM_USER
       proc = Revoke
     else
-      Rails.logger.err "RaReq.request failed because of cert.state is #{cert.state}"
+      Rails.logger.error "RaReq.request failed because of cert.state is #{cert.state}"
       return nil
     end
 
     user = User.find_by(id: cert.user_id)
     unless user
-      Rails.logger.err "RaReq.request failed because of User.find_by(id: #{cert.user_id}) == nil"
+      Rails.logger.error "RaReq.request failed because of User.find_by(id: #{cert.user_id}) == nil"
       return nil
     end
 
@@ -160,7 +161,7 @@ class RaReq
     else
       cert.state = proc::ErrorState
       cert.save
-      Rails.logger.err "#{__method__}: upload fail"
+      Rails.logger.error "#{__method__}: upload fail"
       return nil
     end
   end
