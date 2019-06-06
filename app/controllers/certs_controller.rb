@@ -80,7 +80,7 @@ class CertsController < ApplicationController
           flash[:alert] = "VLAN ID is invalid."
           return redirect_to :action => "index"
         else
-          cn = "CN=#{current_user.uid}" + "@" + params[:cert]["vlan_id"]
+          cn = "CN=#{current_user.uid}" + "@" + params[:cert]["vlan_id"].strip
         end
       else
         cn = "CN=#{current_user.uid}"
