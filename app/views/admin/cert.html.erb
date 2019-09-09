@@ -1,0 +1,181 @@
+
+<h3><%= t('admin.index.title') %></h3>
+
+<h4><%= t('certs.show.title') %></h4>
+
+<% if flash[:alert] %>
+<div class="alert alert-danger">
+  <%= flash[:alert] %>
+</div>
+<% end %>
+
+<% if @cert %>
+<table class="table">
+  <tr>
+	<td><strong><%= t('admin.user.id') %></strong></td>
+	<td><%= @cert.id %></td>
+  </tr>
+  <tr>
+	<td><strong><%= t('certs.show.req_seq') %></strong></td>
+	<td><%= @cert.req_seq %></td>
+  </tr>
+  <tr>
+	<td><strong><%= t('certs.show.purpose_type') %></strong></td>
+	<td>
+	  <% if t('common.purpose_type.t' + @cert.purpose_type.to_s) %>
+	  <%= t('common.purpose_type.t' + @cert.purpose_type.to_s)	%>
+	  <% else %>
+	  <%= t('purpose_type_errror') %>
+	  <% end %>
+          <% if @cert.download_type == 2 %>
+          [UPKI-PASS]
+          <% end %>
+	</td>
+  </tr>
+  <tr>
+	<td><strong><%= t('certs.show.cert_status') %></strong></td>
+	<td>
+          <%= t('certs.show.cert_status_msg')[@cert.state] %>
+	</td>
+  </tr>
+  <tr>
+	<td nowrap><strong><%= t('certs.show.x509_status') %></strong></td>
+	<td>
+        <% if @cert.x509_state == 4 %>
+          <%= link_to 'ERROR', {action: "error", id:@cert.id}, {target: ["_blank"], class: "btn btn-xs btn-info"} %>
+        <% else %>
+          <%= t('certs.show.x509_status_msg')[@cert.x509_state] %>
+        <% end %>
+	</td>
+  </tr>
+  <tr>
+	<td><strong><%= t('certs.show.date') %></strong></td>
+	<td>
+          <% if @cert.created_at %>
+            <%= I18n.l(@cert.created_at) %>
+          <% else %>
+            <%= t('certs.show.cert_unavailable') %>
+          <% end %>
+	</td>
+  </tr>
+  <tr>
+	<td><strong><%= t('certs.show.pin_number') %></strong></td>
+	<td>
+          <% if @cert.download_type == 1 %>
+	  <%= @cert.pin || t('certs.show.pin_wait') %>
+	  <% else %>
+	  <%= @cert.pin || t('certs.show.pin_nouse') %>
+          <% end %>
+	</td>
+  </tr>
+  <tr>
+	<td><strong><%= t('certs.show.pin_date') %></strong></td>
+	<td>
+          <% if @cert.pin_get_at %>
+            <%= I18n.l(@cert.pin_get_at) %>
+          <% else %>
+            <%= t('certs.show.cert_not') %>
+          <% end %>
+	</td>
+  </tr>
+  <tr>
+	<td><strong><%= t('certs.show.serial') %></strong></td>
+	<td>
+	  <%= @cert.serialnumber || t('certs.show.serial_error') %>
+	</td>
+  </tr>
+  <tr>
+	<td><strong><%= t('certs.show.issue_date') %></strong></td>
+	<td>
+          <% if @cert.get_at %>
+            <%= I18n.l(@cert.get_at) %>
+          <% else %>
+            <%= t('certs.show.cert_not') %>
+          <% end %>
+	</td>
+  </tr>
+  <tr>
+	<td><strong><%= t('certs.show.expire_date') %></strong></td>
+	<td>
+          <% if @cert.expire_at %>
+            <%= I18n.l(@cert.expire_at) %>
+          <% else %>
+            <%= t('certs.show.cert_not') %>
+          <% end %>
+	</td>
+  </tr>
+
+  <tr>
+	<td><strong><%= t('certs.show.dn') %></strong></td>
+	<td>
+	  <%= @cert.dn || t('certs.show.dn_error') %>
+	</td>
+  </tr>
+
+  <% if @cert.pass_id %>
+  <tr>
+	<td><strong>PASS ID</strong></td>
+	<td>
+          <%= @cert.pass_id %>
+          [ pin = 
+	  <% if @cert.pass_pin %>
+	    <%= t('.issue') %>
+          <% else %>
+	    <%= t('.wait') %>
+          <% end %>
+          / p12 = 
+	  <% if @cert.pass_p12 %>
+	    <%= t('.issue') %>
+          <% else %>
+	    <%= t('.wait') %>
+          <% end %>
+          ]
+	</td>
+  </tr>
+  <% end %>
+
+  <tr>
+	<td><strong><%= t('certs.show.memo') %></strong></td>
+	<td>
+	  <%= @cert.memo %>
+	</td>
+  </tr>
+  <tr>
+	<td><strong><%= t('.user_seq') %></strong></td>
+        <td>
+          <%= link_to @cert.user_id, {action: "user", id:@cert.user_id}, {class: "btn btn-xs btn-default"} %>
+        </td>
+  </tr>
+  <tr>
+    <% if @cert.x509_state == 4 %>
+	<td><strong><%= t('.delete_operation') %></strong></td>
+	<td>
+          <%= form_tag({controller: "admin", action: "delete_post", id: @cert.id}, {class: "form-inline"}) do %>
+          <%= submit_tag(t('.delete_bt'), class: "btn btn-xs btn-danger", data: {confirm: t('.delete_confirm')}) %>
+          <% end %>
+	</td>
+    <% else %>
+	<td><strong><%= t('certs.show.disable_operation') %></strong></td>
+	<td>
+	  <% if @cert.state == Cert::State::NEW_GOT_SERIAL || @cert.state == Cert::State::RENEW_GOT_SERIAL || @cert.state == Cert::State::NEW_PASS_GOT_CERT %>
+  	    <%= form_tag({action: "disable_post", id: @cert.id}, {class: "form-inline"}) do %>
+	    <%= submit_tag(t('certs.show.disable_bt'), class: "btn btn-xs btn-warning", data: {confirm: t('certs.show.disable_confirm')}) %>
+	    <% end %>
+	  <% else %>
+	    <div class="btn btn-xs btn-default" disabled="disabled">
+	      <%= t('certs.show.disable_bt') %>
+	    </div>
+	  <% end %>
+	</td>
+    <% end %>
+  </tr>
+</table>
+<% else %>
+<p> <%= t('certs.show.cert_error') %></p>
+<% end %>
+
+<p>
+<%= link_to t('.to_usertop'), {controller: "admin", action: "user", id:@cert.user_id}, class:"underlined-text" %> / 
+<a href="#" onclick="javascript:window.history.back(-1);return false;" class="underlined-text"><%= t('admin.back') %></a>
+</p>
+

@@ -21,3 +21,20 @@
     overflow: auto;
     display: table;
 }
+
+#pass.ui-state-default {
+    display: table;
+}
+
+#pass.ui-state-active {
+    background: #f6f6f6;
+    color: #454545;
+    border: 1px solid #c5c5c5;
+    display: table;
+}
+
+#pass.ui-accordion-content {
+    border: 1px solid #dddddd;
+    overflow: auto;
+    display: table;
+}

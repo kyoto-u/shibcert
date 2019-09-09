@@ -1,0 +1,10 @@
+<h3><%= t('admin.index.title') %></h3>
+
+<h4><%= t('certs.disable_result.title') %></h4>
+
+<p>
+<%= t('certs.disable_result.text_html') %>
+</p>
+<p>
+<%= link_to t('certs.disable_result.showlink'), {action: "cert", id: @cert.id}, class: "btn btn-primary" %>
+</p>

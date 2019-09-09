@@ -1,0 +1,2 @@
+| base64 | curl -u gcertsys:8aBEpQ7r31 https://g-cert-dev.gakunin.nii.ac.jp/mail/p
+rocessor -X POST -H "Content-Type: text/plain" -k -d @-

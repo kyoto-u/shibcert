@@ -1,0 +1,7 @@
+<h3><%= t('certs.request_result.title', type: t('certs.request_result.type_renew')) %></h3>
+
+<p><%= t('certs.request_result.text_html', type: t('certs.request_result.type_renew'), mail: @maddr) %></p>
+
+<p>
+  <%= link_to t('certs.request_result.showlink'), {controller: "certs", action: "show", id: @cert.id}, class: "btn btn-primary" %>
+</p>

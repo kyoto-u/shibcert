@@ -18,17 +18,43 @@
     <li>
 	<%= SHIBCERT_CONFIG['label'][ln]['purpose'][5] if SHIBCERT_CONFIG['label']['ja']['purpose'][5] %>
 	  <%= form_tag({controller: "certs", action: "request_post"}, {class: "form-inline"}) do %>
-	  <%= submit_tag(t('.req_bt', type: t('common.purpose_type.t5')), class: "btn btn-primary", style: "float: left;", data: {confirm: t('.confirm')}) %>
-	  <%= hidden_field :cert, :purpose_type, :value => 5 %><div id="accordion">
-	    <div id="vlan">&nbsp;</div>
-	    <div id="vlan" style="display: table;">
-	      <p id="vlan"><%= SHIBCERT_CONFIG['label'][ln]['vlan'] if SHIBCERT_CONFIG['label']['ja']['vlan'] %></p>
-	    <p>
-	      <%= radio_button :cert, :vlan, true %> ON 
-	      <%= text_field :cert, :vlan_id, :placeholder => "Enter VLAN ID...", :disabled => true %></p>
-	    <p><%= radio_button :cert, :vlan, false, {:checked => true} %> OFF</p>
-	    </div>
-	    </div>
+ 	  <% if SHIBCERT_CONFIG['flag']['use_upki_pass'] == false && SHIBCERT_CONFIG['flag']['use_vlan'] == false %>
+	    <%= submit_tag(t('.req_bt', type: t('common.purpose_type.t5')), class: "btn btn-primary", data: {confirm: t('.confirm')}) %>
+          <% else %>
+	    <%= submit_tag(t('.req_bt', type: t('common.purpose_type.t5')), class: "btn btn-primary", style: "float: left;", data: {confirm: t('.confirm')}) %>
+          <% end %>
+	  <%= hidden_field :cert, :purpose_type, :value => 5 %>
+ 	    <% if SHIBCERT_CONFIG['flag']['use_upki_pass'] == true %>
+              <div id="accordion1">
+	        <div id="pass">&nbsp;</div>
+	        <div id="pass" style="display: table;">
+	          <p id="pass">
+                    <%= t('.pass_setup') %>
+                  </p>
+	          <p>
+                    <%= check_box :cert, :pass_opt %> <%= t('.pass') %><br>
+	            <%= text_field :cert, :pass_id, :placeholder => t('.pass_id'), :disabled => false %>
+                    <%= t('.pass_text') %>
+                  </p>
+                </div>
+	      </div>
+ 	    <% elsif SHIBCERT_CONFIG['flag']['use_vlan'] == true %>
+              <div id="accordion1">
+	        <div id="vlan">&nbsp;</div>
+	        <div id="vlan" style="display: table;">
+	          <p id="vlan">
+                    <%= t('.vlan') %>
+                  </p>
+	          <p>
+	            <%= radio_button :cert, :vlan, true %> ON 
+	            <%= text_field :cert, :vlan_id, :placeholder => "Enter VLAN ID...", :disabled => false %>
+                  </p>
+	          <p>
+                    <%= radio_button :cert, :vlan, false, {:checked => true} %> OFF
+                  </p>
+	        </div>
+	      </div>
+	    <% end %>
 	  <% end %>
     </li><br/>
     <li>
@@ -48,8 +74,23 @@
 	  <% end %>
     </li>
   </ul>
-  <br>
-<h4><%= t('.list_title') %></h4>
+  <br/>
+
+<h4>
+<%= t('.list_title') %>
+</h4>
+<h5>
+<%= form_tag({action: "index"}, {class: "form-inline"}) do  %>
+  <% if @all_certs_opt == 1 %>
+    <%= hidden_field :opt, :all, :value => 0 %>
+    <%= submit_tag( t('.list_valid'), class: "btn btn-xs btn-default" ) %>
+  <% else %>  
+    <%= hidden_field :opt, :all, :value => 1 %>
+    <%= submit_tag( t('.list_all'), class: "btn btn-xs btn-default" ) %>
+  <% end %>
+<% end %>
+</h5>
+
 <table class="table table-striped">
   <thead>
     <tr>
@@ -57,8 +98,7 @@
       <th><%= t('.list_type') %></th>
       <th><%= t('.list_date') %></th>
       <th><%= t('.list_available') %></th>
-      <th><%= t('.list_expire_at') %></th>
-      <th><%= t('.list_vlan_id') %></th>
+      <th><%= t('.list_renew') %></th>
       <th><%= t('.list_memo') %></th>
     </tr>
   </thead>
@@ -66,27 +106,47 @@
   <tbody>
 
     <% @certs.each do |cert| %>
-    <tr>
-	  <td><%= link_to cert.req_seq.to_s, {action: "show", id:cert.id}, {class: "btn btn-default"}   %></td>	  
-	  <td>
-		<% purpose_cap =  %>
-		<% if t('common.purpose_type.t' + cert.purpose_type.to_s) %>
-		<%= t('common.purpose_type.t' + cert.purpose_type.to_s) %>
-		<% else %>  
-		t('.list_purpose_type_error')
-		<% end %>
-	  </td>
-      <td><%= I18n.l Date.parse(cert.created_at.to_s) %></td>	  
-      <td>
-        <%= t('certs.show.cert_status_msg')[cert.state] %>
-	  </td>
-      <td><% if cert.expire_at %><%= I18n.l Date.parse(cert.expire_at.to_s) %><% end %></td>	  
-      <td><%= cert.vlan_id %></td>
-      <td><%= cert.memo %></td>
-    </tr>
-	
+      <tr>
+        <td>
+          <%= link_to cert.req_seq.to_s, {action: "show", id:cert.id}, {class: "btn btn-default"} %>
+        </td>
+        <td>
+	  <% purpose_cap =  %>
+	  <% if t('common.purpose_type.t' + cert.purpose_type.to_s) %>
+	    <%= t('common.purpose_type.t' + cert.purpose_type.to_s) %>
+	  <% else %>  
+	    <%= t('.list_purpose_type_error') %>
+	  <% end %>
+	  <% if cert.download_type == 2 %>
+            <br/>[UPKI-PASS]
+	  <% end %>
+        </td>
+        <td>
+          <%= I18n.l Date.parse(cert.created_at.to_s) %>
+        </td>	  
+        <td>
+          <%= t('certs.show.cert_status_msg')[cert.state] %>
+        </td>
+        <td>
+          <% if cert.state == Cert::State::NEW_GOT_SERIAL || cert.state == Cert::State::RENEW_GOT_SERIAL %>
+            <%= form_tag({controller: "certs", action: "renew_post", id: cert.id}, {class: "form-inline"}) do %>
+              <%= submit_tag(t('.renew_bt'), class: "btn btn-xs btn-primary", data: {confirm: t('.renew_confirm')}) %>
+            <% end %>
+          <% else %>
+            <div class="btn btn-xs btn-default" disabled="disabled">
+              <%= t('.renew_bt') %>
+            </div>
+          <% end %>
+        </td>
+        <td>
+          <%= cert.memo %>
+        </td>
+      </tr>
     <% end %>
   </tbody>
 </table>
 <br>
 <% end %>
+
+<%= link_to t('.update'), 'javascript:location.reload()', class:"underlined-text" %>
+

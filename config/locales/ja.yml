@@ -25,43 +25,75 @@ ja:
     menu: "アカウントメニュー"    
     help: "ヘルプ"    
     logout: "ログアウト"
+    admin: "管理者インタフェイス"
   login:
     logintext: "学内IDで"
     otherlogintext: "他のサービスを使って"    
     loginlink: "ログイン"
+    otherloginlink: "開発ログイン"
   common:
     backlink: "キャンセルして戻る"
     purpose_type:
-      t5: "個人証明書" #5
-      t7: "S/MIME証明書" #7
+      t5:  "クライアント証明書" #5
+      t7:  "S/MIME証明書" #7
+      t55: "UPKI-PASS証明書" #55
   certs:
     index:
       dashboard_title: "クライアント証明書発行申請ダッシュボード"
-      dashboard_text: "このページではクライント証明書の発行申請・管理が行えます。なお、本システムは国立情報学研究所(NII)のUPKI電子証明書発行サービスを利用しています。" 
-      req_title: "証明書の種類を選択して申請"
-      req_bt: "%{type}を申請"
-      confirm: "発行元(国立情報学研究所)に申請を送信します。よろしいですか？"
-      linktext: "を申請"
+      dashboard_text: "このページではクライント証明書の発行申請・管理が行えます。本システムは国立情報学研究所(NII)のUPKI電子証明書発行サービスを利用しています。また利用には学認のアカウントが必要です。"
+      req_title: "証明書の種類を選択して新規申請"
+      req_bt: "%{type}を新規申請"
+      confirm: "発行元(国立情報学研究所)に新規申請を送信します。よろしいですか？"
+      linktext: "を新規申請"
       no_multi_smime: "※S/MIME証明書は複数申請できません"
+      pass_setup: "オプション設定:"
+      pass: "UPKI-PASS用のクライアント証明書を発行"
+      pass_id: "UPKI-PASS発行ID..."
+      pass_text: "[必須] 学籍番号等"
+      vlan: "VLAN固定接続"
       list_title: "証明書の発行状況 (申請番号をクリックで詳細表示)"
       list_seq: "申請番号"
+      list_valid: "有効な証明書のみ表示"
+      list_all: "全ての証明書を表示"
       list_type: "証明書の種類"
       list_date: "申請日"
       list_available: "申請状況"
-      list_expire_at: "有効期限"
+      list_status: "状態"
+      list_status_msg:
+        - '申請中'
+        - '有効'
+        - '期限切れ'
+        - '失効'
+        - 'エラー'
+        - '不明'
+        - 'UPKI-PASS'
+        - '未取得'
       list_vlan_id: "VLAN ID"
+      list_renew: "更新操作"
       list_memo: "メモ"
       list_purpose_type_errror: "証明書タイプに問題が発生しています。担当部署までお問い合わせ下さい。"
       cert_expired: "期限切れ"
       cert_valid: "有効"
       cert_invalid: "無効"
       cert_requesting: "未発行"
+      renew_bt: '更新申請'
+      renew_confirm: '発行元(国立情報学研究所)に更新申請を送信します。よろしいですか？'
+      update: '画面更新'
+    request_post:
+      title: "証明書発行エラー"
+      mime_err: "S/MIME証明書は発行済みです。"
+      pass_err: "UPKI-PASS発行IDが未指定です。"
+      vlan_err: "VLAN IDが不正な値です。"
+      max_err: "証明書発行最大数の保存エラー。"
+      save_err: "証明書情報の保存エラー。"
+      back: "戻る"
     request_result:
-      title: "申請完了"
-      text_html: "UPKIクライアント証明書の発行申請を行いました。<br>
+      type_new: '新規'
+      type_renew: '更新'
+      title: "%{type}申請完了"
+      text_html: "UPKIクライアント証明書の%{type}発行申請を行いました。<br>
       <br>
-      <strong>5分程度で、証明書の利用に必要な PIN (Personal Identification Number) を本システムで確認できるようになります。<br>
-      PIN はメールでは届きませんのでご注意ください。</strong><br>
+      5分程度で、証明書の利用に必要な PIN (Personal Identification Number) を本システムで確認できるようになります。<br>
       また、CAサポートセンター &lt;ca-support@ml.secom-sts.co.jp&gt; から、あなたのメールアドレス &lt;%{mail}&gt; 宛てに、<br>
       証明書ダウンロード用URLが記載されたメールが届きます。<br>
       本システムで PIN を確認のうえ、メールに記載されたURLにアクセスして、証明書をダウンロードして下さい。<br>
@@ -74,13 +106,13 @@ ja:
       <br>"
       showlink: "証明書情報確認"
     disable_result:
-      title: "申請完了"
+      title: "失効申請完了"
       text_html: "証明書の発行元(国立情報学研究所)に対する失効申請を行いました。<br>
       <br>"
       showlink: "証明書情報確認"
-    disable_result:
-      title: "申請完了"
-      text_html: "証明書の発行元(国立情報学研究所)に対する失効申請を行いました。<br>
+    renew_result:
+      title: "更新申請完了"
+      text_html: "証明書の発行元(国立情報学研究所)に対する更新申請を行いました。<br>
       <br>"
       showlink: "証明書情報確認"
     show:
@@ -90,23 +122,27 @@ ja:
       purpose_type_errror: "証明書タイプに問題が発生しています。担当部署までお問い合わせ下さい。"
       cert_status: "申請状況"      
       cert_status_msg:
-        10: '新規申請中 (PIN取得待ち)'
-        11: '新規申請中 (PIN取得待ち)'
-        12: '新規申請中 (PIN取得待ち)'
-        13: '新規申請中'
-        14: '新規申請中'
+        10: '新規申請前'
+        11: '新規申請中'
+        12: '新規申請受信'
+        13: '新規申請PIN取得済'
+        14: '新規申請完了'
         15: '有効'
+        16: '取得期限切れ'
+        17: 'UPKI-PASS申請中'
+        18: '新規UPKI-PASS取得済'
         19: '不明 担当部署までお問い合わせください'
-        20: '更新申請中 (PIN取得待ち)'
-        21: '更新申請中 (PIN取得待ち)'
-        22: '更新申請中 (PIN取得待ち)'
-        23: '更新申請中'
-        24: '更新申請中'
-        25: '有効'
+        20: '更新申請前'
+        21: '更新申請中'
+        22: '更新申請受信'
+        23: '更新申請PIN取得済'
+        24: '更新申請完了'
+        25: '有効(更新)'
+        26: '取得(更新)期限切れ'
         29: 'エラー 担当部署までお問い合わせください'
-        30: '失効申請中'
+        30: '失効申請前'
         31: '失効申請中'
-        32: '失効申請中'
+        32: '失効申請受信'
         33: '失効済'
         39: 'エラー 担当部署までお問い合わせください'
         -1: '不明 担当部署までお問い合わせください'
@@ -118,13 +154,24 @@ ja:
         - '失効'
         - 'エラー発生 担当部署までお問い合わせください'
         - '不明 担当部署までお問い合わせください'
-      expire_at: '有効期限'
+        - 'UPKI-PASS'
+        - 'エラー 取得期限切れ'
       pin_number: 'PIN番号'
       pin_wait: 'まだPIN番号は発行されていません。申請完了メール送信までお待ちください。'
+      pin_nouse: 'UPKI-PASSではPIN番号は発行されません。担当部署からの連絡をお待ちください。'
+      mail: 'メール送信'
+      mail_wait: '(受付通知メール送信待ち)'
+      mail_send: '(受付通知メール送信済み)'
+      no_mail: '受付通知メールは送信されません。'
       date: '申請日時'
       cert_unavailable: '未発行'
+      cert_not: '未取得'
+      pin_date: 'PIN生成日時'
       issue_date: '発行日時'
       expire_date: '有効期限'
+      serial: 'シリアル番号'
+      serial_error: '未発行'
+      serial_get: '発行:'
       dn: 'DN(識別名)'
       dn_error: 'エラー'
       memo: '用途メモ'
@@ -132,12 +179,75 @@ ja:
       memo_placeholder_smime: '(例)iPhoneのメール暗号化用'      
       memo_bt: 'メモを保存'
       disable_operation: '失効操作'
-      disable_bt: '失効'
+      disable_bt: '失効申請'
       disable_confirm: "【注意】証明書を失効化します。一度失効すると、再有効化はできません。よろしいですか？"
+      renew_operation: '更新操作'
+      renew_bt: '更新申請'
+      renew_confirm: '発行元(国立情報学研究所)に更新申請を送信します。よろしいですか？'
       cert_error: '指定された証明書が存在しません。何らかのエラーの可能性がありますので、管理担当者までご連絡下さい。'
       to_dashboard: 'ダッシュボードページに戻る'
-    admin:
-      admin_title: "クライアント証明書発行申請管理ページ"
+      update: '画面更新'
+  admin:
+    back: "戻る"
+    index:
+      title: "管理者インタフェイス"
+      user_list: "利用者一覧"
+      user_search: "利用者検索"
+      uid_search: "UID(ePPN)検索"
+      search: "検索"
+      search_list: "検索結果"
+      search_off: "検索解除"
+      search_num: "検索数"
+      page: "ページ"
+      prev: "前ページ"
+      next: "次ページ"
+      sync: "一括インポート機能"
+      sync_bt: "一括インポート"
+      sync_confirm: "発行元(国立情報学研究所)へ接続して情報を一括取得します。よろしいですか？"
+      sync_text: "証明書発行支援システムに接続して申請・発行履歴情報の証明書一覧を取得します。取得後に確認をしてデータベースへのインポートが可能です。"
+      to_dashboard: 'ダッシュボードページに戻る'
+    user:
+      info: "利用者の詳細"
+      id: "番号"
+      uid: "利用者ID(ePPN)"
+      name: "名前"
+      email: "メール"
+      number: "ユニークID"
+      provider: "認証"
+      admin: "管理者権限"
+      create: "作成"
+      update: "更新"
+      to_admintop: "管理者インターフェイストップ"
+    cert:
+      user_seq: '利用者番号'
+      delete_operation: '削除操作'
+      delete_bt: 'レコード削除'
+      delete_confirm: "【注意】証明書情報を削除します。一度削除すると、元にには戻せません。よろしいですか？"
+      wait: "未保存"
+      issue: "保存中"
+      to_usertop: "利用者の詳細"
+    sync:
+      info: "[一括インポート] 取得結果"
+      update_bt: "DB登録を実行して終了"
+      update_confirm: "【注意】サーバより取得した証明書をDBへ登録します。取り消しはできません。よろしいですか？"
+      all_count: "全証明書数"
+      up_count: "うち既存数"
+      all: "取得トータル"
+      new: "DB未登録"
+      exist: "DB登録済み"
+      show: "一覧表示"
+      cert: "証明書"
+      select: "DB登録する"
+      wait: "取得待ち"
+      issue: "発行済み"
+      update: "更新済み"
+      revoke: "失効済み"
+      error: "エラー"
+      clear_bt: "取得情報を破棄して終了"
+    delete_result:
+      title: "レコード削除完了"
+      text_html: "証明書のレコード削除を行いました。<br><br>"
+      showlink: "所有者情報確認"
       
 # copy from http://avosalmon.hatenablog.com/entry/2014/06/15/%E3%80%90Rails%E3%80%91date_select%E3%81%A7%22undefined_method_for_translation_missing_ja_date_order_string%22
   date:

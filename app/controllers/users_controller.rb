@@ -1,4 +1,7 @@
+# ========================================================================
+# UsersController: ユーザ情報クラス.
 class UsersController < ApplicationController
+
   before_action :set_user, only: [:show, :edit, :update, :destroy]
 
   # GET /users
@@ -72,3 +75,5 @@ class UsersController < ApplicationController
       params.require(:user).permit(:uid, :name, :email, :role_id)
     end
 end
+
+# ========================================================================

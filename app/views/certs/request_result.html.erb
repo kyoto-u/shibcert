@@ -1,6 +1,6 @@
-<h3><%= t('.title') %></h3>
+<h3><%= t('.title', type: t('.type_new')) %></h3>
 
-<p><%= t('.text_html', mail: @maddr) %></p>
+<p><%= t('.text_html', type: t('.type_new'), mail: @maddr) %></p>
 
 <p>
   <%= link_to t('.showlink'), {controller: "certs", action: "show", id: @cert.id}, class: "btn btn-primary" %>

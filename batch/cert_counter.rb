@@ -7,7 +7,7 @@ class CertCounter
     smime_certs =  certs.where(purpose_type: Cert::PurposeType::SMIME_CERTIFICATE)
 
     today = Date.today
-    day = Date.new(2016,1,1)
+    day = Date.new(2018,1,1)
  
     while day <= today
       day2 = day >> 1

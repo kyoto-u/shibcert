@@ -2,13 +2,15 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
-#$("#cert_vlan_true").click ->
-#    $("#cert_vlan_id").prop("disabled", false)
-#    return
-#
-#$("#cert_vlan_false").click ->
-#    $("#cert_vlan_id").prop("disabled", true)
-#    return
+ready = ->
+   $("#accordion1").accordion
+     collapsible: true
+     active: 2
+   $("#accordion2").accordion
+     collapsible: true
+     active: 2
+
+$(document).on('turbolinks:load', ready)
 
 $ -> 
   $('input[name="cert[vlan]"]').change ->
