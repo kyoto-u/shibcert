@@ -17,7 +17,7 @@ class CertExpireAtUpdator
   end
   
   def read_tsv(tsvfile)
-    @tsv = CSV.read(tsvfile, col_sep: "\t", headers: true, encoding: "shift_jis:utf-8")
+    @tsv = CSV.read(tsvfile, col_sep: "\t", headers: true, encoding: "utf-8:utf-8")
   end
 
   def update

@@ -4,8 +4,27 @@ class Cert < ActiveRecord::Base
   belongs_to :cert_state
   belongs_to :user
 
-  def self.update_from_login(userid)
+  def self.update_expire_at(id:, serialnumber:, expire_at:, url_expire_at:)
+    if !id
+      logger.info("#{__method__}: serialnumber or expire_at is not set")
+      return nil
+    end
+    cert = Cert.find(id)
+    if cert.serialnumber.blank? && serialnumber.present?
+      cert.serialnumber = serialnumber
+    end
+    if cert.expire_at.blank? && expire_at.present?
+      cert.expire_at = expire_at
+    end
+    if cert.url_expire_at.blank? && url_expire_at.present?
+      cert.url_expire_at = url_expire_at
+    end
+    cert.save
+    logger.info("#{__method__}: updated expire_at for cert.id:#{cert.id}")
+  end
 
+
+  def self.update_from_login(userid)
 #    logger.debug("#{__method__}: check update from login id = #{userid}")
     certs = Cert.where(user_id: userid).order("created_at DESC")
     if certs.count == 0
