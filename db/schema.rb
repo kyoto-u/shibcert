@@ -13,18 +13,6 @@
 
 ActiveRecord::Schema.define(version: 20190314113913) do
 
-  create_table "cert_states", force: true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "cert_types", force: true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "certs", force: true do |t|
     t.datetime "get_at"
     t.datetime "expire_at"
@@ -44,11 +32,11 @@ ActiveRecord::Schema.define(version: 20190314113913) do
     t.integer  "revoke_reason"
     t.string   "revoke_comment"
     t.string   "vlan_id"
-    t.datetime "url_expire_at"
     t.integer  "download_type",  default: 1
     t.string   "pass_id"
     t.string   "pass_pin"
     t.string   "pass_p12"
+    t.datetime "url_expire_at"
   end
 
   create_table "roles", force: true do |t|

@@ -56,7 +56,9 @@ class CertsController < ApplicationController
       @certs = Cert.where(user_id: current_user.id).order("created_at DESC")
       if @all_certs_opt == 0 && !@certs.blank?
         # 有効な証明書のみ抽出.
+        now = Time.now
         @certs = @certs.select { |s| \
+          (!s.expire_at || s.expire_at > now) && \
           s.state != Cert::State::NEW_GOT_TIMEOUT && \
           s.state != Cert::State::NEW_ERROR && \
           s.state != Cert::State::RENEW_GOT_TIMEOUT && \

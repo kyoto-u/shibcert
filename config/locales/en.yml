@@ -57,6 +57,7 @@ en:
       list_type: "Type of the Cert"
       list_date: "Request Date"
       list_available: "Status"
+      list_expire_at: "Expire at"
       list_status: "Status"
       list_status_msg:
         - 'Requesting'
