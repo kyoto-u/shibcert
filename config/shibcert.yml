@@ -1,6 +1,7 @@
 # shibcert.yml: shibcert application user-specific configuration
 
 maintenance_mode: false
+#maintenance_mode: true
 
 label:
   ja:
