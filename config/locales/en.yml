@@ -25,15 +25,18 @@ en:
     menu: "Account Menu"    
     help: "Help"    
     logout: "Log Out"
+    admin: "Admin Interface"
   login:
-    logintext: "With Campus ID"
-    otherlogintext: "With Other Authentication Services"    
-    loginlink: "Log In"
+    logintext: "GakuNin Auth [Test Federation]"
+    loginlink: "GakuNin Login"
+    otherlogintext: "Develop Auth [GitHub]"    
+    otherloginlink: "Develop Login"    
   common:
     backlink: "Cancel and Back"
     purpose_type:
-      t5: "Personal Certification" #5
-      t7: "S/MIME Certification" #7
+      t5:  "Client Certification" #5
+      t7:  "S/MIME Certification" #7
+      t55: "UPKI-PASS Certification" #55
   certs:
     index:
       dashboard_title: "Dashboard of Client Certification Issue Request"
@@ -42,26 +45,56 @@ en:
       req_bt: "Request %{type}"
       confirm: "This system will send your request to the Issuer(NII). Are your sure?"
       no_multi_smime: "Note: It's not allowed to request multiple S/MIME certs."
-      list_title: "Issue Status of Your Certifications (Click request number to show the detail.)"
+      pass_setup: "Option:"
+      pass: "Client Certification for UPKI PASS"
+      pass_id: "UPKI-PASS Uniq ID..."
+      pass_text: "[Required] Student ID number etc."
+      vlan: "Connecting to a Particular VLAN"
+      list_title: "Issue Status of Your Certifications (Click request number to show the detail)"
+      list_valid: "Show only valid certificates"
+      list_all: "Show all certificates"
       list_seq: "Request Number"
       list_type: "Type of the Cert"
       list_date: "Request Date"
       list_available: "Status"
-      list_expire_at: "Expiration Date"
+      list_status: "Status"
+      list_status_msg:
+        - 'Requesting'
+        - 'Valid'
+        - 'Expired'
+        - 'Revoked'
+        - 'Error'
+        - 'Unknown'
+        - 'UPKI-PASS'
+        - 'Not Get'
       list_vlan_id: "VLAN ID"
+      list_renew: "Renew Operation"
       list_memo: "Memo"
       list_purpose_type_errror: "Error occurred on the certification type. Please contact the system administrator."
       cert_expired: "Expired"
       cert_valid: "Valid"
       cert_invalid: "Invalid"
       cert_requesting: "Requesting"
+      renew_bt: 'Request Renew'
+      renew_confirm: "This system will send your renew request to the Issuer(NII). Are your sure?"
+      update: "Screen Reload"
+    request_post:
+      title: "Certificate Issuance Error"
+      mime_err: "S/MIME certificate has been issued."
+      pass_err: "UPKI-PASS Uniq ID is not specified."
+      vlan_err: "VLAN ID is invalid number."
+      max_err: "Save error for maximum number of issued certificate."
+      save_err: "Save error for certificate information."
+      back: "Back"
     request_result:
-      title: "Your request has been sent."
-      text_html: "Your request has been sent to the issuer of certifications (NII).<br><br>
+      type_new: 'new'
+      type_renew: 'renew'
+      title: "Your %{type} request has been sent."
+      text_html: "Your %{type} request has been sent to the issuer of certifications (NII).<br><br>
       You can get the mail via campus mail address when the issuing process is completed.<br>
       You need both the received mail and PIN(Personal Identification Number) to use your certification. <br><br>
       PIN is required <b>when</b> you download your certificate and <b>when you install the certificate on the system</b>.<br>
-      <strong>You can see PIN on the certification detail page for a certain period after the completion of certification issue. </strong><br><br>"
+      You can see PIN on the certification detail page for a certain period after the completion of certification issue.<br><br>"
       text_html: "Your request for an UPKI client certificate has been sent.<br>
       <br>
       You can see your PIN(Personal Identification Number) for the certificate on this system in about 5 min. And you will get message with the certificate download link which is sent from CA Support Center &lt ca-support@ml.secom-sts.co.jp&gt; to your mail address &lt;%{mail}&gt. <br>
@@ -75,13 +108,13 @@ en:
       <br>"
       showlink: "See the Detail"
     disable_result:
-      title: "Your request has been sent."
-      text_html: "Your disabling request has been sent to the issuer of certifications (NII)<br>
+      title: "Your revoke request has been sent."
+      text_html: "Your disabling revoke request has been sent to the issuer of certifications (NII)<br>
       <br>"
       showlink: "See the Detail"
-    disable_result:
-      title: "Your request has been sent."
-      text_html: "Your disabling request has been sent to the issuer of certifications (NII)<br>
+    renew_result:
+      title: "Your renew request has been sent."
+      text_html: "Your disabling renew request has been sent to the issuer of certifications (NII)<br>
       <br>"
       showlink: "See the Detail"
     show:
@@ -97,46 +130,125 @@ en:
         - 'Revoked'
         - 'Error. Please contact the support staff.'
         - 'Unknown. Please contact the support staff.'
+        - 'UPKI-PASS'
+        - 'Error. Not Get'
       cert_status: "Status of Request"      
       cert_status_msg:
-        10: 'Issue Requesting'
-        11: 'Issue Requesting'
-        12: 'Issue Requesting'
-        13: 'Issue Requesting'
-        14: 'Issue Requesting'
+        10: 'Issue Request'
+        11: 'Issue Request Waiting'
+        12: 'Issue Request Processing'
+        13: 'Issue Request Got PIN'
+        14: 'Issue Request Done'
         15: 'Valid'
+        16: 'Issue Request Time Out'
+        17: 'Request UPKI-PASS Waiting'
+        18: 'Issue Request UPKI-PASS Done'
         19: 'Error. Please contact the support staff.'                
-        20: 'Update Requesting'
-        21: 'Update Requesting'
-        22: 'Update Requesting'
-        23: 'Update Requesting'
-        24: 'Update Requesting'
-        25: 'Valid (Updated)'
+        20: 'Renew Request'
+        21: 'Renew Request Waiting'
+        22: 'Renew Request Processing'
+        23: 'Renew Request Got PIN'
+        24: 'Renew Request Done'
+        25: 'Valid (Renewed)'
+        26: 'Renew Request Time Out'
         29: 'Error. Please contact the support staff.'        
-        30: 'Revoking Requesting'
-        31: 'Revoking Requesting'
-        32: 'Revoking Requesting'
+        30: 'Revoking Request'
+        31: 'Revoking Request Waiting'
+        32: 'Revoking Request Processing'
         33: 'Revoked'
         39: 'Error. Please contact the support staff.'
         -1: 'Unknown. Please contact the support staff.'
-      expire_at: 'Expiration Date'
       pin_number: 'PIN'
       pin_wait: 'PIN has NOT been issued. Please wait the issue completion mail.'
+      pin_nouse: 'UPKI-PASS not use PIN. Please wait for the staff to contact you..'
+      mail: 'Mail Destination'
+      mail_wait: '(waiting to send acceptance notice mail)'
+      mail_send: '(acceptance notice mail sent)'
+      no_mail: 'Acceptance notice mail will not be sent'
       date: 'Request Date'
       cert_unavailable: 'Requesting'
+      cert_not: 'Unacquired'
+      pin_date: 'Pin Gen Date'
       issue_date: 'Issue Date'
       expire_date: 'Expire Date'
+      serial: 'Serial Number'
+      serial_error: 'Unissued'
       dn: 'DN(Distingished Name) Information'
       dn_error: 'Error'
       memo: 'Memo of Usage'
       memo_placeholder_personal: '(Ex.) to Connect to KUINS'
       memo_placeholder_smime: '(Ex.) for Encryption of iPhone Email'      
       memo_bt: 'Save the Memo'
-      disable_operation: 'Disabling Operation'
-      disable_bt: 'Disable'
+      disable_operation: 'Revoke Operation'
+      disable_bt: 'Request Revoke'
       disable_confirm: "[Warning] You're going to disable the certification. Once you've disabled it, you cannot enable it again. Are you sure?"            
+      renew_operation: 'Renew Operation'
+      renew_bt: 'Request Renew'
+      renew_confirm: "This system will send your renew request to the Issuer(NII). Are your sure?"
       cert_error: "There's no such certification. Something went wrong, so please contact the support staff."
       to_dashboard: 'Back to the Dashboard'
-    admin:
-      admin_title: "Request System Issuing Certification"
+      update: "Screen Reload"
+
+  admin:
+    back: "Back"
+    index:
+      title: "Administrator Interface"
+      user_list: "User List"
+      user_search: "User Search"
+      uid_search: "UID(ePPN) Search"
+      search: "Serach"
+      search_list: "Search Result"
+      search_off: "Cancel"
+      search_num: "Number of searches"
+      page: "Page"
+      prev: "Prev Page"
+      next: "Next Page"
+      sync: "Server Import Function"
+      sync_bt: "Server Import"
+      sync_confirm: "This function connect to the Issuer(NII) and get bulk informations. Are your sure?"
+      sync_text: "Connect to the certificate issuance support system to acquire a certificate list of application / issuance history information. After acquisition, you can check it and import it into the database."
+      to_dashboard: 'Back to the Dashboard'
+    user:
+      info: "User Information"
+      id: "Id"
+      uid: "User-Id(ePPN)"
+      name: "User-Name"
+      email: "E-Mail"
+      number: "Uniq-Id"
+      provider: "Authentication"
+      admin: "Admin-authority"
+      create: "Created"
+      update: "Updated"
+      to_admintop: "Administrator Interface Top"
+    cert:
+      user_seq: 'User Seq'
+      delete_operation: 'Delete Operation'
+      delete_bt: 'Record Delete'
+      delete_confirm: "[Warning] You're going to delete the certification. Once you've deleted it, you cannot enable it again. Are you sure?"            
+      wait: "NOT"
+      issue: "SAVED"
+      to_usertop: "User Info"
+    sync:
+      info: "[Server import] Acquisition result"
+      update_bt: "DB import execution and exit"
+      update_confirm: "[Warning] You're going to update DataBase. It can not be canceled. Are you sure?"            
+      all_count: "Total-Num"
+      up_count: "Exists-Num"
+      all: "Total"
+      new: "Not included in DB"
+      exist: "Included in DB"
+      show: "Show List"
+      cert: "Certificates"
+      select: "DB import select"
+      wait: "Waiting"
+      issue: "Issued"
+      update: "Renewed"
+      revoke: "Revoked"
+      error: "Error"
+      clear_bt: "Clear informations and exit"
+    delete_result:
+      title: "Your request has been completed."
+      text_html: "We deleted records of certificate.<br><br>"
+      showlink: "See the Owner Detail"
+
     

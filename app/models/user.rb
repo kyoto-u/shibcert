@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
       info = auth['info']
       user.name = info['name'] || user.uid
       user.email = info['email']
+      user.number = info['number']
     end
   end
 end

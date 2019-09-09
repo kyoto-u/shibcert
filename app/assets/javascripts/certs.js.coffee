@@ -3,7 +3,10 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 ready = ->
-   $("#accordion").accordion
+   $("#accordion1").accordion
+     collapsible: true
+     active: 2
+   $("#accordion2").accordion
      collapsible: true
      active: 2
 

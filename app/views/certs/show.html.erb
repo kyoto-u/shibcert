@@ -1,5 +1,11 @@
 <h3><%= t('.title') %></h3>
 
+<% if flash[:alert] %>
+<div class="alert alert-danger">
+  <%= flash[:alert] %>
+</div>
+<% end %>
+
 <% if @cert %>
 <table class="table">
   <tr>
@@ -14,6 +20,9 @@
 	  <% else %>
 	  <%= t('purpose_type_errror') %>
 	  <% end %>
+          <% if @cert.download_type == 2 %>
+          [UPKI-PASS]
+          <% end %>
 	</td>
   </tr>
   <tr>
@@ -23,23 +32,9 @@
 	</td>
   </tr>
   <tr>
-	<td><strong><%= t('.expire_at') %></strong></td>
-	<td>
-          <% if @cert.expire_at %>
-            <%= I18n.l Date.parse(@cert.expire_at.to_s) %>
-          <% end %>
-	</td>
-  </tr>
-  <tr>
-	<td><strong><%= t('.x509_status') %></strong></td>
+	<td nowrap><strong><%= t('.x509_status') %></strong></td>
 	<td>
           <%= t('.x509_status_msg')[@cert.x509_state] %>
-	</td>
-  </tr>
-  <tr>
-	<td><strong><%= t('.pin_number') %></strong></td>
-	<td>
-	  <%= @cert.pin || t('.pin_wait') %>
 	</td>
   </tr>
   <tr>
@@ -52,6 +47,32 @@
           <% end %>
 	</td>
   </tr>
+  <tr>
+	<td><strong><%= t('.pin_number') %></strong></td>
+	<td>
+          <% if @cert.download_type == 1 %>
+  	    <%= @cert.pin || t('.pin_wait') %>
+	  <% else %>
+	    <%= @cert.pin || t('.pin_nouse') %>
+          <% end %>
+	</td>
+  </tr>
+  <tr>
+	<td><strong><%= t('.mail') %></strong></td>
+	<td>
+          <% if @cert.download_type == 1 %>
+	    <%= @user.email %>
+            <% if @cert.pin == nil %>
+	      <%= t('.mail_wait') %>
+	    <% else %>
+	      <%= t('.mail_send') %>
+            <% end %>
+	  <% else %>
+	    <%= t('.no_mail') %>
+          <% end %>
+	</td>
+  </tr>
+<!--
   <% if Rails.env == 'development'  %>  
   <tr>
 	<td><strong><%= t('.issue_date') %></strong></td>
@@ -74,7 +95,22 @@
 	</td>
   </tr>
   <% end %>
+-->
   
+  <tr>
+	<td><strong><%= t('.serial') %></strong></td>
+	<td>
+          <% if @cert.serialnumber %>
+	    <%= @cert.serialnumber %>
+            <% if @cert.get_at %>
+              (<%= t('.serial_get') %><%= I18n.l(@cert.get_at) %>)
+            <% end %>
+          <% else %>
+	    <%= t('.serial_error') %>
+          <% end %>
+	</td>
+  </tr>
+
   <tr>
 	<td><strong><%= t('.dn') %></strong></td>
 	<td>
@@ -103,7 +139,7 @@
   <tr>
 	<td><strong><%= t('.disable_operation') %></strong></td>
 	<td>
-	  <% if @cert.state == Cert::State::NEW_GOT_SERIAL %>
+	  <% if @cert.state == Cert::State::NEW_GOT_SERIAL || @cert.state == Cert::State::RENEW_GOT_SERIAL || @cert.state == Cert::State::NEW_PASS_GOT_CERT %>
 	  <%= form_tag({controller: "certs", action: "disable_post", id: @cert.id}, {class: "form-inline"}) do %>
 	  <%= submit_tag(t('.disable_bt'), class: "btn btn-xs btn-warning", data: {confirm: t('.disable_confirm')}) %>
 	  <% end %>
@@ -114,9 +150,25 @@
 	<% end %>
 	</td>
   </tr>
+  <tr>
+	<td><strong><%= t('.renew_operation') %></strong></td>
+	<td>
+	  <% if @cert.state == Cert::State::NEW_GOT_SERIAL || @cert.state == Cert::State::RENEW_GOT_SERIAL %>
+	  <%= form_tag({controller: "certs", action: "renew_post", id: @cert.id}, {class: "form-inline"}) do %>
+	  <%= submit_tag(t('.renew_bt'), class: "btn btn-xs btn-primary", data: {confirm: t('.renew_confirm')}) %>
+	  <% end %>
+	<% else %>
+	<div class="btn btn-xs btn-default" disabled="disabled">
+	  <%= t('.renew_bt') %>
+	</div>
+	<% end %>
+	</td>
+  </tr>
 </table>
 <% else %>
 <p> <%= t('.cert_error') %></p>
 <% end %>
 
-<%= link_to t('.to_dashboard'), {controller: "certs", action: "index"}, class:"underlined-text" %>
+<%= link_to t('.to_dashboard'), {controller: "certs", action: "index"}, class:"underlined-text" %> / 
+<%= link_to t('.update'), 'javascript:location.reload()', class:"underlined-text" %>
+

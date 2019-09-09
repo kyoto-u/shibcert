@@ -1,0 +1,16 @@
+<h3><%= t('.title') %></h3>
+
+<p>
+<ul>
+<li>
+<% if @errmesg %>
+<%= 'Error: ' + @errmesg %>
+<% else %>
+<%= 'Error: unknown' %>
+<% end %>
+</li>
+</ul>
+</p>
+
+<a href="#" onclick="javascript:window.history.back(-1);return false;" class="underlined-text"><%= t('.back') %></a>
+

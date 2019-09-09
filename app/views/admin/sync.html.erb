@@ -1,0 +1,120 @@
+<h3><%= t('admin.index.title') %></h3>
+
+<h4>
+<%= t('.info') %>
+(
+<%= t('.all_count') %>:<%= @count.to_s %>,
+<%= t('.up_count') %>:<%= @upcount.to_s %>
+)
+</h4>
+
+<%= form_tag({controller: "admin", action: "update_post"}, {class: "form-inline"}) do %>
+
+  <table class="table table-striped">
+
+  <thead>
+
+    <tr>
+      <th></th>
+      <th><%= t('.all') %></th>
+      <th><%= t('.new') %></th>
+      <th><%= t('.exist') %></th>
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <tr>
+      <th><%= t('.wait') %></th>
+      <td>
+        <%= @tsvs[:wait].length.to_s %> : 
+        <%= link_to t('.show'), {action: "show", type:4}, {target: ["_blank"], class: "btn btn-xs btn-default"} %>
+      </td>
+      <td>
+        <%= (@tsvs[:wait].select {|val| val["DB登録"] != "登録済み" }).length.to_s %> : 
+        <%= check_box :import, :wait_new %> <%= t('.select') %>
+      </td>
+      <td>
+        <%= (@tsvs[:wait].select {|val| val["DB登録"] == "登録済み" }).length.to_s %> : 
+        <%= check_box :import, :wait_exist %> <%= t('.select') %>
+      </td>
+    </tr>
+
+    <tr>
+      <th><%= t('.issue') %></th>
+      <td>
+        <%= @tsvs[:issue].length.to_s %> : 
+        <%= link_to t('.show'), {action: "show", type:5}, {target: ["_blank"], class: "btn btn-xs btn-default"} %>
+      </td>
+      <td>
+        <%= (@tsvs[:issue].select {|val| val["DB登録"] != "登録済み" }).length.to_s %> : 
+        <%= check_box :import, :issue_new %> <%= t('.select') %>
+      </td>
+      <td>
+        <%= (@tsvs[:issue].select {|val| val["DB登録"] == "登録済み" }).length.to_s %> : 
+        <%= check_box :import, :issue_exist %> <%= t('.select') %>
+      </td>
+    </tr>
+
+    <tr>
+      <th><%= t('.update') %></th>
+      <td>
+        <%= @tsvs[:update].length.to_s %> : 
+        <%= link_to t('.show'), {action: "show", type:6}, {target: ["_blank"], class: "btn btn-xs btn-default"} %>
+      </td>
+      <td>
+        <%= (@tsvs[:update].select {|val| val["DB登録"] != "登録済み" }).length.to_s %> : 
+        <%= check_box :import, :update_new %> <%= t('.select') %>
+      </td>
+      <td>
+        <%= (@tsvs[:update].select {|val| val["DB登録"] == "登録済み" }).length.to_s %> : 
+        <%= check_box :import, :update_exist %> <%= t('.select') %>
+      </td>
+    </tr>
+
+    <tr>
+      <th><%= t('.revoke') %></th>
+      <td>
+        <%= @tsvs[:revoke].length.to_s %> : 
+        <%= link_to t('.show'), {action: "show", type:7}, {target: ["_blank"], class: "btn btn-xs btn-default"} %>
+      </td>
+      <td>
+        <%= (@tsvs[:revoke].select {|val| val["DB登録"] != "登録済み" }).length.to_s %> : 
+        <%= check_box :import, :revoke_new %> <%= t('.select') %>
+      </td>
+      <td>
+        <%= (@tsvs[:revoke].select {|val| val["DB登録"] == "登録済み" }).length.to_s %> : 
+        <%= check_box :import, :revoke_exist %> <%= t('.select') %>
+      </td>
+    </tr>
+
+    <tr>
+      <th><%= t('.error') %></th>
+      <td>
+        <%= @tsvs[:error].length.to_s %> : 
+        <%= link_to t('.show'), {action: "show", type:8}, {target: ["_blank"], class: "btn btn-xs btn-default"} %>
+      </td>
+      <td>
+        <%= (@tsvs[:error].select {|val| val["DB登録"] != "登録済み" }).length.to_s %> : 
+        <%= check_box :import, :error_new %> <%= t('.select') %>
+      </td>
+      <td>
+        <%= (@tsvs[:error].select {|val| val["DB登録"] == "登録済み" }).length.to_s %> : 
+        <%= check_box :import, :error_exist %> <%= t('.select') %>
+      </td>
+    </tr>
+
+  </tbody>
+
+  </table>
+
+  <%= submit_tag(t('.update_bt', type: t('common.purpose_type.t5')), class: "btn btn-xs btn-danger", data: {confirm: t('.update_confirm')}) %>
+
+<% end %>
+<br>
+
+<p>
+<%= link_to t('.clear_bt'), {action: "clear"}, {class: "btn btn-xs btn-primary"} %>
+</p>
+

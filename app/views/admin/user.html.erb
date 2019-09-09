@@ -1,0 +1,104 @@
+
+<h3><%= t('admin.index.title') %></h3>
+
+<h4><%= t('.info') %></h4>
+
+<% if flash[:alert] %>
+<div class="alert alert-danger">
+  <%= flash[:alert] %>
+</div>
+<% end %>
+
+<table class="table table-striped">
+  <tr>
+    <th><%= t('.id') %></th>
+    <td><%= @user.id %></td>
+  </tr>
+  <tr>
+    <th><%= t('.uid') %></th>
+    <td><%= @user.uid %></td>
+  </tr>
+  <tr>
+    <th><%= t('.name') %></th>
+    <td><%= @user.name %></td>
+  </tr>
+  <tr>
+    <th><%= t('.email') %></th>
+    <td><%= @user.email %></td>
+  </tr>
+  <tr>
+    <th><%= t('.number') %></th>
+    <td><%= @user.number %></td>
+  </tr>
+  <tr>
+    <th><%= t('.provider') %></th>
+    <td><%= @user.provider %></td>
+  </tr>
+  <tr>
+    <th><%= t('.admin') %></th>
+    <td>
+     <% if AdminController.isAdmin(@user) %>
+       true
+     <% else %>
+       <%= @user.admin %>
+     <% end %>
+    </td>
+  </tr>
+  <tr>
+    <th><%= t('.create') %></th>
+    <td><%= @user.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+  </tr>
+  <tr>
+    <th><%= t('.update') %></th>
+    <td><%= @user.updated_at.strftime("%Y-%m-%d %H:%M") %></td>
+  </tr>
+</table>
+
+<h4><%= t('certs.index.list_title') %></h4>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= t('certs.index.list_seq') %></th>
+      <th><%= t('certs.index.list_type') %></th>
+      <th><%= t('certs.index.list_date') %></th>
+      <th><%= t('certs.index.list_available') %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @certs.each do |cert| %>
+    <tr>
+      <td>
+        <%= link_to cert.req_seq.to_s, {action: "cert", id:cert.id}, {class: "btn btn-default"} %>
+      </td>
+      <td>
+        <% purpose_cap =  %>
+        <% if t('common.purpose_type.t' + cert.purpose_type.to_s) %>
+        <%= t('common.purpose_type.t' + cert.purpose_type.to_s) %>
+        <% else %>  
+        t('.list_purpose_type_error')
+        <% end %>
+        <% if cert.download_type == 2 %>
+        <br/>[UPKI-PASS]
+        <% end %>
+      </td>
+      <td>
+        <%= I18n.l Date.parse(cert.created_at.to_s) %>
+      </td>	  
+      <td>
+        <% if cert.x509_state == 4 %>
+          <%= link_to 'ERROR', {action: "error", id:cert.id}, {target: ["_blank"], class: "btn btn-xs btn-info"} %>
+        <% else %>
+          <%= t('certs.show.cert_status_msg')[cert.state] %>
+        <% end %>
+      </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p>
+<%= link_to t('.to_admintop'), {controller: "admin", action: "index"}, class:"underlined-text" %> /
+<a href="#" onclick="javascript:window.history.back(-1);return false;" class="underlined-text"><%= t('admin.back') %></a>
+</p>
+

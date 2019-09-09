@@ -8,35 +8,46 @@ require 'rubygems'
 require 'mechanize'
 require 'pp'
 require 'logger'
+require 'csv'
+require 'securerandom'
+require 'net/https'
 
+# ========================================================================
+# RaReq: 電子証明書自動発行支援システム の 発行・更新・失効 申請.
 class RaReq
+
+  # ----------------------------------------------------------------------
+  # 証明書発行申請.
   module New
     ApplyType = 1
     NextState = Cert::State::NEW_REQUESTED_TO_NII
     ErrorState = Cert::State::NEW_ERROR
-    def self.generate_tsv(cert, user)
+    def self.generate_tsv(cert, user, pin)
       [
         cert.dn,
         cert.purpose_type,
-        SHIBCERT_CONFIG[Rails.env]['cert_download_type'] || '1', # 1:P12個別
+        cert.download_type,   # 1:P12個別 / 2:P12一括(UPKI-PASS)
         '', '', '', '',
         SHIBCERT_CONFIG[Rails.env]['admin_name'],
         SHIBCERT_CONFIG[Rails.env]['admin_ou'],
-        SHIBCERT_CONFIG[Rails.env]['admin_mail'],
+        SHIBCERT_CONFIG[Rails.env]['admin_mail'],  # 管理者(g-certサーバ通知)
         user.name,
+#        user.number,
         'NIIcert' + Time.now.strftime("%Y%m%d-%H%M%S"),
         SHIBCERT_CONFIG[Rails.env]['user_ou'],
         user.email,
-        '', # PIN
+        pin,
       ].join("\t")
     end
   end
 
+  # ----------------------------------------------------------------------
+  # 証明書更新申請.
   module Renew
     ApplyType = 2
     NextState = Cert::State::RENEW_REQUESTED_TO_NII
     ErrorState = Cert::State::RENEW_ERROR
-    def self.generate_tsv(cert, user)
+    def self.generate_tsv(cert, user, pin)
       [
         cert.dn,
         cert.purpose_type,
@@ -45,21 +56,23 @@ class RaReq
         '', '', '',
         SHIBCERT_CONFIG[Rails.env]['admin_name'],
         SHIBCERT_CONFIG[Rails.env]['admin_ou'],
-        SHIBCERT_CONFIG[Rails.env]['admin_mail'],
+        SHIBCERT_CONFIG[Rails.env]['admin_mail'],  # 管理者(g-certサーバ通知)
         user.name,
         'NIIcert' + Time.now.strftime("%Y%m%d-%H%M%S"),
         SHIBCERT_CONFIG[Rails.env]['user_ou'],
         user.email,
-        '', # PIN
+        pin,
       ].join("\t")
     end
   end
 
+  # ----------------------------------------------------------------------
+  # 証明書失効申請.
   module Revoke
     ApplyType = 3
     NextState = Cert::State::REVOKE_REQUESTED_TO_NII
     ErrorState = Cert::State::REVOKE_ERROR
-    def self.generate_tsv(cert, user)
+    def self.generate_tsv(cert, user, pin)
       [
         cert.dn,                  # 1
         '','',
@@ -67,13 +80,15 @@ class RaReq
         cert.revoke_reason || "0",       # 5
         cert.revoke_comment,      # 6
         '', '', '',
-        SHIBCERT_CONFIG[Rails.env]['admin_mail'], # 10
+        SHIBCERT_CONFIG[Rails.env]['admin_mail'], # 管理者(g-certサーバ通知)
         '', '', '',
-        user.email,               # 14
+        user.email, '',               # 14,15
       ].join("\t")
     end
   end
 
+  # ----------------------------------------------------------------------
+  # 初期化.
   def initialize
     %w(admin_name admin_ou admin_mail user_ou).each do |key|
       unless SHIBCERT_CONFIG[Rails.env].has_key?(key)
@@ -82,6 +97,8 @@ class RaReq
     end
   end
 
+  # ----------------------------------------------------------------------
+  # 支援システムへの接続.
   def self.get_upload_form
     agent = Mechanize.new
     begin
@@ -107,30 +124,41 @@ class RaReq
     form2.form_with(:name => 'SP1011')
   end
 
+  # ----------------------------------------------------------------------
+  # 支援システムへの要求TSVファイルのアップロード.
   def self.request(cert)
+
+    isRenew = false
     case cert.state
     when Cert::State::NEW_REQUESTED_FROM_USER
       proc = New
     when Cert::State::RENEW_REQUESTED_FROM_USER
       proc = Renew
+      isRenew = true
     when Cert::State::REVOKE_REQUESTED_FROM_USER
       proc = Revoke
     else
-      Rails.logger.err "RaReq.request failed because of cert.state is #{cert.state}"
+      Rails.logger.info "RaReq.request failed because of cert.state is #{cert.state})"
       return nil
     end
 
     user = User.find_by(id: cert.user_id)
     unless user
-      Rails.logger.err "RaReq.request failed because of User.find_by(id: #{cert.user_id}) == nil"
+      Rails.logger.info "RaReq.request failed because of User.find_by(id: #{cert.user_id}) == nil"
       return nil
     end
 
-    tsv = proc.generate_tsv(cert, user).encode('cp932')
+    pin = ''
+    if SHIBCERT_CONFIG['flag']['use_pin_generate'] && cert.download_type == 2
+      # P12一括時にPIN指定が可能(オプション)
+      pin = SecureRandom.urlsafe_base64
+    end
+
+    tsv = proc.generate_tsv(cert, user, pin).encode('cp932')
     Rails.logger.info "#{__method__}: tsv #{tsv.inspect}"
 
     if Rails.env == 'development' then
-      open("sample.tsv", "w") do |fp|
+      open("log/last_request.tsv", "w") do |fp|
         fp.write(tsv)
       end
     end
@@ -147,46 +175,240 @@ class RaReq
     submitted_form = form.submit    # submit and file-upload
 
     if Rails.env == 'development' then
-      open("body.html", "w") do |fp|
+      open("log/last_response.html", "w") do |fp|
         fp.write submitted_form.body.force_encoding("euc-jp")
       end
     end
 
     if Regexp.new("ファイルのアップロード処理が完了しました。").match(submitted_form.body.encode("utf-8", "euc-jp"))
-      cert.state = proc::NextState
+      if cert.download_type == 1
+        cert.state = proc::NextState
+      else
+        cert.state = Cert::State::NEW_PASS_REQUESTED
+      end
       cert.save
-      Rails.logger.info "#{__method__}: upload success"
+      Rails.logger.debug "#{__method__}: upload success"
       return cert
     else
       cert.state = proc::ErrorState
       cert.save
-      Rails.logger.err "#{__method__}: upload fail"
+      Rails.logger.debug "#{__method__}: upload fail"
+      filename = "log/cert_" + cert.id.to_s + "_error.html"
+      open(filename, "w") do |fp|
+        fp.write submitted_form.body.force_encoding("euc-jp")
+      end
       return nil
     end
+
   end
+
+  # ----------------------------------------------------------------------
+  # UPKI-PASS証明書登録
+  def self.upkiPassCert(cert)
+    if cert.blank?
+      return nil
+    end
+    return upkiPassUpload(false, cert.pass_pin, cert.pass_p12)
+  end
+  # 単体試験用
+  def self.upkiPassCert2(pin, p12)
+    return upkiPassUpload(false, pin, p12)
+  end
+
+  # ----------------------------------------------------------------------
+  # UPKI-PASS証明書失効
+  def self.upkiPassRevoke(cert)
+    if cert.blank?
+      return nil
+    end
+    return upkiPassUpload(true, cert.pass_id, nil)
+  end
+  # 単体試験用
+  def self.upkiPassRevoke2(id)
+    return upkiPassUpload(true, id, nil)
+  end
+
+  # ----------------------------------------------------------------------
+  # 内部: UPKI-PASSサーバへのアップロード.
+  def self.upkiPassUpload(revoke, arg1, arg2)
+
+    # 設定
+    key = ''
+    base = SHIBCERT_CONFIG[Rails.env]['upki_pass_url']
+
+    if revoke
+      # 失効
+      key = SHIBCERT_CONFIG[Rails.env]['upki_pass_key2']
+      url = base + "/recvrevocation"
+      if arg1.blank?
+        Rails.logger.info "RaReq.upkiPass failed because of invalid arg."
+        return nil
+      end
+    else
+      # 発行
+      key = SHIBCERT_CONFIG[Rails.env]['upki_pass_key1']
+      url = base + "/recvcert"
+      if arg1.blank? || arg2.blank?
+        Rails.logger.info "RaReq.upkiPass failed because of invalid arg."
+        return nil
+      end
+    end
+
+    # http通信設定
+    uri = URI.parse(url);
+    http = Net::HTTP.new(uri.host, uri.port)
+    if url.start_with?("https")
+      # HTTPS通信
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE   # とりあえず検証しない
+    end
+    req = Net::HTTP::Post.new(uri.path)
+    if revoke
+      req.set_form_data({'key' => key, 'id' => arg1})
+    else
+      req.set_form_data({'key' => key, 'certfile' => arg1, 'passwdfile' => arg2})
+    end
+
+    # http通信実行
+    res = http.request(req)
+
+    # 結果確認
+    if res.code.to_i != 200
+      Rails.logger.info "RaReq.upkiPass failed because of invalid statas:" + res.code
+      return "err:" + res.code
+    end
+
+    return res.body
+
+  end
+
+  # ----------------------------------------------------------------------
+  # 支援システムから全情報TSVファイルのダウンロード.
+  def self.requestAll()
+
+    filename = "log/All.tsv"
+
+    agent = Mechanize.new
+    begin
+      agent.cert = SHIBCERT_CONFIG[Rails.env]['certificate_file'] # config/shibcert.yml
+    rescue => evar
+      Rails.logger.info "error: certificate_file '#{SHIBCERT_CONFIG[Rails.env]['certificate_file']}' #{evar.inspect}"
+      raise
+    end
+    begin
+      agent.key =  SHIBCERT_CONFIG[Rails.env]['certificate_key_file'] # config/shibcert.yml
+    rescue => evar
+      Rails.logger.info "error: certificater_key_file '#{SHIBCERT_CONFIG[Rails.env]['certificate_key_file']}' #{evar.inspect}"
+      raise
+    end
+
+    # まずログイン.
+    agent.get('https://scia.secomtrust.net/upki-odcert/lra/SSLLogin.do')
+
+    # 続いて全情報TSV取得.
+    getBody = agent.get('https://scia.secomtrust.net/upki-odcert/lra/syomeiDL_S_Cli.do').body
+#    getBody = agent.get('https://scia.secomtrust.net/upki-odcert/lra/riyouDL_S.do').body
+    if !getBody 
+      Rails.logger.debug "#{__method__}: tsv download fail"
+      return nil
+    end
+
+    # UTF-8に変換.
+    body = getBody.encode("UTF-8", "Shift_JIS")
+    if body.blank?
+      Rails.logger.debug "#{__method__}: tsv is null"
+      return nil
+    end
+
+    # ファイル保存(後から利用する為)
+    open(filename, "w") do |fp|
+      fp.write(body)
+    end
+
+    # TSVに変換(最初の行はインデックスに利用).
+    tsv = CSV.parse(body, col_sep: "\t", headers: :first_row)
+    if !tsv
+      Rails.logger.debug "#{__method__}: tsv parse fail"
+      return nil
+    end
+
+#   # 利用例.
+#   tsv.each { |line|
+#     p line["主体者DN"]
+#   }
+
+    return tsv
+  end
+
+  # ----------------------------------------------------------------------
+  # 取得済み全情報TSVファイルから情報取得
+  def self.existAll()
+
+    filename = "log/All.tsv"
+    if !File.exist?(filename)
+      return nil
+    end
+
+    body = nil
+    open(filename, "r") do |fp|
+      body = fp.read()
+    end
+
+    if body.blank?
+      Rails.logger.debug "#{__method__}: tsv is null"
+      return nil
+    end
+
+    # TSVに変換(最初の行はインデックスに利用).
+    tsv = CSV.parse(body, col_sep: "\t", headers: :first_row)
+    if !tsv
+      Rails.logger.debug "#{__method__}: tsv parse fail"
+      return nil
+    end
+
+    return tsv
+
+  end
+
+  # ----------------------------------------------------------------------
+  # 取得済み全情報TSVファイルの削除
+  def self.clearAll()
+
+    filename = "log/All.tsv"
+    if File.exist?(filename)
+      File.delete filename
+    end
+
+  end
+
 end
 
+# ========================================================================
+# TSVフォーマット仕様.
 
 =begin
 # TSV format https://certs.nii.ac.jp/archive/TSV_File_Format/client_tsv/
-TSV = ['CN=example,OU=001,OU=Example OU,O=Kyoto University,ST=Kyoto,C=JP', # No.1 certificate DN
-       '5',                     # No.2 Profile - 4:client(sha1), 5:client(sha256), 6:S/MIME(sha1), 7:S/MIME(sha256)
-       '1',                     # No.3 Download Type - 1:P12個別, 2:P12一括, 3:ブラウザ個別
-       '',                      # No.4 -
-       '',                      # No.5 -
-       '',                      # No.6 -
-       '',                      # No.7 -
-       'Name',                  # No.8 admin user name
-       'Example OU',            # No.9 admin OU
-       'example@kyoto-u.ac.jp', # No.10 admin mail
-       'Name',                  # No.11 user name
-       'example20151221C00511', # No.12 P12 filename
-       'example OU',            # No.13 user OU 
-       'example@kyoto-u.ac.jp', # No.14 user mail
+TSV = [
+       'CN=TEST,OU=01,OU=TEST OU,O=NII,L=Tokyo,C=JP', # No.1 certificate DN
+       '5',                   # No.2 Profile - 5:client(sha256), 7:S/MIME(sha256)
+       '1',                   # No.3 Download Type - 1:P12個別, 2:P12一括, 3:ブラウザ個別
+       '',                    # No.4 -
+       '',                    # No.5 -
+       '',                    # No.6 -
+       '',                    # No.7 -
+       'Name',                # No.8 admin user name
+       'Example OU',          # No.9 admin OU
+       'example@example.com', # No.10 admin mail
+       'Name',                # No.11 user name
+       'example20180321C005', # No.12 P12 filename
+       'example OU',          # No.13 user OU 
+       'example@example.com', # No.14 user mail
+       '',                    # No.15 access PIN (not use)
       ].join("\t")
 =end
 
-# 最終ページの例
+# ========================================================================
+# 終了ページの例
 
 =begin
 
@@ -246,11 +468,11 @@ TSV = ['CN=example,OU=001,OU=Example OU,O=Kyoto University,ST=Kyoto,C=JP', # No.
 	            </font></td>
 	            <td align="left" nowrap><font size="-1">
 	            	
-	            	京都大学
+	            	試験大学
 	            </font></td>
 	            <td align="left" nowrap><font size="-1">
 	            	
-	            	Example OU
+	            	TEST OU
 	            </font></td>
 	            <td align="left" nowrap><font size="-1">
 	            	
@@ -269,7 +491,6 @@ TSV = ['CN=example,OU=001,OU=Example OU,O=Kyoto University,ST=Kyoto,C=JP', # No.
 </body>
 </html>
 =end
-
 
 =begin
 失敗例
@@ -321,3 +542,5 @@ TSV = ['CN=example,OU=001,OU=Example OU,O=Kyoto University,ST=Kyoto,C=JP', # No.
 </body>
 </html>
 =end
+
+# ========================================================================

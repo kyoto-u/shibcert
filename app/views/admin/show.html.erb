@@ -1,0 +1,44 @@
+
+<h3><%= t('admin.index.title') %></h3>
+
+<h4>
+[<%= @type_name %>]
+<%= t('admin.sync.cert') %>
+<%= t('admin.sync.show') %>
+</h4>
+
+<% if flash[:alert] %>
+<div class="alert alert-danger">
+  <%= flash[:alert] %>
+</div>
+<% end %>
+
+<table class="table table-striped">
+
+  <thead>
+    <tr>
+      <th><%= t('admin.user.id') %></th>
+      <th>DB</th>
+      <th><%= t('certs.show.date') %></th>
+      <th><%= t('certs.show.serial') %></th>
+      <th><%= t('certs.show.dn') %></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% num = 0 %>
+    <% if !@certs.blank? %>
+      <% @certs.each do |cert| %>
+        <tr>
+          <td><% num = num+1 %><%= num.to_s %></td>
+          <td><%= cert["DB登録"] %></td>
+          <td><%= cert["発行・更新申請-日時"] %></td>
+          <td><%= cert["発行・更新申請-シリアル番号"] %></td>
+          <td><%= cert["主体者DN"] %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+
+</table>
+
