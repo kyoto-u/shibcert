@@ -148,20 +148,6 @@
 	<% end %>
 	</td>
   </tr>
-  <tr>
-	<td><strong><%= t('.renew_operation') %></strong></td>
-	<td>
-	  <% if @cert.state == Cert::State::NEW_GOT_SERIAL || @cert.state == Cert::State::RENEW_GOT_SERIAL %>
-	  <%= form_tag({controller: "certs", action: "renew_post", id: @cert.id}, {class: "form-inline"}) do %>
-	  <%= submit_tag(t('.renew_bt'), class: "btn btn-xs btn-primary", data: {confirm: t('.renew_confirm')}) %>
-	  <% end %>
-	<% else %>
-	<div class="btn btn-xs btn-default" disabled="disabled">
-	  <%= t('.renew_bt') %>
-	</div>
-	<% end %>
-	</td>
-  </tr>
 </table>
 <% else %>
 <p> <%= t('.cert_error') %></p>

@@ -98,7 +98,7 @@
       <th><%= t('.list_type') %></th>
       <th><%= t('.list_date') %></th>
       <th><%= t('.list_available') %></th>
-      <th><%= t('.list_renew') %></th>
+      <!-- <th><%= t('.list_renew') %></th> -->
       <th><%= t('.list_memo') %></th>
     </tr>
   </thead>
@@ -126,17 +126,6 @@
         </td>	  
         <td>
           <%= t('certs.show.cert_status_msg')[cert.state] %>
-        </td>
-        <td>
-          <% if cert.state == Cert::State::NEW_GOT_SERIAL || cert.state == Cert::State::RENEW_GOT_SERIAL %>
-            <%= form_tag({controller: "certs", action: "renew_post", id: cert.id}, {class: "form-inline"}) do %>
-              <%= submit_tag(t('.renew_bt'), class: "btn btn-xs btn-primary", data: {confirm: t('.renew_confirm')}) %>
-            <% end %>
-          <% else %>
-            <div class="btn btn-xs btn-default" disabled="disabled">
-              <%= t('.renew_bt') %>
-            </div>
-          <% end %>
         </td>
         <td>
           <%= cert.memo %>

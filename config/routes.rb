@@ -15,10 +15,10 @@ Shibcert::Application.routes.draw do
     get "certs/disable_result/:id", to: 'certs#disable_result', \
         as: 'disable_result'
 
-    post "certs/renew_post/:id",  to: 'certs#renew_post', \
-        as: 'renew_post'         
-    get "certs/renew_result/:id", to: 'certs#renew_result', \
-        as: 'renew_result'
+#    post "certs/renew_post/:id",  to: 'certs#renew_post', \
+#        as: 'renew_post'         
+#    get "certs/renew_result/:id", to: 'certs#renew_result', \
+#        as: 'renew_result'
 
     resources :certs do
       member do
