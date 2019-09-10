@@ -49,8 +49,8 @@ production:
 
 
   # メール連携設定
-  mail_basic_name: 'admin'
-  mail_basic_pswd: '*' #sha1hash
+  mail_basic_name: 'shibcert-sys'
+  mail_basic_pswd: '137F2634B91D8C08D6D678821E67AA254014D37A' #'KaAN0T7XjgGBHcLxVu'
 
   # UPKI-PASS連携設定
   upki_pass_key1: ''
@@ -58,9 +58,9 @@ production:
   upki_pass_url: 'https://g-cert-dev.gakunin.nii.ac.jp/upki-pass'
 
   # 管理者設定
-  admin_uids: ['']
-  admin_basic_name: 'admin'
-  admin_basic_pswd: '*' #sha1hash
+  admin_uids: ['takaaki056komura', 'noritoshi859atsumi', 'toshiaki763shikata']
+  admin_basic_name: 'shibcert-sys'
+  admin_basic_pswd: '137F2634B91D8C08D6D678821E67AA254014D37A' #'KaAN0T7XjgGBHcLxVu'
 
 development:
 
@@ -80,8 +80,8 @@ development:
 
 
   # メール連携設定
-  mail_basic_name: 'admin'
-  mail_basic_pswd: '*' #sha1hash
+  mail_basic_name: 'shibcert-sys'
+  mail_basic_pswd: '852cbe920a6d8b515adb8b476ebd6609523165e0' #'CHVX2RGCtQyeW8w'
 
   # UPKI-PASS連携設定
   upki_pass_key1: ''
@@ -119,7 +119,7 @@ test:
   upki_pass_url: 'https://g-cert-dev.gakunin.nii.ac.jp/upki-pass'
 
   # 管理者設定
-  admin_uids: ['']
-  admin_basic_name: 'admin'
-  admin_basic_pswd: '*' #sha1hash
+  admin_uids: ['takaaki056komura', 'noritoshi859atsumi']
+  admin_basic_name: 'shibcert-sys'
+  admin_basic_pswd: '852cbe920a6d8b515adb8b476ebd6609523165e0' #'CHVX2RGCtQyeW8w'
 

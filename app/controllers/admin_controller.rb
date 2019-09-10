@@ -533,10 +533,8 @@ class AdminController < ApplicationController
   def self.isAdmin(user)
     if user.blank? || user.uid.blank? 
       return false
-    elsif user.uid == SHIBCERT_CONFIG[Rails.env]['admin_uid1']   # 設定1
-      return true
-    elsif user.uid == SHIBCERT_CONFIG[Rails.env]['admin_uid2']   # 設定2
-      return true
+    elsif SHIBCERT_CONFIG[Rails.env]['admin_uids'].include?(user.uid)
+       return true
     elsif user.admin == true    # データベース設定フラグ(現在未使用)
       return false
 #      return true
