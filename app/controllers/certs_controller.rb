@@ -136,7 +136,7 @@ class CertsController < ApplicationController
           end
         else
           # 普通のクライアント証明書.
-          cn = "CN=#{current_user.name}"
+          cn = "CN=#{current_user.uid}"
         end
       end
     end
