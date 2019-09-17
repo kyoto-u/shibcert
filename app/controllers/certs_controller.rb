@@ -125,13 +125,14 @@ class CertsController < ApplicationController
       else
         if params[:cert]["vlan"] == "true"
           # VLANのクライアント証明書.
-          vlan_id = params[:cert]["vlan_id"].strip.to_i || 0
-          if vlan_id == 0
+          vlan_id = params[:cert]["vlan_id"].strip
+          vlan_id_i = vlan_id.to_i || 0
+          if vlan_id_i == 0
 #            flash[:alert] = "VLAN ID is invalid."
             flash[:alert] = t('.vlan_err')
             return redirect_to :action => "index"
           else
-            cn = "CN=#{current_user.uid}" + "@" + params[:cert]["vlan_id"]
+            cn = "CN=#{current_user.uid}" + "@" + vlan_id
           end
         else
           # 普通のクライアント証明書.
