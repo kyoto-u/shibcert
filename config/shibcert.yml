@@ -49,8 +49,8 @@ production:
 
 
   # メール連携設定
-  mail_basic_name: 'admin'
-  mail_basic_pswd: '*' #sha1hash
+  mail_basic_name: 'shibcert-sys'
+  mail_basic_pswd: '94ea2f0cdb9f4915bd097a0a92ac321419d33222' #'9SZxd4Kuf42pJ8Ln'
 
   # UPKI-PASS連携設定
   upki_pass_key1: ''
@@ -58,9 +58,9 @@ production:
   upki_pass_url: 'https://g-cert-dev.gakunin.nii.ac.jp/upki-pass'
 
   # 管理者設定
-  admin_uids: ['']
-  admin_basic_name: 'admin'
-  admin_basic_pswd: '*' #sha1hash
+  admin_uids: ['takaaki056komura', 'noritoshi859atsumi', 'toshiaki763shikata', 'mika199noguchi', 'gaku387takagishi']
+  admin_basic_name: 'shibcert-sys'
+  admin_basic_pswd: '94ea2f0cdb9f4915bd097a0a92ac321419d33222' #'9SZxd4Kuf42pJ8Ln'
 
 development:
 
@@ -80,8 +80,8 @@ development:
 
 
   # メール連携設定
-  mail_basic_name: 'admin'
-  mail_basic_pswd: '*' #sha1hash
+  mail_basic_name: '*'
+  mail_basic_pswd: '*' #sha1hash 
 
   # UPKI-PASS連携設定
   upki_pass_key1: ''
@@ -90,7 +90,7 @@ development:
 
   # 管理者設定
   admin_uids: ['']
-  admin_basic_name: 'admin'
+  admin_basic_name: '*'
   admin_basic_pswd: '*' #sha1hash
 
 test:
@@ -110,7 +110,7 @@ test:
   base_dn_smime: OU=Institute for Information Management and Communication,O=Kyoto University,ST=Kyoto,C=JP
 
   # メール連携設定
-  mail_basic_name: 'admin'
+  mail_basic_name: '*'
   mail_basic_pswd: '*' #sha1hash
 
   # UPKI-PASS連携設定
@@ -120,6 +120,6 @@ test:
 
   # 管理者設定
   admin_uids: ['']
-  admin_basic_name: 'admin'
+  admin_basic_name: '*'
   admin_basic_pswd: '*' #sha1hash
 
