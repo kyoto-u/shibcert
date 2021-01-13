@@ -11,7 +11,7 @@ class MailController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   # Basic認証定義.
-  before_filter :auth
+  before_action :auth
 
   BASE64_MAXLEN = 200000
   MAIL_MAXLEN   = 100000

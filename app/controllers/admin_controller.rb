@@ -9,7 +9,7 @@ class AdminController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   # Basic認証定義.
-  before_filter :auth
+  before_action :auth
 
   # ----------------------------------------------------------------------
   # Basic認証実装.

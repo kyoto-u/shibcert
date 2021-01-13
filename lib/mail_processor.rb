@@ -268,12 +268,15 @@ Subject: [UPKI] クライアント証明書取得通知
 
     # 対象証明書のDN情報取得.
     mail_text_part = @mail.text_part.decoded
-    mail_text_part.match(/^【対象証明書DN】\n　---------------------------------------------\n(.*)\n　---------------------------------------------$/m)
+    mail_text_part.gsub!(/\r/, '')
+    mail_text_part.match(/^【対象証明書DN】\n　---------------------------------------------\n(.*)\n　---------------------------------------------/m)
     dn = Regexp.last_match(1).delete('　').split("\n").join(',')
+    @logger.info(dn)
 
     # 対象証明書のシリアル番号取得.
     mail_text_part.match(/^【対象証明書シリアル番号】\n　(\d+)$/m)
     serial = Regexp.last_match(1)
+    @logger.info(serial)
     if serial
       # シリアル番号があった.
       @logger.info("serial: #{serial} for #{dn}")
@@ -317,6 +320,7 @@ Subject: [UPKI] クライアント証明書更新通知
 
     # 対象証明書のDN情報取得.
     mail_text_part = @mail.text_part.decoded
+    mail_text_part.gsub!(/\r/, '')
     mail_text_part.match(/^【対象証明書DN】\n　---------------------------------------------\n(.*)\n　---------------------------------------------$/m)
     dn = Regexp.last_match(1).delete('　').split("\n").join(',')
 
@@ -344,6 +348,7 @@ Subject: [UPKI] クライアント証明書更新通知
 
     # 失効証明書のDN情報取得.
     mail_text_part = @mail.text_part.decoded
+    mail_text_part.gsub!(/\r/, '')
     m = mail_text_part.match(/このメールに心当たりがない場合や不明点等ございましたら、/)
     mail_text_part2 = m.pre_match
     mail_text_part2.match(/^【失効証明書DN】\n　---------------------------------------------\n(.*)\n　---------------------------------------------$/m)
