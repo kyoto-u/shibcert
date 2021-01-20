@@ -44,8 +44,8 @@ production:
   user_ou: 'Institute for Information Management and Communication'
 
   base_dn_dev: ''
-  base_dn_auth: OU=Kyoto University Integrated Information Network System,O=Kyoto University,ST=Kyoto,C=JP
-  base_dn_smime: OU=Institute for Information Management and Communication,O=Kyoto University,ST=Kyoto,C=JP
+  base_dn_auth: OU=Kyoto University Integrated Information Network System,O=Kyoto University,L=Kyoto,ST=Kyoto,C=JP
+  base_dn_smime: OU=Institute for Information Management and Communication,O=Kyoto University,L=Kyoto,ST=Kyoto,C=JP
 
 
   # メール連携設定
