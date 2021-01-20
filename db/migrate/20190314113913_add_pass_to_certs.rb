@@ -1,4 +1,4 @@
-class AddPassToCerts < ActiveRecord::Migration
+class AddPassToCerts < ActiveRecord::Migration[4.2]
   def change
     add_column :certs, :pass_id, :string
     add_column :certs, :pass_pin, :string

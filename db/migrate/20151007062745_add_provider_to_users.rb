@@ -1,4 +1,4 @@
-class AddProviderToUsers < ActiveRecord::Migration
+class AddProviderToUsers < ActiveRecord::Migration[4.2]
   def change
     add_column :users, :provider, :string
   end
