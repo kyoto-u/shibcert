@@ -24,9 +24,6 @@ gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '~> 4.2.2'
 
-# See https://github.com/sstephenson/execjs#readme for more supported runtimes
-gem 'mini_racer', '~> 0.3.1'
-
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
@@ -67,9 +64,8 @@ gem 'passenger'
 gem 'yaml_db'
 
 gem 'omniauth-github'
-gem 'omniauth-shibboleth'
+gem 'omniauth-saml'
 
 gem 'mechanize'
 gem 'mail'
 gem 'zipruby'
-
