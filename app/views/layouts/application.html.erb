@@ -75,7 +75,7 @@
       <p><%= SHIBCERT_CONFIG['label'][ln]['intro_text'] %></p>
       <br>
       <div class="omniauth">
-      <p><%= link_to t('login.loginlink'), "/auth/shibboleth", class: 'btn btn-primary' %> <%= t('login.logintext')%></p>
+      <p><%= link_to t('login.loginlink'), "/auth/saml", class: 'btn btn-primary' %> <%= t('login.logintext')%></p>
       <% if Rails.env == 'development'  %>
         <p><%= link_to t('login.otherloginlink'), "/auth/github", class: 'btn btn-primary' %> <%= t('login.otherlogintext')%></p>
       <% end %>
