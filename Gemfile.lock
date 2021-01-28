@@ -74,7 +74,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.1.7)
+    concurrent-ruby (1.1.8)
     connection_pool (2.2.3)
     crass (1.0.6)
     domain_name (0.5.20190701)
@@ -111,8 +111,7 @@ GEM
     jquery-ui-themes (0.0.12)
       httparty
     jwt (2.2.2)
-    libv8 (8.4.255.0-x86_64-darwin-20)
-    loofah (2.8.0)
+    loofah (2.9.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -134,8 +133,6 @@ GEM
     mime-types-data (3.2020.1104)
     mimemagic (0.3.5)
     mini_mime (1.0.2)
-    mini_racer (0.3.1)
-      libv8 (~> 8.4.255)
     minitest (5.14.3)
     multi_json (1.15.0)
     multi_xml (0.6.0)
@@ -154,7 +151,7 @@ GEM
       multi_json (~> 1.3)
       multi_xml (~> 0.5)
       rack (>= 1.2, < 3)
-    omniauth (2.0.0)
+    omniauth (2.0.1)
       hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
       rack-protection
@@ -164,8 +161,9 @@ GEM
     omniauth-oauth2 (1.7.1)
       oauth2 (~> 1.4)
       omniauth (>= 1.9, < 3)
-    omniauth-shibboleth (1.3.0)
-      omniauth (>= 1.0.0)
+    omniauth-saml (2.0.0)
+      omniauth (~> 2.0)
+      ruby-saml (~> 1.9)
     passenger (6.0.7)
       rack
       rake (>= 0.8.1)
@@ -203,7 +201,9 @@ GEM
       thor (~> 1.0)
     rake (13.0.3)
     rdoc (6.3.0)
-    ruby2_keywords (0.0.2)
+    ruby-saml (1.11.0)
+      nokogiri (>= 1.5.10)
+    ruby2_keywords (0.0.4)
     sassc (2.4.0)
       ffi (~> 1.9)
     sassc-rails (2.0.0)
@@ -222,7 +222,7 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     sqlite3 (1.4.2)
-    thor (1.0.1)
+    thor (1.1.0)
     tilt (2.0.10)
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
@@ -258,10 +258,9 @@ DEPENDENCIES
   jquery-ui-themes
   mail
   mechanize
-  mini_racer (~> 0.3.1)
   mysql2 (~> 0.4.1)
   omniauth-github
-  omniauth-shibboleth
+  omniauth-saml
   passenger
   rails (~> 6.1.0)
   sassc-rails (~> 2.0.0)
@@ -273,4 +272,4 @@ DEPENDENCIES
   zipruby
 
 BUNDLED WITH
-   2.2.3
+   2.2.6
