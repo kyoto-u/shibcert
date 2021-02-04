@@ -60,8 +60,9 @@ gem 'passenger'
 # Use yaml dump for export/import DB records
 gem 'yaml_db'
 
-gem 'omniauth-github'
-gem 'omniauth-saml'
+# Doesn't work omniauth 2.0
+gem 'omniauth-github', '~> 1'
+gem 'omniauth-saml', '~> 1'
 
 gem 'mechanize'
 gem 'mail'
