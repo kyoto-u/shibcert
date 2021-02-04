@@ -12,17 +12,17 @@ end
 
 # Use sqlite3 as the database for Active Record
 group :production do
-  gem 'mysql2', '~> 0.4.1'
+  gem 'mysql2'
 end
 
 # Use SCSS for stylesheets
-gem 'sassc-rails', '~> 2.0.0'
+gem 'sassc-rails'
 
 # Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
+gem 'uglifier'
 
 # Use CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.2.2'
+gem 'coffee-rails'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -34,7 +34,7 @@ gem 'jquery-turbolinks'
 gem 'turbolinks'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.9.1'
+gem 'jbuilder'
 
 # Bootstrap and Font Awesome
 #gem 'less-rails'
@@ -46,9 +46,6 @@ group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
 end
-
-# Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
 
 # Use unicorn as the app server
 # gem 'unicorn'
