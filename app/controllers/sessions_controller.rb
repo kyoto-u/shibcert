@@ -1,6 +1,9 @@
 # ========================================================================
 # SessionsController: 認証セッションクラス.
-class SessionsController < ApplicationController
+# protect_from_forgery の設定を分けるため ApplicationController ではなく
+# ActionController::Base を継承
+class SessionsController < ActionController::Base
+  protect_from_forgery except: [:create], with: :exception
 
   # ----------------------------------------------------------------------
   # 生成.
