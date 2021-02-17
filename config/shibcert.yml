@@ -48,10 +48,6 @@ production:
   base_dn_smime: OU=Institute for Information Management and Communication,O=Kyoto University,L=Kyoto,ST=Kyoto,C=JP
 
 
-  # メール連携設定
-  mail_basic_name: 'shibcert-sys'
-  mail_basic_pswd: '94ea2f0cdb9f4915bd097a0a92ac321419d33222' #'9SZxd4Kuf42pJ8Ln'
-
   # UPKI-PASS連携設定
   upki_pass_key1: ''
   upki_pass_key2: ''
@@ -59,8 +55,6 @@ production:
 
   # 管理者設定
   admin_uids: ['takaaki056komura', 'noritoshi859atsumi', 'toshiaki763shikata', 'mika199noguchi', 'gaku387takagishi']
-  admin_basic_name: 'shibcert-sys'
-  admin_basic_pswd: '94ea2f0cdb9f4915bd097a0a92ac321419d33222' #'9SZxd4Kuf42pJ8Ln'
 
 development:
 
