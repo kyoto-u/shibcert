@@ -10,17 +10,17 @@ class CertsController < ApplicationController
 
   # ----------------------------------------------------------------------
   def record_not_found
-    render file: Rails.root.join('public/404.html'), status: 404, layout: false, content_type: 'text/html'  
+    render file: Rails.root.join('public/404.html'), status: 404, layout: false, content_type: 'text/html'
   end
 
   def working_smime_num(myid)
-    # FIXME: generating terrible SQL    
+    # FIXME: generating terrible SQL
     smime_num = Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_GOT_SERIAL).count()
-    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_REQUESTED_TO_NII).count() 
+    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_REQUESTED_TO_NII).count()
     smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_RECEIVED_MAIL).count()
     smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_GOT_PIN).count()
     smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_DISPLAYED_PIN).count()
-    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_GOT_SERIAL).count() 
+    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_GOT_SERIAL).count()
     smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::RENEW_REQUESTED_FROM_USER).count()
     smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::RENEW_REQUESTED_TO_NII).count()
     smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::RENEW_RECEIVED_MAIL).count()
@@ -32,7 +32,7 @@ class CertsController < ApplicationController
     smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::REVOKE_RECEIVED_MAIL).count()
     return smime_num
   end
-  
+
   # GET /certs
   # GET /certs.json
   def index
@@ -82,7 +82,7 @@ class CertsController < ApplicationController
 
     @user = User.find(@cert.user_id)
     unless /\d+/.match(params[:id])
-      return 
+      return
     end
   end
 
@@ -103,7 +103,7 @@ class CertsController < ApplicationController
     download_type = 1
     pass_id = nil
 
-    # S/MIME-multiple-application guard (failsafe)    
+    # S/MIME-multiple-application guard (failsafe)
     if params[:cert]["purpose_type"].to_i == Cert::PurposeType::SMIME_CERTIFICATE and working_smime_num(current_user.id) > 0
        flash[:alert] = t('.mime_err')
        return redirect_to :action => "index"
@@ -141,14 +141,14 @@ class CertsController < ApplicationController
       end
     end
 
-    ActiveRecord::Base.transaction do      
+    ActiveRecord::Base.transaction do
       current_user.cert_serial_max += 1
       if(!current_user.save)
         flash[:alert] = t('.max_err')
         return redirect_to :action => "index"
       end
-    end        
-    
+    end
+
     case params[:cert]["purpose_type"].to_i
 
     when Cert::PurposeType::CLIENT_AUTH_CERTIFICATE
@@ -171,7 +171,7 @@ class CertsController < ApplicationController
       dn = ""
       return
     end
-    
+
     request_params = params.require(:cert).permit(:purpose_type).merge(
       {user_id: current_user.id,
        state: Cert::State::NEW_REQUESTED_FROM_USER,
@@ -187,8 +187,13 @@ class CertsController < ApplicationController
     end
 
     Rails.logger.debug "RaReq.request call: @cert = #{@cert.inspect}"
-    RaReq.request(@cert)
- 
+    if RaReq.request(@cert).nil?
+      #
+      # ToDo 直さないといけない
+      #
+      flash[:alert] = 'Your request fails. Please see https://certs.nii.ac.jp/news'
+    end
+
     redirect_to request_result_path(@cert.id)
   end
 
@@ -206,7 +211,7 @@ class CertsController < ApplicationController
     end
   end
 
-  # POST /certs/disable_post [with RPG pattern]  
+  # POST /certs/disable_post [with RPG pattern]
   def disable_post
 
     if !current_user
@@ -219,12 +224,12 @@ class CertsController < ApplicationController
     if @cert
       @cert.state = Cert::State::REVOKE_REQUESTED_FROM_USER
       @cert.save
-      
-      Rails.logger.debug "RaReq.request call: @cert = #{@cert.inspect}"    
+
+      Rails.logger.debug "RaReq.request call: @cert = #{@cert.inspect}"
       RaReq.request(@cert)
     end
 
-    redirect_to disable_result_path(@cert.id)    
+    redirect_to disable_result_path(@cert.id)
   end
 
   # POST /certs/disable_result [with RPG pattern]
@@ -233,10 +238,10 @@ class CertsController < ApplicationController
     if !current_user
       return redirect_to :action => "index"
     end
-    
+
   end
 
-  # POST /certs/renew_post [with RPG pattern]  
+  # POST /certs/renew_post [with RPG pattern]
   def renew_post
 
     if !current_user
@@ -258,19 +263,19 @@ class CertsController < ApplicationController
 #      @newcert.serialnumber = nil
       @newcert.state = Cert::State::RENEW_REQUESTED_FROM_USER
 
-      ActiveRecord::Base.transaction do      
+      ActiveRecord::Base.transaction do
         current_user.cert_serial_max += 1
         current_user.save # TODO: need error check
-      end        
+      end
 
       @newcert.req_seq = current_user.cert_serial_max
       @newcert.save
-      
-      Rails.logger.debug "RaReq.request call: @newcert = #{@newcert.inspect}"    
+
+      Rails.logger.debug "RaReq.request call: @newcert = #{@newcert.inspect}"
       RaReq.request(@newcert)
     end
 
-    redirect_to renew_result_path(@newcert.id)    
+    redirect_to renew_result_path(@newcert.id)
   end
 
   # POST /certs/renew_result [with RPG pattern]
@@ -279,7 +284,7 @@ class CertsController < ApplicationController
     if !current_user
       return redirect_to :action => "index"
     end
-    
+
   end
 
   # GET /certs/new
@@ -340,11 +345,11 @@ class CertsController < ApplicationController
       format.json { head :no_content }
     end
   end
-  
+
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_cert
-    @cert = Cert.find(params[:id])    
+    @cert = Cert.find(params[:id])
   end
 
   def set_cert_of_user
@@ -360,14 +365,14 @@ class CertsController < ApplicationController
     end
 
     mycert = Cert.find(params[:id])
-    
+
     if mycert and mycert.user_id == current_user.id
       @cert = mycert
     else
       raise ActiveRecord::RecordNotFound
     end
   end
-  
+
   # Never trust parameters from the scary internet, only allow the white list through.
     def cert_params
       params.require(:cert).permit(:vlan_id, :memo, :get_at, :expire_at, :pin, :pin_get_at, :user_id, :cert_state_id, :cert_type_id, :purpose_type, pass_id)

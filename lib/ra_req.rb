@@ -104,14 +104,14 @@ class RaReq
     agent = Mechanize.new
     begin
       agent.cert = SHIBCERT_CONFIG[Rails.env]['certificate_file'] # config/shibcert.yml
-    rescue => evar
-      Rails.logger.info "error: certificate_file '#{SHIBCERT_CONFIG[Rails.env]['certificate_file']}' #{evar.inspect}"
+    rescue => e
+      Rails.logger.info "error: certificate_file '#{SHIBCERT_CONFIG[Rails.env]['certificate_file']}' #{e.inspect}"
       raise
     end
     begin
       agent.key =  SHIBCERT_CONFIG[Rails.env]['certificate_key_file'] # config/shibcert.yml
-    rescue => evar
-      Rails.logger.info "error: certificater_key_file '#{SHIBCERT_CONFIG[Rails.env]['certificate_key_file']}' #{evar.inspect}"
+    rescue => e
+      Rails.logger.info "error: certificater_key_file '#{SHIBCERT_CONFIG[Rails.env]['certificate_key_file']}' #{e.inspect}"
       raise
     end
     agent.get('https://scia.secomtrust.net/upki-odcert/lra/SSLLogin.do') # Login with client certificate
@@ -164,16 +164,23 @@ class RaReq
       end
     end
 
-    form = self.get_upload_form
+    begin
+      form = self.get_upload_form
 
-    form.applyType = proc::ApplyType            # 処理内容 1:発行, 2:更新, 3:失効
-    form.radiobuttons_with(:name => 'errorFlg')[0].check # エラーが有れば全件処理を中止
-    form.file_upload_with(:name => 'file'){|form_upload| # TSV をアップロード準備
-      form_upload.file_data = tsv                        # アップロードする内容を文字列として渡す
-      form_upload.file_name = 'sample.tsv'               # 何かファイル名を渡す
-      form_upload.mime_type = 'application/force-download' # mime_type これで良いのか？
-    }
-    submitted_form = form.submit    # submit and file-upload
+      form.applyType = proc::ApplyType            # 処理内容 1:発行, 2:更新, 3:失効
+      form.radiobuttons_with(:name => 'errorFlg')[0].check # エラーが有れば全件処理を中止
+      form.file_upload_with(:name => 'file'){|form_upload| # TSV をアップロード準備
+        form_upload.file_data = tsv                        # アップロードする内容を文字列として渡す
+        form_upload.file_name = 'sample.tsv'               # 何かファイル名を渡す
+        form_upload.mime_type = 'application/force-download' # mime_type これで良いのか？
+      }
+      submitted_form = form.submit    # submit and file-upload
+    rescue Mechanize => e
+      Rails.logger.debug "#{__method__}: Mechanize error: ${e.inspect}"
+      cert.state = proc::ErrorState
+      cert.save
+      return nil
+    end
 
     if Rails.env == 'development' then
       open("log/last_response.html", "w") do |fp|
@@ -292,14 +299,14 @@ class RaReq
     agent = Mechanize.new
     begin
       agent.cert = SHIBCERT_CONFIG[Rails.env]['certificate_file'] # config/shibcert.yml
-    rescue => evar
-      Rails.logger.info "error: certificate_file '#{SHIBCERT_CONFIG[Rails.env]['certificate_file']}' #{evar.inspect}"
+    rescue => e
+      Rails.logger.info "error: certificate_file '#{SHIBCERT_CONFIG[Rails.env]['certificate_file']}' #{e.inspect}"
       raise
     end
     begin
       agent.key =  SHIBCERT_CONFIG[Rails.env]['certificate_key_file'] # config/shibcert.yml
-    rescue => evar
-      Rails.logger.info "error: certificater_key_file '#{SHIBCERT_CONFIG[Rails.env]['certificate_key_file']}' #{evar.inspect}"
+    rescue => e
+      Rails.logger.info "error: certificater_key_file '#{SHIBCERT_CONFIG[Rails.env]['certificate_key_file']}' #{e.inspect}"
       raise
     end
 
@@ -309,7 +316,7 @@ class RaReq
     # 続いて全情報TSV取得.
     getBody = agent.get('https://scia.secomtrust.net/upki-odcert/lra/syomeiDL_S_Cli.do').body
 #    getBody = agent.get('https://scia.secomtrust.net/upki-odcert/lra/riyouDL_S.do').body
-    if !getBody 
+    if !getBody
       Rails.logger.debug "#{__method__}: tsv download fail"
       return nil
     end
@@ -402,7 +409,7 @@ TSV = [
        'example@example.com', # No.10 admin mail
        'Name',                # No.11 user name
        'example20180321C005', # No.12 P12 filename
-       'example OU',          # No.13 user OU 
+       'example OU',          # No.13 user OU
        'example@example.com', # No.14 user mail
        '',                    # No.15 access PIN (not use)
       ].join("\t")
@@ -429,19 +436,19 @@ TSV = [
     <tr><td>&nbsp;</td></tr>
      <tr><td style="position:relative;left:10px">
         ファイルのアップロード処理が完了しました。<br>
-        
-        
+
+
         <ul>
         	<li>証明書発行処理が完了後、利用管理者様宛にワンタイムURL付きアクセスPIN取得案内メールを送信致します。</li>
         	<li>利用者様宛にワンタイムURL付き証明書発行案内メールを送信致します。 ワンタイムURLはアクセスPIN取得後、有効化されます。</li>
         	<li>証明書ダウンロードが完了後、登録担当者様と利用管理者様宛にダウンロード完了案内メールを送信致しますのでお待ち下さい。</li>
         </ul>
-        
-        
-        
+
+
+
     </td></tr>
     <tr><td>&nbsp;</td></tr>
-    
+
     <tr style="position:relative;left:10px;"><td align="center">
         <table border="1" bordercolor="#808080">
             <tr style="background:#AAAAAA">
@@ -453,38 +460,38 @@ TSV = [
                 <th align="center" nowrap><font size="-1">氏名</font></th>
                 <th align="center" nowrap><font size="-1">メールアドレス</font></th>
             </tr>
-            
+
             <tr>
 	            <td align="center" nowrap><font size="-1">
-	            	
+
 	            	1
 	            </font></td>
 	            <td align="center" nowrap><font size="-1">
-	            	
+
 	            	OK
 	            </font></td>
 	            <td align="left" nowrap><font size="-1">
 	            	&nbsp;
-	            	
+
 	            </font></td>
 	            <td align="left" nowrap><font size="-1">
-	            	
+
 	            	試験大学
 	            </font></td>
 	            <td align="left" nowrap><font size="-1">
-	            	
+
 	            	TEST OU
 	            </font></td>
 	            <td align="left" nowrap><font size="-1">
-	            	
+
 	            	Name
 	            </font></td>
 	            <td align="left" nowrap><font size="-1">
-	            	
+
 	            	user@example.com
 	            </font></td>
 	        </tr>
-	        
+
         </table>
     </td></tr>
     <tr><td>&nbsp;</td></tr>
@@ -520,22 +527,22 @@ TSV = [
                 <th align="center" nowrap><font size="-1">処理結果</font></th>
                 <th align="center" nowrap><font size="-1">エラー内容</font></th>
             </tr>
-            
+
             <tr>
 	            <td align="center" nowrap><font size="-1">
-	            	
+
 	            	1
 	            </font></td>
 	            <td align="center" nowrap><font size="-1">
-	            	
+
 	            	NG
 	            </font></td>
 	            <td align="left" nowrap><font size="-1">
-	            	
+
 	            	212:1,主体者DN,指定したDNはすでに存在しています。
 	            </font></td>
 	        </tr>
-	        
+
         </table>
     </td></tr>
     <tr><td>&nbsp;</td></tr>
