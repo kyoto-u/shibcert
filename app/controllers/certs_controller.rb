@@ -304,6 +304,7 @@ class CertsController < ApplicationController
       @cert.attributes = params.require(:cert).permit(:memo)
       @cert.save
     end
+    redirect_to @cert, notice: "Memo was updated"
   end
 
   # POST /certs
