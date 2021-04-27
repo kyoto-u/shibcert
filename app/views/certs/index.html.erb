@@ -61,7 +61,7 @@
 	<%= SHIBCERT_CONFIG['label'][ln]['purpose'][7] if SHIBCERT_CONFIG['label']['ja']['purpose'][7] %>
 	  <%= form_tag({controller: "certs", action: "request_post"}, {class: "form-inline"}) do  %>
 	  <%= hidden_field :cert, :purpose_type, :value => 7 %>
- 	  <% unless @smime_num > 0 %>	
+ 	  <% unless @smime_num > 0 %>
 	  <%= submit_tag(t('.req_bt', type: t('common.purpose_type.t7')), class: "btn btn-primary", data: {confirm: t('.confirm')}) %>
 	  <% else %>
 	  <div class="btn btn-default" disabled="disabled">
@@ -69,7 +69,7 @@
 	  </div>
 	  <% end %>
  	  <% if @smime_num > 0 %>
-	  <%= t('.no_multi_smime') %>	
+	  <%= t('.no_multi_smime') %>
 	  <% end %>
 	  <% end %>
     </li>
@@ -84,7 +84,7 @@
   <% if @all_certs_opt == 1 %>
     <%= hidden_field :opt, :all, :value => 0 %>
     <%= submit_tag( t('.list_valid'), class: "btn btn-xs btn-default" ) %>
-  <% else %>  
+  <% else %>
     <%= hidden_field :opt, :all, :value => 1 %>
     <%= submit_tag( t('.list_all'), class: "btn btn-xs btn-default" ) %>
   <% end %>
@@ -94,7 +94,7 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th><%= t('.list_seq') %></th>	  
+      <th><%= t('.list_seq') %></th>
       <th><%= t('.list_type') %></th>
       <th><%= t('.list_date') %></th>
       <th><%= t('.list_available') %></th>
@@ -118,7 +118,7 @@
 	  <% purpose_cap =  %>
 	  <% if t('common.purpose_type.t' + cert.purpose_type.to_s) %>
 	    <%= t('common.purpose_type.t' + cert.purpose_type.to_s) %>
-	  <% else %>  
+	  <% else %>
 	    <%= t('.list_purpose_type_error') %>
 	  <% end %>
 	  <% if cert.download_type == 2 %>
@@ -127,7 +127,7 @@
         </td>
         <td>
           <%= I18n.l Date.parse(cert.created_at.to_s) %>
-        </td>	  
+        </td>
         <td>
           <% if cert.expire_at && cert.expire_at < Time.now %>
           <%= t('.cert_expired') %>
@@ -150,4 +150,3 @@
 <% end %>
 
 <%= link_to t('.update'), 'javascript:location.reload()', class:"underlined-text" %>
-
