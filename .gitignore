@@ -14,8 +14,7 @@
 /db/*sqlite3*
 
 # Ignore all logfiles and tempfiles.
-/log/*.log
-/log/*.log.*
+/log
 /tmp
 
 # Ignore emacs backup
@@ -39,4 +38,5 @@ sample.tsv
 # Ignore Database Dump by yaml-db
 /db/data.yml
 
+/db/schema.rb
 .ruby-version
