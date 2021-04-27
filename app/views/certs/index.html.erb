@@ -46,8 +46,8 @@
                     <%= t('.vlan') %>
                   </p>
 	          <p>
-	            <%= radio_button :cert, :vlan, true %> ON 
-	            <%= text_field :cert, :vlan_id, :placeholder => "Enter VLAN ID...", :disabled => false %>
+	            <%= radio_button :cert, :vlan, true %> ON
+	            <%= text_field :cert, :vlan_id, :placeholder => "Enter VLAN ID...", :disabled => true %>
                   </p>
 	          <p>
                     <%= radio_button :cert, :vlan, false, {:checked => true} %> OFF
