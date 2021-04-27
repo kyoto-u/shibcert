@@ -3,7 +3,7 @@
 # ========================================================================
 # CertsController: 証明書発行操作クラス.
 class CertsController < ApplicationController
-  before_action :set_cert, only: [:edit, :update, :destroy]
+  before_action :do_not_use, only: [:edit, :update, :destroy]
   before_action :set_cert_of_user, only: [:show, :edit_memo_remote, :request_result, :disable_post, :disable_result, :renew_post, :renew_result]
 
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
@@ -350,6 +350,11 @@ class CertsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_cert
     @cert = Cert.find(params[:id])
+  end
+
+  def do_not_use
+    @cert = nil
+    return false
   end
 
   def set_cert_of_user
