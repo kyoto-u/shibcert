@@ -41,7 +41,7 @@ class SessionsController < ActionController::Base
     if number == nil
       number = auth['uid']
     end
-    printable = number.gsub!(/@+|\(+|\)+|'+|:+|\/+|\.+|=+|_+/, '-') 
+    printable = number.gsub!(/@+|\(+|\)+|'+|:+|\/+|\.+|=+|_+/, '-')
     if printable != nil
       number = printable
     end

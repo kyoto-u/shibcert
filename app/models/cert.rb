@@ -237,7 +237,7 @@ p dn
     CLIENT_AUTH_CERTIFICATE = 5
     SMIME_CERTIFICATE = 7
   end
-  
+
   module State
     # 新規発行
     NEW_REQUESTED_FROM_USER = 10 # 利用者から受付後、NIIへ申請前

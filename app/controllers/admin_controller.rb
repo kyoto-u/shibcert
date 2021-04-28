@@ -531,7 +531,7 @@ class AdminController < ApplicationController
   # ----------------------------------------------------------------------
   # 管理者チェック
   def self.isAdmin(user)
-    if user.blank? || user.uid.blank? 
+    if user.blank? || user.uid.blank?
       return false
     elsif SHIBCERT_CONFIG[Rails.env]['admin_uids'].include?(user.uid)
        return true
