@@ -61,7 +61,9 @@ gem 'passenger'
 gem 'yaml_db'
 
 # Doesn't work omniauth 2.0
-gem 'omniauth-github', '~> 1'
+group :development, :test do
+  gem 'omniauth-github', '~> 1'
+end
 gem 'omniauth-saml', '~> 1'
 
 gem 'mechanize'
