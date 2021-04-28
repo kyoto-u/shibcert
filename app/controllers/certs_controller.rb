@@ -3,7 +3,6 @@
 # ========================================================================
 # CertsController: 証明書発行操作クラス.
 class CertsController < ApplicationController
-  before_action :do_not_use, only: [:edit, :update, :destroy]
   before_action :set_cert_of_user, only: [:show, :edit_memo_remote, :request_result, :disable_post, :disable_result, :renew_post, :renew_result]
 
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
@@ -287,15 +286,6 @@ class CertsController < ApplicationController
 
   end
 
-  # GET /certs/new
-  def new
-    @cert = Cert.new
-  end
-
-  # GET /certs/1/edit
-  def edit
-  end
-
   # POST /certs/1/edit_memo_remote
   def edit_memo_remote
 #    @cert.update('memo = ' + params[:memo])
@@ -320,30 +310,6 @@ class CertsController < ApplicationController
         format.html { render action: 'new' }
         format.json { render json: @cert.errors, status: :unprocessable_entity }
       end
-    end
-  end
-
-  # PATCH/PUT /certs/1
-  # PATCH/PUT /certs/1.json
-  def update
-    respond_to do |format|
-      if @cert.update(cert_params)
-        format.html { redirect_to @cert, notice: 'Cert was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: 'edit' }
-        format.json { render json: @cert.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /certs/1
-  # DELETE /certs/1.json
-  def destroy
-    @cert.destroy
-    respond_to do |format|
-      format.html { redirect_to certs_url }
-      format.json { head :no_content }
     end
   end
 

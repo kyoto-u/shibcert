@@ -14,17 +14,13 @@ Shibcert::Application.routes.draw do
         as: 'disable_post'         
     get "certs/disable_result/:id", to: 'certs#disable_result', \
         as: 'disable_result'
+    post "certs/edit_memo_remote", to: 'certs#edit_memo_remote', \
+        as: 'edit_memo_remote'
 
 #    post "certs/renew_post/:id",  to: 'certs#renew_post', \
 #        as: 'renew_post'         
 #    get "certs/renew_result/:id", to: 'certs#renew_result', \
 #        as: 'renew_result'
-
-    resources :certs do
-      member do
-        post "edit_memo_remote"
-      end
-    end
 
 #    resources :cert_states
 #    resources :cert_types
