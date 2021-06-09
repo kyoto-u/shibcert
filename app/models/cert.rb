@@ -4,6 +4,35 @@ class Cert < ActiveRecord::Base
   belongs_to :cert_state
   belongs_to :user
 
+  def self.update_by_tsv(id:, serialnumber:, state:, expire_at:, url_expire_at:)
+    updated = []
+    if !id
+      logger.info("#{__method__}: serialnumber or expire_at is not set")
+      return nil
+    end
+    cert = Cert.find(id)
+    if cert.serialnumber.blank? && serialnumber.present?
+      cert.serialnumber = serialnumber
+      updated << "serialnumber"
+    end
+    if state && cert.state != state
+      cert.state = state
+      updated << "state"
+    end
+    if cert.expire_at.blank? && expire_at.present?
+      cert.expire_at = expire_at
+      updated << "expire_at"
+    end
+    if cert.url_expire_at.blank? && url_expire_at.present?
+      cert.url_expire_at = url_expire_at
+      updated << "url_expire_at"
+    end
+    if not updated.empty?
+      cert.save
+      logger.info("#{__method__}: updated for cert.id:#{cert.id} update:#{updated.join(',')}")
+    end
+  end
+
   def self.update_expire_at(id:, serialnumber:, expire_at:, url_expire_at:)
     if !id
       logger.info("#{__method__}: serialnumber or expire_at is not set")
