@@ -7,7 +7,7 @@ Shibcert::Application.routes.draw do
     root "certs#index", as: "locale_root"
     match '/'  => 'certs#index', :via => :post
 
-    get "certs/:id", to: 'certs#show'
+    get "certs/:id", to: 'certs#show', as: "cert_show"
     post "certs/request_post"
     get "certs/request_result/:id", to: 'certs#request_result', \
         as: 'request_result'
