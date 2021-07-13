@@ -32,7 +32,8 @@
 		  </p>
 		</div>
 	    <% elsif SHIBCERT_CONFIG['flag']['use_vlan'] == true %>
-	      <%= text_field :cert, :vlan_id, :placeholder => "Enter VLAN ID..." %> (VLAN固定接続をする場合のみ)
+	      <%= text_field :cert, :vlan_id, :placeholder => "Enter VLAN ID..." %>
+	      <%= t('.vlan_id_if_you_use') %>
 	    <% end %>
 	    </div>
 	    <%= submit_tag(t('.req_bt', type: t('common.purpose_type.t5')), class: "btn btn-primary", data: {confirm: t('.confirm')}) %>

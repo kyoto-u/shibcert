@@ -53,6 +53,7 @@ ja:
       pass_id: "UPKI-PASS発行ID..."
       pass_text: "[必須] 学籍番号等"
       vlan: "VLAN固定接続"
+      vlan_id_if_you_use: "VLAN固定接続をする場合のみ"
       list_title: "証明書の発行状況 (申請番号をクリックで詳細表示)"
       list_seq: "申請番号"
       list_valid: "有効な証明書のみ表示"
