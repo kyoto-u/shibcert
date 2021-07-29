@@ -107,8 +107,8 @@ en:
       <br>
       PIN can be seen on \"Detail of the Certification\" page of this site for a certain period. <br>
       <br>
-      Finally, download and install the intermediate CA certificate via the following link.<br>
-      https://repo1.secomtrust.net/sppca/nii/odca3/nii-odca3sha2.cer<br>
+      Finally, download and install the intermediate CA certificate (SECOM Passport for Member PUB CA8 CA) via the following link.<br>
+      https://repo1.secomtrust.net/sppca/nii/odca4/#cert-clientauth<br>
       <br>"
       showlink: "See the Detail"
     disable_result:
