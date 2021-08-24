@@ -1,7 +1,5 @@
 # coding: utf-8
 class Cert < ActiveRecord::Base
-  belongs_to :cert_type
-  belongs_to :cert_state
   belongs_to :user
 
   def self.update_by_tsv(id:, serialnumber:, state:, expire_at:, url_expire_at:)
