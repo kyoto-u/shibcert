@@ -24,8 +24,6 @@ Shibcert::Application.routes.draw do
 #    get "certs/renew_result/:id", to: 'certs#renew_result', \
 #        as: 'renew_result'
 
-#    resources :cert_states
-#    resources :cert_types
 #    resources :users
 #    resources :roles
 #    resources :requests
