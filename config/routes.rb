@@ -24,7 +24,6 @@ Shibcert::Application.routes.draw do
 #    get "certs/renew_result/:id", to: 'certs#renew_result', \
 #        as: 'renew_result'
 
-#    resources :users
 #    resources :requests
 
     get '/auth/:provider/callback' => 'sessions#create'
