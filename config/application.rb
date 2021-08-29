@@ -27,6 +27,8 @@ module Shibcert
 
     # to auto load lib/ directory
     config.autoload_paths += %W(#{config.root}/lib)
+
+    config.enable_dependency_loading = true
   end
 end
 

@@ -67,6 +67,7 @@ group :development do
   gem 'omniauth-identity'
 end
 
+gem 'activerecord-nulldb-adapter'
 gem 'mechanize'
 gem 'mail'
 gem 'zipruby'

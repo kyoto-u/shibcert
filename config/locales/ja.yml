@@ -105,8 +105,8 @@ ja:
       <br>
       PINは発行完了後の一定期間、本ポータルの証明書情報確認画面で確認できます。<br>
       <br>
-      また、下記URLから、中間CA証明書もダウンロードしてシステムにインストールして下さい。<br>
-      https://repo1.secomtrust.net/sppca/nii/odca3/nii-odca3sha2.cer<br>
+      また、下記URLから「SECOM Passport for Member PUB CA8 CA証明書」をダウンロードしてシステムにインストールして下さい。<br>
+      https://repo1.secomtrust.net/sppca/nii/odca4/#cert-clientauth<br>
       <br>"
       showlink: "証明書情報確認"
     disable_result:
