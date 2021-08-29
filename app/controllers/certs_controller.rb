@@ -347,6 +347,6 @@ class CertsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
     def cert_params
-      params.require(:cert).permit(:vlan_id, :memo, :get_at, :expire_at, :pin, :pin_get_at, :user_id, :cert_state_id, :cert_type_id, :purpose_type, pass_id)
+      params.require(:cert).permit(:vlan_id, :memo, :get_at, :expire_at, :pin, :pin_get_at, :user_id, :purpose_type, pass_id)
     end
 end
