@@ -1,3 +1,4 @@
+# coding: utf-8
 # ========================================================================
 # SessionsController: 認証セッションクラス.
 # protect_from_forgery の設定を分けるため ApplicationController ではなく
@@ -12,7 +13,16 @@ class SessionsController < ActionController::Base
 
     auth = request.env['omniauth.auth']
     logger.info("#{self}.#{__method__} auth=#{auth.inspect}")
-    user = User.find_by_provider_and_uid(auth['provider'], auth['uid']) || User.create_with_omniauth(auth)
+    provider = auth[:provider]
+    uid = case provider
+          when 'identity'
+            Identity.find(auth[:uid])[:uid]
+          when 'saml'
+            auth[:info][:uid]
+          else
+            auth[:uid]
+          end
+    user = User.find_by(provider: provider, uid: uid) || User.create_with_omniauth(auth)
     logger.info("#{self}.#{__method__} user=#{user.inspect}")
     update_user(user, auth)
     session[:user_id] = user.id
@@ -37,15 +47,9 @@ class SessionsController < ActionController::Base
   def update_user(user, auth)
     user[:name]  = auth[:info][:name]
     user[:email] = auth[:info][:email]
-    number = auth[:info][:number]
-    if number == nil
-      number = auth['uid']
-    end
-    printable = number.gsub!(/@+|\(+|\)+|'+|:+|\/+|\.+|=+|_+/, '-')
-    if printable != nil
-      number = printable
-    end
-    user[:number] = number
+    number = auth[:info][:number] || user[:uid]
+    printable_number = number.gsub!(/@+|\(+|\)+|'+|:+|\/+|\.+|=+|_+/, '-')
+    user[:number] = printable_number || number
     user.save!
   end
 
