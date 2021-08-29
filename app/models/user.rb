@@ -1,5 +1,4 @@
 class User < ActiveRecord::Base
-  belongs_to :role
   has_many :certs
 
   def self.create_with_omniauth(auth)

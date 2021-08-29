@@ -4,10 +4,8 @@ one:
   uid: MyString
   name: MyString
   email: MyString
-  role_id: 1
 
 two:
   uid: MyString
   name: MyString
   email: MyString
-  role_id: 1
