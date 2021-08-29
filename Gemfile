@@ -63,9 +63,7 @@ gem 'yaml_db'
 # Doesn't work omniauth 2.0
 gem 'omniauth-github', '~> 1'
 gem 'omniauth-saml', '~> 1'
-group :development do
-  gem 'omniauth-identity'
-end
+gem 'omniauth-identity'
 
 gem 'activerecord-nulldb-adapter'
 gem 'mechanize'
