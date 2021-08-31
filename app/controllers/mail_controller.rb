@@ -30,7 +30,7 @@ class MailController < ApplicationController
   # ----------------------------------------------------------------------
   # indexはBasic認証の試験用.
   def index
-    render text: 'ok'
+    render plain: 'ok'
   end
 
   # ----------------------------------------------------------------------
@@ -42,11 +42,11 @@ class MailController < ApplicationController
     mp.read_from(StringIO.new(body), MAIL_MAXLEN)
     update_info = mp.get_info
     if update_info == nil
-      render text: 'error.'
+      render plain: 'error.'
     end
     # DB更新.
     Cert.update_from_mail(update_info)
-    render text: 'done.'
+    render plain: 'done.'
   end
 
 end
