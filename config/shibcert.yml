@@ -47,6 +47,9 @@ production:
   base_dn_auth: OU=Kyoto University Integrated Information Network System,O=Kyoto University,L=Kyoto,ST=Kyoto,C=JP
   base_dn_smime: OU=Institute for Information Management and Communication,O=Kyoto University,L=Kyoto,ST=Kyoto,C=JP
 
+  # メール連携設定
+#  mail_basic_name: '*'  # -> MAIL_BASIC_AUTH_ID
+#  mail_basic_pswd: '*'  # -> MAIL_BASIC_AUTH_PW
 
   # UPKI-PASS連携設定
   upki_pass_key1: ''
@@ -55,6 +58,8 @@ production:
 
   # 管理者設定
   admin_uids: ['takaaki056komura', 'noritoshi859atsumi', 'toshiaki763shikata', 'mika199noguchi', 'gaku387takagishi']
+#  admin_basic_name: '*' # -> ADMIN_BASIC_AUTH_ID
+#  admin_basic_pswd: '*' # -> ADMIN_BASIC_AUTH_PW
 
 development:
 
@@ -74,8 +79,8 @@ development:
 
 
   # メール連携設定
-  mail_basic_name: '*'
-  mail_basic_pswd: '*' #sha1hash 
+#  mail_basic_name: '*'  # -> MAIL_BASIC_AUTH_ID
+#  mail_basic_pswd: '*'  # -> MAIL_BASIC_AUTH_PW
 
   # UPKI-PASS連携設定
   upki_pass_key1: ''
@@ -84,8 +89,8 @@ development:
 
   # 管理者設定
   admin_uids: ['']
-  admin_basic_name: '*'
-  admin_basic_pswd: '*' #sha1hash
+#  admin_basic_name: '*' # -> ADMIN_BASIC_AUTH_ID
+#  admin_basic_pswd: '*' # -> ADMIN_BASIC_AUTH_PW
 
 test:
 
@@ -104,8 +109,8 @@ test:
   base_dn_smime: OU=Institute for Information Management and Communication,O=Kyoto University,ST=Kyoto,C=JP
 
   # メール連携設定
-  mail_basic_name: '*'
-  mail_basic_pswd: '*' #sha1hash
+#  mail_basic_name: '*'  # -> MAIL_BASIC_AUTH_ID
+#  mail_basic_pswd: '*'  # -> MAIL_BASIC_AUTH_PW
 
   # UPKI-PASS連携設定
   upki_pass_key1: ''
@@ -114,6 +119,5 @@ test:
 
   # 管理者設定
   admin_uids: ['']
-  admin_basic_name: '*'
-  admin_basic_pswd: '*' #sha1hash
-
+#  admin_basic_name: '*' # -> ADMIN_BASIC_AUTH_ID
+#  admin_basic_pswd: '*' # -> ADMIN_BASIC_AUTH_PW
