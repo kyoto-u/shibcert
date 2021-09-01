@@ -132,7 +132,7 @@ class CertsController < ApplicationController
         pass_id = params[:cert]["pass_id"]
         cn = "CN=" + params[:cert]["pass_id"] + " " + "#{current_user.name}"
       else
-        if params[:cert]["vlan"] == "true"
+        unless params[:cert]["vlan_id"].empty?
           # VLANのクライアント証明書.
           vlan_id = params[:cert]["vlan_id"].strip
           vlan_id_i = vlan_id.to_i || 0
