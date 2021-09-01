@@ -16,25 +16,48 @@ class CertsController < ApplicationController
     # FIXME: generating terrible SQL
 
     smime_num = 0
-    [Cert::PurposeType::SMIME_CERTIFICATE_52,
-     Cert::PurposeType::SMIME_CERTIFICATE_13,
-     Cert::PurposeType::SMIME_CERTIFICATE_25].each do |type|
 
-      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::NEW_GOT_SERIAL).count()
-      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::NEW_REQUESTED_TO_NII).count()
-      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::NEW_RECEIVED_MAIL).count()
-      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::NEW_GOT_PIN).count()
-      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::NEW_DISPLAYED_PIN).count()
-      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::NEW_GOT_SERIAL).count()
-      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::RENEW_REQUESTED_FROM_USER).count()
-      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::RENEW_REQUESTED_TO_NII).count()
-      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::RENEW_RECEIVED_MAIL).count()
-      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::RENEW_GOT_PIN).count()
-      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::RENEW_DISPLAYED_PIN).count()
-      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::RENEW_GOT_SERIAL).count()
-      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::REVOKE_REQUESTED_FROM_USER).count()
-      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::REVOKE_REQUESTED_TO_NII).count()
-      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::REVOKE_RECEIVED_MAIL).count()
+    certs = Cert.where(user_id: myid).merge(Cert.where(purpose_type: Cert::PurposeType::SMIME_CERTIFICATE_52)
+                                              .or(Cert.where(purpose_type: Cert::PurposeType::SMIME_CERTIFICATE_13))
+                                              .or(Cert.where(purpose_type: Cert::PurposeType::SMIME_CERTIFICATE_25)))
+
+    month_to_live = Array.new
+    month_to_live[Cert::PurposeType::SMIME_CERTIFICATE_52] = 52
+    month_to_live[Cert::PurposeType::SMIME_CERTIFICATE_13] = 13
+    month_to_live[Cert::PurposeType::SMIME_CERTIFICATE_25] = 25
+
+    now = DateTime.now
+
+    certs.each do |cert|
+
+      if [Cert::State::NEW_GOT_SERIAL,
+        Cert::State::NEW_REQUESTED_TO_NII,
+        Cert::State::NEW_RECEIVED_MAIL,
+        Cert::State::NEW_GOT_PIN,
+        Cert::State::NEW_DISPLAYED_PIN,
+        Cert::State::NEW_GOT_SERIAL,
+        Cert::State::RENEW_REQUESTED_FROM_USER,
+        Cert::State::RENEW_REQUESTED_TO_NII,
+        Cert::State::RENEW_RECEIVED_MAIL,
+        Cert::State::RENEW_GOT_PIN,
+        Cert::State::RENEW_DISPLAYED_PIN,
+        Cert::State::RENEW_GOT_SERIAL,
+        Cert::State::REVOKE_REQUESTED_FROM_USER,
+        Cert::State::REVOKE_REQUESTED_TO_NII,
+        Cert::State::REVOKE_RECEIVED_MAIL,
+       ].include?(cert[:state])
+
+        if cert[:expire_at].nil?
+          expire_at = cert[:created_at].since(month_to_live[cert[:purpose_type]].month)
+          if now < expire_at
+            smime_num += 1
+          end
+        else
+          if now < cert[:expire_at]
+            smime_num += 1
+          end
+        end
+      end
     end
     return smime_num
   end
