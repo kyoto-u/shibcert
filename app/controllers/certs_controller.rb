@@ -160,14 +160,18 @@ class CertsController < ApplicationController
 
     case params[:cert]["purpose_type"].to_i
 
-    when Cert::PurposeType::CLIENT_AUTH_CERTIFICATE
+    when Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52,
+         Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_13,
+         Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_25
       if Rails.env == 'development' then
         dn = cn + ",OU=No #{current_user.cert_serial_max.to_s}" + "," + SHIBCERT_CONFIG[Rails.env]['base_dn_dev'] + "," + SHIBCERT_CONFIG[Rails.env]['base_dn_auth']
       else
         dn = cn + ",OU=No #{current_user.cert_serial_max.to_s}," + SHIBCERT_CONFIG[Rails.env]['base_dn_auth']
       end
 
-    when Cert::PurposeType::SMIME_CERTIFICATE
+    when Cert::PurposeType::SMIME_CERTIFICATE_52,
+         Cert::PurposeType::SMIME_CERTIFICATE_13,
+         Cert::PurposeType::SMIME_CERTIFICATE_25
       if Rails.env == 'development' then
         dn = "CN=#{current_user.email},OU=No #{current_user.cert_serial_max.to_s}," + SHIBCERT_CONFIG[Rails.env]['base_dn_dev'] + "," + SHIBCERT_CONFIG[Rails.env]['base_dn_smime']
       else
