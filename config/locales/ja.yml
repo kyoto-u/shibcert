@@ -22,20 +22,26 @@
 ja:
   nav:
     user: "ユーザー"
-    menu: "アカウントメニュー"    
-    help: "ヘルプ"    
+    menu: "アカウントメニュー"
+    help: "ヘルプ"
     logout: "ログアウト"
     admin: "管理者インタフェイス"
   login:
     logintext: "学内IDで"
-    otherlogintext: "他のサービスを使って"    
+    locallogintext: "ローカルIDで"
+    otherlogintext: "他のサービスを使って"
     loginlink: "ログイン"
+    localloginlink: "ローカルログイン"
     otherloginlink: "開発ログイン"
   common:
     backlink: "キャンセルして戻る"
     purpose_type:
-      t5:  "クライアント証明書" #5
-      t7:  "S/MIME証明書" #7
+      t5:  "クライアント証明書"	# 52ヶ月
+      t13:  "クライアント証明書"	# 13ヶ月
+      t14:  "クライアント証明書"	# 25ヶ月
+      t7:  "S/MIME証明書"	# 52ヶ月
+      t15: "S/MIME証明書"	# 13ヶ月
+      t16: "S/MIME証明書"	# 25ヶ月
       t55: "UPKI-PASS証明書" #55
   certs:
     index:
@@ -51,6 +57,7 @@ ja:
       pass_id: "UPKI-PASS発行ID..."
       pass_text: "[必須] 学籍番号等"
       vlan: "VLAN固定接続"
+      vlan_id_if_you_use: "VLAN固定接続をする場合のみ"
       list_title: "証明書の発行状況 (申請番号をクリックで詳細表示)"
       list_seq: "申請番号"
       list_valid: "有効な証明書のみ表示"
@@ -102,8 +109,8 @@ ja:
       <br>
       PINは発行完了後の一定期間、本ポータルの証明書情報確認画面で確認できます。<br>
       <br>
-      また、下記URLから、中間CA証明書もダウンロードしてシステムにインストールして下さい。<br>
-      https://repo1.secomtrust.net/sppca/nii/odca3/nii-odca3sha2.cer<br>
+      また、下記URLから「SECOM Passport for Member PUB CA8 CA証明書」をダウンロードしてシステムにインストールして下さい。<br>
+      https://repo1.secomtrust.net/sppca/nii/odca4/#cert-clientauth<br>
       <br>"
       showlink: "証明書情報確認"
     disable_result:
@@ -121,7 +128,7 @@ ja:
       req_seq: '申請番号'
       purpose_type: '証明書タイプ'
       purpose_type_errror: "証明書タイプに問題が発生しています。担当部署までお問い合わせ下さい。"
-      cert_status: "申請状況"      
+      cert_status: "申請状況"
       cert_status_msg:
         10: '新規申請前'
         11: '新規申請中'
@@ -177,7 +184,7 @@ ja:
       dn_error: 'エラー'
       memo: '用途メモ'
       memo_placeholder_personal: '(例)ノートPCの接続用'
-      memo_placeholder_smime: '(例)iPhoneのメール暗号化用'      
+      memo_placeholder_smime: '(例)iPhoneのメール暗号化用'
       memo_bt: 'メモを保存'
       disable_operation: '失効操作'
       disable_bt: '失効申請'
@@ -249,7 +256,7 @@ ja:
       title: "レコード削除完了"
       text_html: "証明書のレコード削除を行いました。<br><br>"
       showlink: "所有者情報確認"
-      
+
 # copy from http://avosalmon.hatenablog.com/entry/2014/06/15/%E3%80%90Rails%E3%80%91date_select%E3%81%A7%22undefined_method_for_translation_missing_ja_date_order_string%22
   date:
     formats:

@@ -20,17 +20,17 @@ class MailController < ApplicationController
   # Basic認証実装.
   # パスワードはSHA-1ハッシュ値HEXで覚える.
   def auth
-    name = SHIBCERT_CONFIG[Rails.env]['mail_basic_name']
-    passwd = SHIBCERT_CONFIG[Rails.env]['mail_basic_pswd']
+    name = ENV['MAIL_BASIC_AUTH_ID']
+    passwd = ENV['MAIL_BASIC_AUTH_PW']
     authenticate_or_request_with_http_basic do |user, pass|
-      user == name && Digest::SHA1.hexdigest(pass) == passwd
+      user == name && pass == passwd
     end
   end
 
   # ----------------------------------------------------------------------
   # indexはBasic認証の試験用.
   def index
-    render text: 'ok'
+    render plain: 'ok'
   end
 
   # ----------------------------------------------------------------------
@@ -42,11 +42,11 @@ class MailController < ApplicationController
     mp.read_from(StringIO.new(body), MAIL_MAXLEN)
     update_info = mp.get_info
     if update_info == nil
-      render text: 'error.'
+      render plain: 'error.'
     end
     # DB更新.
     Cert.update_from_mail(update_info)
-    render text: 'done.'
+    render plain: 'done.'
   end
 
 end

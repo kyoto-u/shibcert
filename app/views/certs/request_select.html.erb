@@ -1,15 +1,15 @@
 <h3><%= t('req_sel.title') %></h3>
 <p>
   <%= form_tag controller: "certs", action: "request_result" do %>
-  <%= hidden_field :cert, :purpose_type, :value => 5 %>
-  <%= submit_tag SHIBCERT_CONFIG['caption_j']['purpose_type_short'][5] + t('req_sel.linktext'), class: "btn btn-primary", data: {confirm: t('req_sel.confirm')}  %> 
+  <%= hidden_field :cert, :purpose_type, :value => Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52 %>
+  <%= submit_tag SHIBCERT_CONFIG['caption_j']['purpose_type_short'][5] + t('req_sel.linktext'), class: "btn btn-primary", data: {confirm: t('req_sel.confirm')}  %>
   <% end %>
 </p>
 
 <p>
   <%= form_tag controller: "certs", action: "request_result" do  %>
-  <%= hidden_field :cert, :purpose_type, :value => 7 %>  
-  <%= submit_tag SHIBCERT_CONFIG['caption_j']['purpose_type_short'][7] + t('req_sel.linktext'), class: "btn btn-primary", data: {confirm: t('req_sel.confirm')} %> 
+  <%= hidden_field :cert, :purpose_type, :value => Cert::PurposeType::SMIME_CERTIFICATE_25 %>
+  <%= submit_tag SHIBCERT_CONFIG['caption_j']['purpose_type_short'][7] + t('req_sel.linktext'), class: "btn btn-primary", data: {confirm: t('req_sel.confirm')} %>
   <% end %>
 </p>
 

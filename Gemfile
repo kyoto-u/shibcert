@@ -16,16 +16,13 @@ group :production do
 end
 
 # Use SCSS for stylesheets
-gem 'sassc-rails', '~> 2.0.0'
+gem 'sassc-rails'
 
 # Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
+gem 'uglifier'
 
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails'
-
-# See https://github.com/sstephenson/execjs#readme for more supported runtimes
-gem 'mini_racer'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -53,10 +50,12 @@ gem 'passenger'
 # Use yaml dump for export/import DB records
 gem 'yaml_db'
 
-gem 'omniauth-github'
-gem 'omniauth-shibboleth'
+# Doesn't work omniauth 2.0
+gem 'omniauth-github', '~> 1'
+gem 'omniauth-saml', '~> 1'
+gem 'omniauth-identity'
 
+gem 'activerecord-nulldb-adapter'
 gem 'mechanize'
 gem 'mail'
 gem 'zipruby'
-

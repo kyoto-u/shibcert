@@ -1,8 +1,35 @@
 # coding: utf-8
 class Cert < ActiveRecord::Base
-  belongs_to :cert_type
-  belongs_to :cert_state
   belongs_to :user
+
+  def self.update_by_tsv(id:, serialnumber:, state:, expire_at:, url_expire_at:)
+    updated = []
+    if !id
+      logger.info("#{__method__}: serialnumber or expire_at is not set")
+      return nil
+    end
+    cert = Cert.find(id)
+    if cert.serialnumber.blank? && serialnumber.present?
+      cert.serialnumber = serialnumber
+      updated << "serialnumber"
+    end
+    if state && cert.state != state
+      cert.state = state
+      updated << "state"
+    end
+    if cert.expire_at.blank? && expire_at.present?
+      cert.expire_at = expire_at
+      updated << "expire_at"
+    end
+    if cert.url_expire_at.blank? && url_expire_at.present?
+      cert.url_expire_at = url_expire_at
+      updated << "url_expire_at"
+    end
+    if not updated.empty?
+      cert.save
+      logger.info("#{__method__}: updated for cert.id:#{cert.id} update:#{updated.join(',')}")
+    end
+  end
 
   def self.update_expire_at(id:, serialnumber:, expire_at:, url_expire_at:)
     if !id
@@ -234,10 +261,16 @@ p dn
   end
 
   module PurposeType
-    CLIENT_AUTH_CERTIFICATE = 5
-    SMIME_CERTIFICATE = 7
+    CLIENT_AUTH_CERTIFICATE = 5 	# 5: 52 months, 13: 13 months, 14: 25 months
+    SMIME_CERTIFICATE = 7		# 7: 52 months, 15: 13 months, 16: 25 months
+    CLIENT_AUTH_CERTIFICATE_52 = 5
+    SMIME_CERTIFICATE_52 = 7
+    CLIENT_AUTH_CERTIFICATE_13 = 13
+    SMIME_CERTIFICATE_13 = 15
+    CLIENT_AUTH_CERTIFICATE_25 = 14
+    SMIME_CERTIFICATE_25 = 16
   end
-  
+
   module State
     # 新規発行
     NEW_REQUESTED_FROM_USER = 10 # 利用者から受付後、NIIへ申請前

@@ -22,11 +22,13 @@ module Shibcert
     # config.i18n.default_locale = :de
     config.i18n.default_locale = :ja
 
-    # for loading bootstrap 
+    # for loading bootstrap
     config.assets.precompile += %w(*.png *.jpg *.jpeg *.gif)
 
     # to auto load lib/ directory
     config.autoload_paths += %W(#{config.root}/lib)
+
+    config.enable_dependency_loading = true
   end
 end
 

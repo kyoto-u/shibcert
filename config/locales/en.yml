@@ -22,25 +22,31 @@
 en:
   nav:
     user: "User"
-    menu: "Account Menu"    
-    help: "Help"    
+    menu: "Account Menu"
+    help: "Help"
     logout: "Log Out"
     admin: "Admin Interface"
   login:
     logintext: "GakuNin Auth [Test Federation]"
     loginlink: "GakuNin Login"
-    otherlogintext: "Develop Auth [GitHub]"    
-    otherloginlink: "Develop Login"    
+    otherlogintext: "Develop Auth [GitHub]"
+    otherloginlink: "Develop Login"
+    locallogintext: "Develop Auth [Local]"
+    localloginlink: "Develop Local Login"
   common:
     backlink: "Cancel and Back"
     purpose_type:
-      t5:  "Client Certification" #5
-      t7:  "S/MIME Certification" #7
+      t5:  "Client Certification"	# 52 months
+      t13: "Client Certification"	# 13 months
+      t14: "Client Certification"	# 25 months
+      t7:  "S/MIME Certification"	# 52 months
+      t15: "S/MIME Certification"	# 13 months
+      t16: "S/MIME Certification"	# 25 months
       t55: "UPKI-PASS Certification" #55
   certs:
     index:
       dashboard_title: "Dashboard of Client Certification Issue Request"
-      dashboard_text: "You can request for issuing personal certification by National Institute of Informatics (NII) here."            
+      dashboard_text: "You can request for issuing personal certification by National Institute of Informatics (NII) here."
       req_title: "Request with Certification Type"
       req_bt: "Request %{type}"
       confirm: "This system will send your request to the Issuer(NII). Are your sure?"
@@ -49,7 +55,8 @@ en:
       pass: "Client Certification for UPKI PASS"
       pass_id: "UPKI-PASS Uniq ID..."
       pass_text: "[Required] Student ID number etc."
-      vlan: "Connecting to a Particular VLAN"
+      vlan: "Connect to a Particular VLAN"
+      vlan_id_if_you_use: "If you want to use fixed-VLAN VPN"
       list_title: "Issue Status of Your Certifications (Click request number to show the detail)"
       list_valid: "Show only valid certificates"
       list_all: "Show all certificates"
@@ -104,8 +111,8 @@ en:
       <br>
       PIN can be seen on \"Detail of the Certification\" page of this site for a certain period. <br>
       <br>
-      Finally, download and install the intermediate CA certificate via the following link.<br>
-      https://repo1.secomtrust.net/sppca/nii/odca3/nii-odca3sha2.cer<br>
+      Finally, download and install the intermediate CA certificate (SECOM Passport for Member PUB CA8 CA) via the following link.<br>
+      https://repo1.secomtrust.net/sppca/nii/odca4/#cert-clientauth<br>
       <br>"
       showlink: "See the Detail"
     disable_result:
@@ -122,7 +129,7 @@ en:
       title: 'Detail of the Certification'
       req_seq: 'Request Number'
       purpose_type: 'Certification Type'
-      purpose_type_errror: 'Error occurred on the certification type.Please contact the support staff'      
+      purpose_type_errror: 'Error occurred on the certification type.Please contact the support staff'
       x509_status: 'Status of Certification'
       x509_status_msg:
         - 'Requesting'
@@ -133,7 +140,7 @@ en:
         - 'Unknown. Please contact the support staff.'
         - 'UPKI-PASS'
         - 'Error. Not Get'
-      cert_status: "Status of Request"      
+      cert_status: "Status of Request"
       cert_status_msg:
         10: 'Issue Request'
         11: 'Issue Request Waiting'
@@ -144,7 +151,7 @@ en:
         16: 'Issue Request Time Out'
         17: 'Request UPKI-PASS Waiting'
         18: 'Issue Request UPKI-PASS Done'
-        19: 'Error. Please contact the support staff.'                
+        19: 'Error. Please contact the support staff.'
         20: 'Renew Request'
         21: 'Renew Request Waiting'
         22: 'Renew Request Processing'
@@ -152,7 +159,7 @@ en:
         24: 'Renew Request Done'
         25: 'Valid (Renewed)'
         26: 'Renew Request Time Out'
-        29: 'Error. Please contact the support staff.'        
+        29: 'Error. Please contact the support staff.'
         30: 'Revoking Request'
         31: 'Revoking Request Waiting'
         32: 'Revoking Request Processing'
@@ -178,11 +185,11 @@ en:
       dn_error: 'Error'
       memo: 'Memo of Usage'
       memo_placeholder_personal: '(Ex.) to Connect to KUINS'
-      memo_placeholder_smime: '(Ex.) for Encryption of iPhone Email'      
+      memo_placeholder_smime: '(Ex.) for Encryption of iPhone Email'
       memo_bt: 'Save the Memo'
       disable_operation: 'Revoke Operation'
       disable_bt: 'Request Revoke'
-      disable_confirm: "[Warning] You're going to disable the certification. Once you've disabled it, you cannot enable it again. Are you sure?"            
+      disable_confirm: "[Warning] You're going to disable the certification. Once you've disabled it, you cannot enable it again. Are you sure?"
       renew_operation: 'Renew Operation'
       renew_bt: 'Request Renew'
       renew_confirm: "This system will send your renew request to the Issuer(NII). Are your sure?"
@@ -225,14 +232,14 @@ en:
       user_seq: 'User Seq'
       delete_operation: 'Delete Operation'
       delete_bt: 'Record Delete'
-      delete_confirm: "[Warning] You're going to delete the certification. Once you've deleted it, you cannot enable it again. Are you sure?"            
+      delete_confirm: "[Warning] You're going to delete the certification. Once you've deleted it, you cannot enable it again. Are you sure?"
       wait: "NOT"
       issue: "SAVED"
       to_usertop: "User Info"
     sync:
       info: "[Server import] Acquisition result"
       update_bt: "DB import execution and exit"
-      update_confirm: "[Warning] You're going to update DataBase. It can not be canceled. Are you sure?"            
+      update_confirm: "[Warning] You're going to update DataBase. It can not be canceled. Are you sure?"
       all_count: "Total-Num"
       up_count: "Exists-Num"
       all: "Total"
@@ -252,6 +259,6 @@ en:
       text_html: "We deleted records of certificate.<br><br>"
       showlink: "See the Owner Detail"
 
-    
+
   maintenance_mode:
     sorry: "Sorry, maintenance in progress"
