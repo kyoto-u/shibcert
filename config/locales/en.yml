@@ -36,8 +36,12 @@ en:
   common:
     backlink: "Cancel and Back"
     purpose_type:
-      t5:  "Client Certification" #5
-      t7:  "S/MIME Certification" #7
+      t5:  "Client Certification"	# 52 months
+      t13: "Client Certification"	# 13 months
+      t14: "Client Certification"	# 25 months
+      t7:  "S/MIME Certification"	# 52 months
+      t15: "S/MIME Certification"	# 13 months
+      t16: "S/MIME Certification"	# 25 months
       t55: "UPKI-PASS Certification" #55
   certs:
     index:
