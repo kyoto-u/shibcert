@@ -14,21 +14,28 @@ class CertsController < ApplicationController
 
   def working_smime_num(myid)
     # FIXME: generating terrible SQL
-    smime_num = Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_GOT_SERIAL).count()
-    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_REQUESTED_TO_NII).count()
-    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_RECEIVED_MAIL).count()
-    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_GOT_PIN).count()
-    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_DISPLAYED_PIN).count()
-    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::NEW_GOT_SERIAL).count()
-    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::RENEW_REQUESTED_FROM_USER).count()
-    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::RENEW_REQUESTED_TO_NII).count()
-    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::RENEW_RECEIVED_MAIL).count()
-    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::RENEW_GOT_PIN).count()
-    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::RENEW_DISPLAYED_PIN).count()
-    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::RENEW_GOT_SERIAL).count()
-    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::REVOKE_REQUESTED_FROM_USER).count()
-    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::REVOKE_REQUESTED_TO_NII).count()
-    smime_num += Cert.where(user_id: myid, purpose_type: 7, state: Cert::State::REVOKE_RECEIVED_MAIL).count()
+
+    smime_num = 0
+    [Cert::PurposeType::SMIME_CERTIFICATE_52,
+     Cert::PurposeType::SMIME_CERTIFICATE_13,
+     Cert::PurposeType::SMIME_CERTIFICATE_25].each do |type|
+
+      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::NEW_GOT_SERIAL).count()
+      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::NEW_REQUESTED_TO_NII).count()
+      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::NEW_RECEIVED_MAIL).count()
+      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::NEW_GOT_PIN).count()
+      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::NEW_DISPLAYED_PIN).count()
+      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::NEW_GOT_SERIAL).count()
+      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::RENEW_REQUESTED_FROM_USER).count()
+      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::RENEW_REQUESTED_TO_NII).count()
+      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::RENEW_RECEIVED_MAIL).count()
+      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::RENEW_GOT_PIN).count()
+      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::RENEW_DISPLAYED_PIN).count()
+      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::RENEW_GOT_SERIAL).count()
+      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::REVOKE_REQUESTED_FROM_USER).count()
+      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::REVOKE_REQUESTED_TO_NII).count()
+      smime_num += Cert.where(user_id: myid, purpose_type: type, state: Cert::State::REVOKE_RECEIVED_MAIL).count()
+    end
     return smime_num
   end
 
@@ -103,7 +110,10 @@ class CertsController < ApplicationController
     pass_id = nil
 
     # S/MIME-multiple-application guard (failsafe)
-    if params[:cert]["purpose_type"].to_i == Cert::PurposeType::SMIME_CERTIFICATE and working_smime_num(current_user.id) > 0
+    if [Cert::PurposeType::SMIME_CERTIFICATE_52,
+        Cert::PurposeType::SMIME_CERTIFICATE_13,
+        Cert::PurposeType::SMIME_CERTIFICATE_25].include?(params[:cert]["purpose_type"].to_i) and
+      working_smime_num(current_user.id) > 0
        flash[:alert] = t('.mime_err')
        return redirect_to :action => "index"
     end
