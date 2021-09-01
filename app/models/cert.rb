@@ -261,8 +261,14 @@ p dn
   end
 
   module PurposeType
-    CLIENT_AUTH_CERTIFICATE = 5
-    SMIME_CERTIFICATE = 7
+    CLIENT_AUTH_CERTIFICATE = 5 	# 5: 52 months, 13: 13 months, 14: 25 months
+    SMIME_CERTIFICATE = 7		# 7: 52 months, 15: 13 months, 16: 25 months
+    CLIENT_AUTH_CERTIFICATE_52 = 5
+    SMIME_CERTIFICATE_52 = 7
+    CLIENT_AUTH_CERTIFICATE_13 = 13
+    SMIME_CERTIFICATE_13 = 15
+    CLIENT_AUTH_CERTIFICATE_25 = 14
+    SMIME_CERTIFICATE_25 = 16
   end
 
   module State
