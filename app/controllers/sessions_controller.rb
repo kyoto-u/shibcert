@@ -12,8 +12,12 @@ class SessionsController < ActionController::Base
 #    raise request.env["omniauth.auth"].to_yaml
 
     auth = request.env['omniauth.auth']
-    logger.info("#{self}.#{__method__} auth=#{auth.inspect}")
     provider = auth[:provider]
+    if Rails.env.production? && provider == 'identity'
+      logger.info("ignore: access to identity in production mode")
+      redirect_to root_url
+    end
+    logger.debug("#{self}.#{__method__} auth=#{auth.inspect}")
     uid = case provider
           when 'identity'
             Identity.find(auth[:uid])[:uid]
@@ -22,6 +26,9 @@ class SessionsController < ActionController::Base
           else
             auth[:uid]
           end
+
+    logger.info("#{self}.#{__method__} provider:#{provider},uid:#{uid}")
+
     user = User.find_by(provider: provider, uid: uid) || User.create_with_omniauth(auth)
     logger.info("#{self}.#{__method__} user=#{user.inspect}")
     update_user(user, auth)

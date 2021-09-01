@@ -1,6 +1,10 @@
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :github, 'client-id', 'client-secret'
-  provider :identity, fields: [:uid,:name,:email], model: Identity
+
+  if Rails.env.development?
+    provider :identity, fields: [:uid,:name,:email], model: Identity
+  end
+
   provider :saml,
            assertion_consumer_service_url:      "https://shibcert.iimc.kyoto-u.ac.jp/auth/saml/callback",
            issuer:                              "https://shibcert.iimc.kyoto-u.ac.jp/",
