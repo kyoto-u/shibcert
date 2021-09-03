@@ -57,7 +57,7 @@ production:
   upki_pass_url: 'https://g-cert-dev.gakunin.nii.ac.jp/upki-pass'
 
   # 管理者設定
-  admin_uids: ['takaaki056komura', 'noritoshi859atsumi', 'toshiaki763shikata', 'mika199noguchi', 'gaku387takagishi']
+  admin_uids: []
 #  admin_basic_name: '*' # -> ADMIN_BASIC_AUTH_ID
 #  admin_basic_pswd: '*' # -> ADMIN_BASIC_AUTH_PW
 
