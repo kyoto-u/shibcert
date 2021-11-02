@@ -44,12 +44,12 @@ class CertExpireAtUpdator
   end
 end
 
-if ARGV.count != 3 
+if ARGV.count != 1 
   puts "usage: #{$0} [TSV file]"
   exit 1
 end
 
 updator = CertExpireAtUpdator.new()
-updator.read_tsv(ARGV[2])
+updator.read_tsv(ARGV[0])
 updator.update
 
