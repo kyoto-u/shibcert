@@ -42,9 +42,6 @@ class CertsController < ApplicationController
         Cert::State::RENEW_GOT_PIN,
         Cert::State::RENEW_DISPLAYED_PIN,
         Cert::State::RENEW_GOT_SERIAL,
-        Cert::State::REVOKE_REQUESTED_FROM_USER,
-        Cert::State::REVOKE_REQUESTED_TO_NII,
-        Cert::State::REVOKE_RECEIVED_MAIL,
        ].include?(cert[:state])
 
         if cert[:expire_at].nil?
