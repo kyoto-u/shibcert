@@ -47,7 +47,6 @@ en:
     index:
       dashboard_title: "Dashboard of Client Certification Issue Request"
       dashboard_text: "You can request for issuing personal certification by National Institute of Informatics (NII) here."
-      dashboard_notice:
       req_title: "Request with Certification Type"
       req_bt: "Request %{type}"
       confirm: "This system will send your request to the Issuer(NII). Are your sure?"

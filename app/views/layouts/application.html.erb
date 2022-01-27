@@ -86,8 +86,7 @@
     <% if current_user %>
       <%= yield %>
     <% else %>
-      <p><%= t('certs.index.dashboard_text')%></p>
-      <p><% puts t('certs.index.dashboard_notice') %></p>
+      <p><%= raw t('certs.index.dashboard_text')%></p>
       <p><%= SHIBCERT_CONFIG['label'][ln]['intro_text'] %></p>
       <br>
       <div class="omniauth">
