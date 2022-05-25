@@ -29,8 +29,13 @@ class CertsControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "should get edit" do
-    get :edit, id: @cert
+  test "should post edit_memo_remote" do
+    session[:user_id] = users(:users_one).id
+    post :edit_memo_remote, params:{cert: {id: certs(:certs_one).id, memo: "change memo"}}
+#    post :edit_memo_remote, params: {id: 1, memo: "change memo"}
+#    post edit_memo_remote_url(locale:'ja'), params: {id: 1, memo: "change memo"}
+#    post edit_memo_remote_url(locale:'ja') + '?id=1', params: {memo: "change memo"}
+#    post edit_memo_remote_path(locale:'ja') + '?id=1', params: {memo: "change memo"}
     assert_response :success
   end
 
