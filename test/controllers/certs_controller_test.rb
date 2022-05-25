@@ -2,7 +2,7 @@ require 'test_helper'
 
 class CertsControllerTest < ActionController::TestCase
   setup do
-    @cert = certs(:one)
+    @cert = certs(:certs_one)
   end
 
   test "should get index" do

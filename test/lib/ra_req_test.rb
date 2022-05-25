@@ -20,16 +20,16 @@ class RaReqTest < ActiveSupport::TestCase
   end
 
   test "RAreq does not request twice" do
-    assert RaReq.request(certs(:old_one)) == nil
-    assert RaReq.request(certs(:old_two)) == nil
+    assert RaReq.request(certs(:certs_old_one)) == nil
+    assert RaReq.request(certs(:certs_old_two)) == nil
   end
 
   test "RAreq request new cert" do
-    assert RaReq.request(certs(:one)) != nil
-    assert certs(:one).state == Cert::State::NEW_REQUESTED_TO_NII
-    assert certs(:one).state == 0
-    assert RaReq.request(certs(:two)) != nil
-    assert certs(:two).state == Cert::State::NEW_REQUESTED_TO_NII
+    assert RaReq.request(certs(:certs_one)) != nil
+    assert certs(:certs_one).state == Cert::State::NEW_REQUESTED_TO_NII
+    assert certs(:certs_one).state == 0
+    assert RaReq.request(certs(:certs_two)) != nil
+    assert certs(:certs_two).state == Cert::State::NEW_REQUESTED_TO_NII
   end
 
 end
