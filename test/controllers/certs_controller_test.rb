@@ -13,7 +13,7 @@ class CertsControllerTest < ActionController::TestCase
   end
 
   test "should show cert" do
-    get :show, id: @cert
+    get :show, params:{id: certs(:certs_one).id}
     assert_response :success
   end
 
