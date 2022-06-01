@@ -2,7 +2,8 @@ require 'test_helper'
 
 class CertsControllerTest < ActionController::TestCase
   setup do
-    @cert = certs(:certs_one)
+    session[:user_id] = users(:users_one).id
+#    @cert = certs(:certs_one)
   end
 
   test "should get index" do
@@ -30,7 +31,6 @@ class CertsControllerTest < ActionController::TestCase
   end
 
   test "should post edit_memo_remote" do
-    session[:user_id] = users(:users_one).id
     post :edit_memo_remote, params:{id: certs(:certs_one).id, cert: {memo: "change memo"}}
     assert_response :redirect
   end
