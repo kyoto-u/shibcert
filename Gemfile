@@ -8,6 +8,7 @@ gem 'rails', '~> 6.1.0'
 group :development, :test do
   gem 'sqlite3'
   gem 'byebug'
+  gem 'rails-controller-testing'
 end
 
 # Use sqlite3 as the database for Active Record
