@@ -6,18 +6,18 @@ class CertsControllerTest < ActionController::TestCase
 #    @cert = certs(:certs_one)
   end
 
-  test "should get index" do
+  test "get index" do
     get :index
     assert_response :success
     assert_not_nil assigns(:certs)
   end
 
-  test "should show cert" do
+  test "show cert" do
     get :show, params:{id: certs(:certs_one).id}
     assert_response :success
   end
 
-  test "should post edit_memo_remote" do
+  test "post edit_memo_remote" do
     post :edit_memo_remote, params:{id: certs(:certs_one).id, cert: {memo: "change memo"}}
     assert_response :redirect
   end
