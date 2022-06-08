@@ -1,5 +1,5 @@
 # coding: utf-8
-class Cert < ActiveRecord::Base
+class Cert < ApplicationRecord
   belongs_to :user
 
   def set_attributes(params, user:)

@@ -1,4 +1,4 @@
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   has_many :certs
 
   def self.create_with_omniauth(auth)
