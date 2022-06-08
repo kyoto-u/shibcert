@@ -117,97 +117,24 @@ class CertsController < ApplicationController
   def request_select
   end
 
-  def generate_rareq_request_params(params)
-    # purpose_type: profile ID of
-    #   https://certs.nii.ac.jp/archive/TSV_File_Format/client_tsv/
-
+  # POST /certs/request_post [with RPG pattern]
+  def request_post
     if !current_user
       return redirect_to :action => "index"
     end
 
-    download_type = 1
-    pass_id = nil
-
-    # S/MIME-multiple-application guard (failsafe)
-    if purpose_type_is_smime(params[:cert]["purpose_type"]) and
-       working_smime_num(current_user.id) > 0
-        flash[:alert] = t('.mime_err')
-        return redirect_to :action => "index"
+    if !request_post_params_is_valid
+      return redirect_to :action => "index"
     end
 
-    # Client Cert
-    if purpose_type_is_client_auth(params[:cert]["purpose_type"])
-      if params[:cert]["pass_opt"].to_i == 1
-        # UPKI-PASSクライアント証明書.
-        if params[:cert]["pass_id"].blank?
-#          @errmesg = t('.pass_err')
-#          return
-          flash[:alert] = t('.pass_err')
-          return redirect_to :action => "index"
-        end
-        download_type = 2
-        pass_id = params[:cert]["pass_id"]
-        cn = "CN=" + params[:cert]["pass_id"] + " " + "#{current_user.name}"
-      else
-        cn = "CN=#{current_user.uid}"
-        unless params[:cert]["vlan_id"].empty?
-          # VLANのクライアント証明書.
-          vlan_id = params[:cert]["vlan_id"].strip
-          vlan_id_i = vlan_id.to_i || 0
-          if vlan_id_i == 0
-#            flash[:alert] = "VLAN ID is invalid."
-            flash[:alert] = t('.vlan_err')
-            return redirect_to :action => "index"
-          else
-            cn += "@" + vlan_id
-          end
-        end
-      end
+    current_user.cert_serial_max += 1
+    if !current_user.save
+      flash[:alert] = t('.max_err')
+      return redirect_to :action => "index"
     end
 
-    ActiveRecord::Base.transaction do
-      current_user.cert_serial_max += 1
-      if(!current_user.save)
-        flash[:alert] = t('.max_err')
-        return redirect_to :action => "index"
-      end
-    end
-
-    if purpose_type_is_client_auth(params[:cert]["purpose_type"])
-      dn = cn + ",OU=No #{current_user.cert_serial_max.to_s},"
-      if Rails.env != 'production' then
-         dn += SHIBCERT_CONFIG[Rails.env]['base_dn_dev'] + ","
-      end
-      dn += SHIBCERT_CONFIG[Rails.env]['base_dn_auth']
-
-    elsif purpose_type_is_smime(params[:cert]["purpose_type"])
-      dn = "CN=#{current_user.email},OU=No #{current_user.cert_serial_max.to_s},"
-      if Rails.env != 'production' then
-        dn += SHIBCERT_CONFIG[Rails.env]['base_dn_dev'] + ","
-      end
-      dn += SHIBCERT_CONFIG[Rails.env]['base_dn_smime']
-
-    else
-      # something wrong. TODO: need error handling
-      Rails.logger.info "#{__method__}: unknown purpose_type #{params[:cert]['purpose_type']}"
-      dn = ""
-      return
-    end
-
-    request_params = params.require(:cert).permit(:purpose_type).merge(
-      {user_id: current_user.id,
-       state: Cert::State::NEW_REQUESTED_FROM_USER,
-       dn: dn,
-       download_type: download_type,
-       vlan_id: vlan_id,
-       pass_id: pass_id,
-       req_seq: current_user.cert_serial_max})
-  end
-
-  # POST /certs/request_post [with RPG pattern]
-  def request_post
-    request_params = generate_rareq_request_params(params)
-    @cert = Cert.new(request_params)
+    @cert = Cert.new
+    @cert.set_attributes(params, user: current_user)
     if(!@cert.save)
       flash[:alert] = t('.save_err')
       return redirect_to :action => "index"
@@ -339,6 +266,44 @@ class CertsController < ApplicationController
     end
   end
 
+  def request_post_params_is_valid
+    purpose_type = params[:cert]["purpose_type"].to_i
+
+    if !Certs.is_smime(purpose_type) && !Certs.is_client_auth(purpose_type)
+      # something wrong. TODO: need error handling
+      flash[:alert] = t('.unknowen_purpose_type_err')
+      Rails.logger.info "#{__method__}: unknown purpose_type #{params[:cert]['purpose_type']}"
+      return false
+    end
+
+    if Certs.is_smime(purpose_type)
+      working_smime_num(current_user.id) > 0
+      flash[:alert] = t('.mime_err')
+      return false
+    end
+
+    # Client Cert
+    if Certs.is_client_auth(purpose_type)
+      if params[:cert]["pass_opt"].to_i == 1
+        # UPKI-PASSクライアント証明書.
+        if params[:cert]["pass_id"].blank?
+          flash[:alert] = t('.pass_err')
+          return false
+        end
+      else
+        unless params[:cert]["vlan_id"].empty?
+          # VLANのクライアント証明書.
+          vlan_id = params[:cert]["vlan_id"].strip
+          if vlan_id.to_i == 0  # to_i return 0 if vlan_id is not Integer
+            flash[:alert] = t('.vlan_err')
+            return false
+          end
+        end
+      end
+    end
+    return true
+  end
+
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_cert
@@ -369,18 +334,6 @@ class CertsController < ApplicationController
     else
       raise ActiveRecord::RecordNotFound
     end
-  end
-
-  def purpose_type_is_smime(type)
-    [Cert::PurposeType::SMIME_CERTIFICATE_52,
-     Cert::PurposeType::SMIME_CERTIFICATE_13,
-     Cert::PurposeType::SMIME_CERTIFICATE_25].include?(type.to_i)
-  end
-
-  def purpose_type_is_client_auth(type)
-    [Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52,
-     Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_13,
-     Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_25].include?(type.to_i)
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

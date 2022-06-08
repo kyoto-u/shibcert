@@ -104,6 +104,7 @@ ja:
       max_err: "証明書発行最大数の保存エラー。"
       save_err: "証明書情報の保存エラー。"
       back: "戻る"
+      unknowen_purpose_type_err: "PurposeTypeが不正な値です。"
     request_result:
       type_new: '新規'
       type_renew: '更新'

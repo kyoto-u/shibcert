@@ -94,6 +94,7 @@ en:
       max_err: "Save error for maximum number of issued certificate."
       save_err: "Save error for certificate information."
       back: "Back"
+      unknowen_purpose_type_err: "Unknowen PurposeType error."
     request_result:
       type_new: 'new'
       type_renew: 'renew'
