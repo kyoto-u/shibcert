@@ -3,43 +3,42 @@ class Cert < ApplicationRecord
   belongs_to :user
 
   def set_attributes(params, user:)
+    # purpose_type: profile ID of
+    #   https://certs.nii.ac.jp/archive/TSV_File_Format/client_tsv/
     self.purpose_type = params[:cert]["purpose_type"].to_i
     self.user_id = user.id
     self.req_seq = user.cert_serial_max
     self.state = Cert::State::NEW_REQUESTED_FROM_USER
-
-    # purpose_type: profile ID of
-    #   https://certs.nii.ac.jp/archive/TSV_File_Format/client_tsv/
     self.download_type = 1
     self.pass_id = nil
 
-    if Cert.is_client_auth(purpose_type)
+    cn = "CN="
+    if Cert.is_client_auth(self.purpose_type)
       if params[:cert]["pass_opt"].to_i == 1
         # UPKI-PASSクライアント証明書.
+        cn += params[:cert]["pass_id"] + " " + user.name
+
         self.download_type = 2
         self.pass_id = params[:cert]["pass_id"]
-        cn = "CN=" + params[:cert]["pass_id"] + " " + "#{user.name}"
       else
-        cn = "CN=#{user.uid}"
+        cn += user.uid
         if params[:cert].has_key?("vlan_id") and !params[:cert]["vlan_id"].empty?
           # VLANのクライアント証明書.
           cn += "@" + params[:cert]["vlan_id"].strip
         end
       end
+    elsif Cert.is_smime(self.purpose_type)
+      cn += user.email
     end
 
-    if Cert.is_client_auth(purpose_type)
-      self.dn = cn + ",OU=No #{req_seq},"
-      if Rails.env != 'production' then
-        self.dn += SHIBCERT_CONFIG[Rails.env]['base_dn_dev'] + ","
-      end
-      self.dn += SHIBCERT_CONFIG[Rails.env]['base_dn_auth']
+    self.dn = cn + ",OU=No #{self.req_seq},"
+    if Rails.env != 'production' then
+      self.dn += SHIBCERT_CONFIG[Rails.env]['base_dn_dev'] + ","
+    end
 
-    elsif Cert.is_smime(purpose_type)
-      self.dn = "CN=#{user.email},OU=No #{req_seq},"
-      if Rails.env != 'production' then
-        self.dn += SHIBCERT_CONFIG[Rails.env]['base_dn_dev'] + ","
-      end
+    if Cert.is_client_auth(self.purpose_type)
+      self.dn += SHIBCERT_CONFIG[Rails.env]['base_dn_auth']
+    elsif Cert.is_smime(self.purpose_type)
       self.dn += SHIBCERT_CONFIG[Rails.env]['base_dn_smime']
     end
 

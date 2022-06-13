@@ -56,4 +56,14 @@ class CertTest < ActiveSupport::TestCase
     assert c.dn == 'CN=user1uid,OU=No 0,OU=test,OU=Kyoto University Integrated Information Network System,O=Kyoto University,ST=Kyoto,C=JP'
   end
 
+  test "Cert#set_attributes works for UPKI-pass certificate" do
+    c = Cert.new
+    pass_id = "PASSID"
+    params = {cert: {"purpose_type" => Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52, "pass_opt" => "1", "pass_id" => pass_id}}
+    c.set_attributes(params, user: users(:users_one))
+    assert c.download_type == 2
+    assert c.pass_id == pass_id
+    assert c.dn == "CN=#{pass_id} user1 name,OU=No 0,OU=test,OU=Kyoto University Integrated Information Network System,O=Kyoto University,ST=Kyoto,C=JP"
+  end
+
 end
