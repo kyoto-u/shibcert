@@ -41,7 +41,6 @@ class Cert < ApplicationRecord
     elsif Cert.is_smime(self.purpose_type)
       self.dn += SHIBCERT_CONFIG[Rails.env]['base_dn_smime']
     end
-
   end
 
 
@@ -246,6 +245,37 @@ p dn
     else
       logger.info("not supported type='#{update_target}'")
       return nil
+    end
+  end
+
+  def next_state
+    if [nil,
+        State::NEW_ERROR,
+        State::RENEW_ERROR,
+        State::REVOKE_ERROR,
+        State::UNKNOWN].include?(self.state)
+      raise RuntimeError, "invalid Cert.state #{self.state}"
+    end
+    if [State::NEW_GOT_SERIAL,
+        State::RENEW_GOT_SERIAL,
+        State::REVOKED].include?(self.state)
+      raise RuntimeError, "no next state #{self.state}"
+    end
+    self.state += 1
+  end
+
+  def set_error_state
+    if State::NEW_REQUESTED_FROM_USER <= self.state &&
+       self.state <= State::NEW_ERROR
+      self.state = State::NEW_ERROR
+    elsif State::RENEW_REQUESTED_FROM_USER <= self.state &&
+       self.state <= State::RENEW_ERROR
+      self.state = State::RENEW_ERROR
+    elsif State::REVOKE_REQUESTED_FROM_USER <= self.state &&
+       self.state <= State::REVOKE_ERROR
+      self.state = State::REVOKE_ERROR
+    else
+      raise RuntimeError, "unknown current state"
     end
   end
 

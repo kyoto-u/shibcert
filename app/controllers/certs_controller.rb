@@ -3,6 +3,7 @@
 # ========================================================================
 # CertsController: 証明書発行操作クラス.
 class CertsController < ApplicationController
+  before_action :check_user, only: [:index, :request_post, :disable_result, :renew_post]
   before_action :set_cert_of_user, only: [:show, :edit_memo_remote, :request_result, :disable_post, :disable_result, :renew_post, :renew_result]
 
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
@@ -62,50 +63,43 @@ class CertsController < ApplicationController
   # GET /certs
   # GET /certs.json
   def index
-    if current_user
-      # オプション設定.
-      @pass_opt = false
-      # S/MIME数
-      @smime_num = working_smime_num(current_user.id)
-      # 表示設定.
-      if params[:opt] == nil || params[:opt][:all] == nil || request.get?
-        # 指定無し(オプション未指定かGETメソッド)
-        if cookies[:opt_all] == nil
-          @all_certs_opt = 1				# デフォルト値.
-        else
-          @all_certs_opt = cookies[:opt_all].to_i	# クッキーから.
-        end
+    # オプション設定.
+    @pass_opt = false
+    # S/MIME数
+    @smime_num = working_smime_num(current_user.id)
+    # 表示設定.
+    if params[:opt] == nil || params[:opt][:all] == nil || request.get?
+      # 指定無し(オプション未指定かGETメソッド)
+      if cookies[:opt_all] == nil
+        @all_certs_opt = 1				# デフォルト値.
       else
-        @all_certs_opt = params[:opt][:all].to_i	# オプション指定.
+        @all_certs_opt = cookies[:opt_all].to_i	# クッキーから.
       end
-      # 証明書取得.
-      @certs = Cert.where(user_id: current_user.id).order("created_at DESC")
-      if @all_certs_opt == 0 && !@certs.blank?
-        # 有効な証明書のみ抽出.
-        now = Time.now
-        @certs = @certs.select { |s| \
-          (!s.expire_at || s.expire_at > now) && \
-          s.state != Cert::State::NEW_GOT_TIMEOUT && \
-          s.state != Cert::State::NEW_ERROR && \
-          s.state != Cert::State::RENEW_GOT_TIMEOUT && \
-          s.state != Cert::State::RENEW_ERROR && \
-          s.state != Cert::State::REVOKED && \
-          s.state != Cert::State::REVOKE_ERROR && \
-          s.state != Cert::State::UNKNOWN }
-      end
-      # 設定のクッキーへの保存.
-      cookies[:opt_all] = { :value => @all_certs_opt, :expires => 7.days.from_now }
+    else
+      @all_certs_opt = params[:opt][:all].to_i	# オプション指定.
     end
+    # 証明書取得.
+    @certs = Cert.where(user_id: current_user.id).order("created_at DESC")
+    if @all_certs_opt == 0 && !@certs.blank?
+      # 有効な証明書のみ抽出.
+      now = Time.now
+      @certs = @certs.select { |s| \
+                                 (!s.expire_at || s.expire_at > now) && \
+                               s.state != Cert::State::NEW_GOT_TIMEOUT && \
+                               s.state != Cert::State::NEW_ERROR && \
+                               s.state != Cert::State::RENEW_GOT_TIMEOUT && \
+                               s.state != Cert::State::RENEW_ERROR && \
+                               s.state != Cert::State::REVOKED && \
+                               s.state != Cert::State::REVOKE_ERROR && \
+                               s.state != Cert::State::UNKNOWN }
+    end
+    # 設定のクッキーへの保存.
+    cookies[:opt_all] = { :value => @all_certs_opt, :expires => 7.days.from_now }
   end
 
   # GET /certs/1
   # GET /certs/1.json
   def show
-
-    if !current_user
-      return redirect_to :action => "index"
-    end
-
     @user = User.find(@cert.user_id)
     unless /\d+/.match(params[:id])
       return
@@ -119,10 +113,6 @@ class CertsController < ApplicationController
 
   # POST /certs/request_post [with RPG pattern]
   def request_post
-    if !current_user
-      return redirect_to :action => "index"
-    end
-
     if !request_post_params_is_valid
       return redirect_to :action => "index"
     end
@@ -139,23 +129,24 @@ class CertsController < ApplicationController
       flash[:alert] = t('.save_err')
       return redirect_to :action => "index"
     end
-    Rails.logger.debug "RaReq.request call: @cert = #{@cert.inspect}"
-    if RaReq.request(@cert).nil?
-      #
-      # ToDo 直さないといけない
-      #
+    tsv = RaReq.generate_tsv_new(@cert)
+    Rails.logger.debug "#{__method__}: call RaReq.request with tsv:#{tsv.inspect}"
+    if RaReq.request(RaReq::ApplyType::New, tsv) == true
+      if @cert.download_type == 1
+        @cert.next_state
+      else
+        @cert.state = Cert::State::NEW_PASS_REQUESTED
+      end
+    else
+      @cert.set_error_state
       flash[:alert] = 'Your request fails. Please see https://certs.nii.ac.jp/news'
     end
+    @cert.save
     redirect_to request_result_path(@cert.id)
   end
 
   # GET /certs/request_result [with RPG pattern]
   def request_result
-
-    if !current_user
-      return redirect_to :action => "index"
-    end
-
     if current_user and current_user.email
       @maddr = current_user.email
     else
@@ -165,41 +156,30 @@ class CertsController < ApplicationController
 
   # POST /certs/disable_post [with RPG pattern]
   def disable_post
+    @cert.state = Cert::State::REVOKE_REQUESTED_FROM_USER
+    @cert.save
 
-    if !current_user
-      return redirect_to :action => "index"
+    tsv = RaReq.generate_tsv_revoke(@cert)
+
+    Rails.logger.debug "RaReq.request call: @cert = #{@cert.inspect}"
+    if RaReq.request(RaReq::ApplyType::Revoke, tsv) == true
+      @cert.next_state
+      flash[:notice] = "revoke success"
+    else
+      @cert.set_error_state
+      flash[:alert] = "revoke error"
     end
-
-#      flash[:alert] = "revoke error"
-#      return redirect_to :action => "show"
-
-    if @cert
-      @cert.state = Cert::State::REVOKE_REQUESTED_FROM_USER
-      @cert.save
-
-      Rails.logger.debug "RaReq.request call: @cert = #{@cert.inspect}"
-      RaReq.request(@cert)
-    end
+    @cert.save
 
     redirect_to disable_result_path(@cert.id)
   end
 
   # POST /certs/disable_result [with RPG pattern]
   def disable_result
-
-    if !current_user
-      return redirect_to :action => "index"
-    end
-
   end
 
   # POST /certs/renew_post [with RPG pattern]
   def renew_post
-
-    if !current_user
-      return redirect_to :action => "index"
-    end
-
 #      flash[:alert] = "renew error"
 #      return redirect_to :action => "index"
 
@@ -232,11 +212,6 @@ class CertsController < ApplicationController
 
   # POST /certs/renew_result [with RPG pattern]
   def renew_result
-
-    if !current_user
-      return redirect_to :action => "index"
-    end
-
   end
 
   # POST /certs/1/edit_memo_remote
@@ -269,21 +244,21 @@ class CertsController < ApplicationController
   def request_post_params_is_valid
     purpose_type = params[:cert]["purpose_type"].to_i
 
-    if !Certs.is_smime(purpose_type) && !Certs.is_client_auth(purpose_type)
+    if !Cert.is_smime(purpose_type) && !Cert.is_client_auth(purpose_type)
       # something wrong. TODO: need error handling
       flash[:alert] = t('.unknowen_purpose_type_err')
       Rails.logger.info "#{__method__}: unknown purpose_type #{params[:cert]['purpose_type']}"
       return false
     end
 
-    if Certs.is_smime(purpose_type)
+    if Cert.is_smime(purpose_type)
       working_smime_num(current_user.id) > 0
       flash[:alert] = t('.mime_err')
       return false
     end
 
     # Client Cert
-    if Certs.is_client_auth(purpose_type)
+    if Cert.is_client_auth(purpose_type)
       if params[:cert]["pass_opt"].to_i == 1
         # UPKI-PASSクライアント証明書.
         if params[:cert]["pass_id"].blank?
@@ -291,7 +266,7 @@ class CertsController < ApplicationController
           return false
         end
       else
-        unless params[:cert]["vlan_id"].empty?
+        unless params[:cert]["vlan_id"].blank?
           # VLANのクライアント証明書.
           vlan_id = params[:cert]["vlan_id"].strip
           if vlan_id.to_i == 0  # to_i return 0 if vlan_id is not Integer
@@ -315,18 +290,17 @@ class CertsController < ApplicationController
     return false
   end
 
-  def set_cert_of_user
-#    FIXME: fix for not found error
-#    begin
-#      mycert = Cert.find(params[:id])
-#    rescue ActiveRecord::RecordNotFound => e
-#      mycert = nil
-#    end
-
+  def check_user
     if !current_user
-      return redirect_to :action => "index"
+      redirect_to :action => "index"
     end
+  end
 
+  def set_cert_of_user
+    if !current_user
+      redirect_to :action => "index"
+      return
+    end
     mycert = Cert.find(params[:id])
 
     if mycert and mycert.user_id == current_user.id

@@ -18,84 +18,23 @@ class RaReq
 
   # ----------------------------------------------------------------------
   # 証明書発行申請.
-  module New
-    ApplyType = 1
-    NextState = Cert::State::NEW_REQUESTED_TO_NII
-    ErrorState = Cert::State::NEW_ERROR
-    def self.generate_tsv(cert, user, pin)
-      [
-        cert.dn,
-        cert.purpose_type,
-        cert.download_type,   # 1:P12個別 / 2:P12一括(UPKI-PASS)
-        '', '', '', '',
-        SHIBCERT_CONFIG[Rails.env]['admin_name'],
-        SHIBCERT_CONFIG[Rails.env]['admin_ou'],
-        SHIBCERT_CONFIG[Rails.env]['admin_mail'],  # 管理者(g-certサーバ通知)
-        user.name,
-#        user.number,
-        'NIIcert' + Time.now.strftime("%Y%m%d-%H%M%S"),
-        SHIBCERT_CONFIG[Rails.env]['user_ou'],
-        user.email,
-        pin,
-      ].join("\t")
-    end
-  end
-
-  # ----------------------------------------------------------------------
-  # 証明書更新申請.
-  module Renew
-    ApplyType = 2
-    NextState = Cert::State::RENEW_REQUESTED_TO_NII
-    ErrorState = Cert::State::RENEW_ERROR
-    def self.generate_tsv(cert, user, pin)
-      [
-        cert.dn,
-        cert.purpose_type,
-        SHIBCERT_CONFIG[Rails.env]['cert_download_type'] || '1', # 1:P12個別
-        cert.serialnumber,
-        '', '', '',
-        SHIBCERT_CONFIG[Rails.env]['admin_name'],
-        SHIBCERT_CONFIG[Rails.env]['admin_ou'],
-        SHIBCERT_CONFIG[Rails.env]['admin_mail'],  # 管理者(g-certサーバ通知)
-        user.name,
-        'NIIcert' + Time.now.strftime("%Y%m%d-%H%M%S"),
-        SHIBCERT_CONFIG[Rails.env]['user_ou'],
-        user.email,
-        pin,
-      ].join("\t")
-    end
-  end
-
-  # ----------------------------------------------------------------------
-  # 証明書失効申請.
-  module Revoke
-    ApplyType = 3
-    NextState = Cert::State::REVOKE_REQUESTED_TO_NII
-    ErrorState = Cert::State::REVOKE_ERROR
-    def self.generate_tsv(cert, user, pin)
-      [
-        cert.dn,                  # 1
-        '','',
-        cert.serialnumber,   # 4
-        cert.revoke_reason || "0",       # 5
-        cert.revoke_comment,      # 6
-        '', '', '',
-        SHIBCERT_CONFIG[Rails.env]['admin_mail'], # 管理者(g-certサーバ通知)
-        '', '', '',
-        user.email,               # 14
-        '', # 15:PIN
-      ].join("\t")
-    end
+  module ApplyType
+    New = 1
+    Renew = 2
+    Revoke = 3
   end
 
   # ----------------------------------------------------------------------
   # 初期化.
   def initialize
+    error = false
     %w(admin_name admin_ou admin_mail user_ou).each do |key|
       unless SHIBCERT_CONFIG[Rails.env].has_key?(key)
         Rails.logger.debug "Nesesary value '#{key}' in '#{Rails.env}' is not set in system configuration file."
+        error = true
       end
     end
+    raise RuntimeError, "System configuration error" if error
   end
 
   # ----------------------------------------------------------------------
@@ -125,29 +64,9 @@ class RaReq
     form2.form_with(:name => 'SP1011')
   end
 
-  # ----------------------------------------------------------------------
-  # 支援システムへの要求TSVファイルのアップロード.
-  def self.request(cert)
-
-    isRenew = false
-    case cert.state
-    when Cert::State::NEW_REQUESTED_FROM_USER
-      proc = New
-    when Cert::State::RENEW_REQUESTED_FROM_USER
-      proc = Renew
-      isRenew = true
-    when Cert::State::REVOKE_REQUESTED_FROM_USER
-      proc = Revoke
-    else
-      Rails.logger.info "RaReq.request failed because of cert.state is #{cert.state})"
-      return nil
-    end
-
-    user = User.find_by(id: cert.user_id)
-    unless user
-      Rails.logger.info "RaReq.request failed because of User.find_by(id: #{cert.user_id}) == nil"
-      return nil
-    end
+  def self.generate_tsv_new(cert)
+    user = User.find(cert.user_id)
+    raise RuntimeError, "#{__method__} failed: User.find(#{cert.user_id}) == nil" unless user
 
     pin = ''
     if SHIBCERT_CONFIG['flag']['use_pin_generate'] && cert.download_type == 2
@@ -155,19 +74,87 @@ class RaReq
       pin = SecureRandom.urlsafe_base64
     end
 
-    tsv = proc.generate_tsv(cert, user, pin).encode('cp932')
-    Rails.logger.info "#{__method__}: tsv #{tsv.inspect}"
+    tsv = [
+      cert.dn,
+      cert.purpose_type,
+      cert.download_type,   # 1:P12個別 / 2:P12一括(UPKI-PASS)
+      '', '', '', '',
+      SHIBCERT_CONFIG[Rails.env]['admin_name'],
+      SHIBCERT_CONFIG[Rails.env]['admin_ou'],
+      SHIBCERT_CONFIG[Rails.env]['admin_mail'],  # 管理者(g-certサーバ通知)
+      user.name,
+      #        user.number,
+      'NIIcert' + Time.now.strftime("%Y%m%d-%H%M%S"),
+      SHIBCERT_CONFIG[Rails.env]['user_ou'],
+      user.email,
+      pin,
+    ].join("\t").encode('cp932')
 
-    if Rails.env == 'development' then
-      open("log/last_request.tsv", "w") do |fp|
-        fp.write(tsv)
-      end
+    Rails.logger.debug "#{__method__}: tsv #{tsv.inspect}"
+    return tsv
+  end
+
+  def self.generate_tsv_renew(cert)
+    user = User.find(cert.user_id)
+    raise RuntimeError, "#{__method__} failed: User.find(#{cert.user_id}) == nil" unless user
+
+    pin = ''
+    if SHIBCERT_CONFIG['flag']['use_pin_generate'] && cert.download_type == 2
+      # P12一括時にPIN指定が可能(オプション)
+      pin = SecureRandom.urlsafe_base64
     end
+
+    tsv = [
+      cert.dn,
+      cert.purpose_type,
+      SHIBCERT_CONFIG[Rails.env]['cert_download_type'] || '1', # 1:P12個別
+      cert.serialnumber,
+      '', '', '',
+      SHIBCERT_CONFIG[Rails.env]['admin_name'],
+      SHIBCERT_CONFIG[Rails.env]['admin_ou'],
+      SHIBCERT_CONFIG[Rails.env]['admin_mail'],  # 管理者(g-certサーバ通知)
+      user.name,
+      'NIIcert' + Time.now.strftime("%Y%m%d-%H%M%S"),
+      SHIBCERT_CONFIG[Rails.env]['user_ou'],
+      user.email,
+      pin,
+    ].join("\t").encode('cp932')
+
+    Rails.logger.debug "#{__method__}: tsv #{tsv.inspect}"
+    return tsv
+  end
+
+
+  def self.generate_tsv_revoke(cert)
+    user = User.find(cert.user_id)
+    raise RuntimeError, "#{__method__} failed: User.find(#{cert.user_id}) == nil" unless user
+
+    tsv = [
+      cert.dn,                  # 1
+      '','',
+      cert.serialnumber,         # 4
+      cert.revoke_reason || "0", # 5
+      cert.revoke_comment,       # 6
+      '', '', '',
+      SHIBCERT_CONFIG[Rails.env]['admin_mail'], # 管理者(g-certサーバ通知)
+      '', '', '',
+      user.email,               # 14
+      '', # 15:PIN
+    ].join("\t").encode('cp932')
+
+    Rails.logger.debug "#{__method__}: tsv #{tsv.inspect}"
+    return tsv
+  end
+
+  # ----------------------------------------------------------------------
+  # 支援システムへの要求TSVファイルのアップロード.
+  def self.request(applyType, tsv)
+    return true if Rails.env == 'test'
 
     begin
       form = self.get_upload_form
 
-      form.applyType = proc::ApplyType            # 処理内容 1:発行, 2:更新, 3:失効
+      form.applyType = applyType            # 処理内容 1:発行, 2:更新, 3:失効
       form.radiobuttons_with(:name => 'errorFlg')[0].check # エラーが有れば全件処理を中止
       form.file_upload_with(:name => 'file'){|form_upload| # TSV をアップロード準備
         form_upload.file_data = tsv                        # アップロードする内容を文字列として渡す
@@ -177,9 +164,7 @@ class RaReq
       submitted_form = form.submit    # submit and file-upload
     rescue Mechanize => e
       Rails.logger.debug "#{__method__}: Mechanize error: ${e.inspect}"
-      cert.state = proc::ErrorState
-      cert.save
-      return nil
+      return false
     end
 
     if Rails.env == 'development' then
@@ -189,23 +174,15 @@ class RaReq
     end
 
     if Regexp.new("ファイルのアップロード処理が完了しました。").match(submitted_form.body.encode("utf-8", "euc-jp"))
-      if cert.download_type == 1
-        cert.state = proc::NextState
-      else
-        cert.state = Cert::State::NEW_PASS_REQUESTED
-      end
-      cert.save
       Rails.logger.debug "#{__method__}: upload success"
-      return cert
+      return true
     else
-      cert.state = proc::ErrorState
-      cert.save
       Rails.logger.debug "#{__method__}: upload fail"
       filename = "log/cert_" + cert.id.to_s + "_error.html"
       open(filename, "w") do |fp|
         fp.write submitted_form.body.force_encoding("euc-jp")
       end
-      return nil
+      return false
     end
 
   end

@@ -66,4 +66,95 @@ class CertTest < ActiveSupport::TestCase
     assert c.dn == "CN=#{pass_id} user1 name,OU=No 0,OU=test,OU=Kyoto University Integrated Information Network System,O=Kyoto University,ST=Kyoto,C=JP"
   end
 
+  test "Cert#next_state works for NEW_*" do
+    c = Cert.new
+    c.state = Cert::State::NEW_REQUESTED_FROM_USER
+    assert c.next_state == Cert::State::NEW_REQUESTED_TO_NII
+    assert c.next_state == Cert::State::NEW_RECEIVED_MAIL
+    assert c.next_state == Cert::State::NEW_GOT_PIN
+    assert c.next_state == Cert::State::NEW_DISPLAYED_PIN
+    assert c.next_state == Cert::State::NEW_GOT_SERIAL
+    assert_raises RuntimeError do
+      c.next_state
+    end
+
+    c.state = Cert::State::NEW_ERROR
+    assert_raises RuntimeError do
+      c.next_state
+    end
+  end
+
+  test "Cert#next_state works for RENEW_*" do
+    c = Cert.new
+    c.state = Cert::State::RENEW_REQUESTED_FROM_USER
+    assert c.next_state == Cert::State::RENEW_REQUESTED_TO_NII
+    assert c.next_state == Cert::State::RENEW_RECEIVED_MAIL
+    assert c.next_state == Cert::State::RENEW_GOT_PIN
+    assert c.next_state == Cert::State::RENEW_DISPLAYED_PIN
+    assert c.next_state == Cert::State::RENEW_GOT_SERIAL
+    assert_raises RuntimeError do
+      c.next_state
+    end
+
+    c.state = Cert::State::RENEW_ERROR
+    assert_raises RuntimeError do
+      c.next_state
+    end
+  end
+
+  test "Cert#next_state works for REVOKE_*" do
+    c = Cert.new
+    c.state = Cert::State::REVOKE_REQUESTED_FROM_USER
+    assert c.next_state == Cert::State::REVOKE_REQUESTED_TO_NII
+    assert c.next_state == Cert::State::REVOKE_RECEIVED_MAIL
+    assert c.next_state == Cert::State::REVOKED
+    assert_raises RuntimeError do
+      c.next_state
+    end
+
+    c.state = Cert::State::REVOKE_ERROR
+    assert_raises RuntimeError do
+      c.next_state
+    end
+  end
+
+  test "Cert#set_error_state for NEW*" do
+    c = Cert.new
+
+    c.state = Cert::State::NEW_REQUESTED_FROM_USER
+    assert c.set_error_state == Cert::State::NEW_ERROR
+
+    c.state = Cert::State::NEW_RECEIVED_MAIL
+    assert c.set_error_state == Cert::State::NEW_ERROR
+
+    c.state = Cert::State::NEW_ERROR
+    assert c.set_error_state == Cert::State::NEW_ERROR
+  end
+
+  test "Cert#set_error_state for RENEW*" do
+    c = Cert.new
+
+    c.state = Cert::State::RENEW_REQUESTED_FROM_USER
+    assert c.set_error_state == Cert::State::RENEW_ERROR
+
+    c.state = Cert::State::RENEW_RECEIVED_MAIL
+    assert c.set_error_state == Cert::State::RENEW_ERROR
+
+    c.state = Cert::State::RENEW_ERROR
+    assert c.set_error_state == Cert::State::RENEW_ERROR
+  end
+
+  test "Cert#set_error_state for REVOKE*" do
+    c = Cert.new
+
+    c.state = Cert::State::REVOKE_REQUESTED_FROM_USER
+    assert c.set_error_state == Cert::State::REVOKE_ERROR
+
+    c.state = Cert::State::REVOKE_RECEIVED_MAIL
+    assert c.set_error_state == Cert::State::REVOKE_ERROR
+
+    c.state = Cert::State::REVOKE_ERROR
+    assert c.set_error_state == Cert::State::REVOKE_ERROR
+  end
+
 end
