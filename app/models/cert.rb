@@ -31,15 +31,20 @@ class Cert < ApplicationRecord
       cn += user.email
     end
 
-    self.dn = cn + ",OU=No #{self.req_seq},"
+    self.dn = cn + ".#{self.req_seq}"
     if Rails.env != 'production' then
-      self.dn += SHIBCERT_CONFIG[Rails.env]['base_dn_dev'] + ","
+      self.dn += '.' + SHIBCERT_CONFIG[Rails.env]['base_dn_dev']
     end
+    self.dn += ','
 
     if Cert.is_client_auth(self.purpose_type)
       self.dn += SHIBCERT_CONFIG[Rails.env]['base_dn_auth']
     elsif Cert.is_smime(self.purpose_type)
       self.dn += SHIBCERT_CONFIG[Rails.env]['base_dn_smime']
+    end
+
+    if /OU=/i.match(self.dn)
+      raise RuntimeError, "invalid DN (includes OU): #{self.dn}"
     end
   end
 

@@ -32,28 +32,28 @@ class CertTest < ActiveSupport::TestCase
     c = Cert.new
     params = {cert: {"purpose_type" => Cert::PurposeType::SMIME_CERTIFICATE_13}}
     c.set_attributes(params, user: users(:users_one))
-    assert c.dn == 'CN=user1@mail.com,OU=No 0,OU=test,OU=Institute for Information Management and Communication,O=Kyoto University,ST=Kyoto,C=JP'
+    assert c.dn == 'CN=user1@mail.com.0.' + SHIBCERT_CONFIG['test']['base_dn_dev'] + ',' + SHIBCERT_CONFIG['test']['base_dn_smime']
   end
 
   test "Cert#set_attributes works for client auth certificate" do
     c = Cert.new
     params = {cert: {"purpose_type" => Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52}}
     c.set_attributes(params, user: users(:users_one))
-    assert c.dn == 'CN=user1uid,OU=No 0,OU=test,OU=Kyoto University Integrated Information Network System,O=Kyoto University,ST=Kyoto,C=JP'
+    assert c.dn == 'CN=user1uid.0.' + SHIBCERT_CONFIG['test']['base_dn_dev'] + ',' + SHIBCERT_CONFIG['test']['base_dn_auth']
   end
 
   test "Cert#set_attributes works for client auth certificate with VLAN-ID" do
     c = Cert.new
     params = {cert: {"purpose_type" => Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52, "vlan_id" => "1234"}}
     c.set_attributes(params, user: users(:users_one))
-    assert c.dn == 'CN=user1uid@1234,OU=No 0,OU=test,OU=Kyoto University Integrated Information Network System,O=Kyoto University,ST=Kyoto,C=JP'
+    assert c.dn == 'CN=user1uid@1234.0.' + SHIBCERT_CONFIG['test']['base_dn_dev'] + ',' + SHIBCERT_CONFIG['test']['base_dn_auth']
   end
 
   test "Cert#set_attributes works for client auth certificate with empty VLAN-ID" do
     c = Cert.new
     params = {cert: {"purpose_type" => Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52, "vlan_id" => ""}}
     c.set_attributes(params, user: users(:users_one))
-    assert c.dn == 'CN=user1uid,OU=No 0,OU=test,OU=Kyoto University Integrated Information Network System,O=Kyoto University,ST=Kyoto,C=JP'
+    assert c.dn == 'CN=user1uid.0.' + SHIBCERT_CONFIG['test']['base_dn_dev'] + ',' + SHIBCERT_CONFIG['test']['base_dn_auth']
   end
 
   test "Cert#set_attributes works for UPKI-pass certificate" do
@@ -63,7 +63,7 @@ class CertTest < ActiveSupport::TestCase
     c.set_attributes(params, user: users(:users_one))
     assert c.download_type == 2
     assert c.pass_id == pass_id
-    assert c.dn == "CN=#{pass_id} user1 name,OU=No 0,OU=test,OU=Kyoto University Integrated Information Network System,O=Kyoto University,ST=Kyoto,C=JP"
+    assert c.dn == "CN=#{pass_id} user1 name.0." + SHIBCERT_CONFIG['test']['base_dn_dev'] + ',' + SHIBCERT_CONFIG['test']['base_dn_auth']
   end
 
   test "Cert#next_state works for NEW_*" do

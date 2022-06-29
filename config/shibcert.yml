@@ -44,8 +44,8 @@ production:
   user_ou: 'Institute for Information Management and Communication'
 
   base_dn_dev: ''
-  base_dn_auth: OU=Kyoto University Integrated Information Network System,O=Kyoto University,L=Kyoto,ST=Kyoto,C=JP
-  base_dn_smime: OU=Institute for Information Management and Communication,O=Kyoto University,L=Kyoto,ST=Kyoto,C=JP
+  base_dn_auth: O=Kyoto University,L=Kyoto,ST=Kyoto,C=JP
+  base_dn_smime: O=Kyoto University,L=Kyoto,ST=Kyoto,C=JP
 
   # メール連携設定
 #  mail_basic_name: '*'  # -> MAIL_BASIC_AUTH_ID
@@ -73,9 +73,9 @@ development:
   admin_pass_mail: 'shibcert-sys@iimc.kyoto-u.ac.jp'
   user_ou: 'Institute for Information Management and Communication'
 
-  base_dn_dev: OU=dev
-  base_dn_auth: OU=Kyoto University Integrated Information Network System,O=Kyoto University,ST=Kyoto,C=JP
-  base_dn_smime: OU=Institute for Information Management and Communication,O=Kyoto University,ST=Kyoto,C=JP
+  base_dn_dev: dev
+  base_dn_auth: O=Kyoto University,L=Kyoto,ST=Kyoto,C=JP
+  base_dn_smime: O=Kyoto University,L=Kyoto,ST=Kyoto,C=JP
 
 
   # メール連携設定
@@ -104,9 +104,9 @@ test:
   admin_pass_mail: 'shibcert-sys@iimc.kyoto-u.ac.jp'
   user_ou: 'Institute for Information Management and Communication'
 
-  base_dn_dev: OU=test
-  base_dn_auth: OU=Kyoto University Integrated Information Network System,O=Kyoto University,ST=Kyoto,C=JP
-  base_dn_smime: OU=Institute for Information Management and Communication,O=Kyoto University,ST=Kyoto,C=JP
+  base_dn_dev: test
+  base_dn_auth: O=Kyoto University,L=Kyoto,ST=Kyoto,C=JP
+  base_dn_smime: O=Kyoto University,L=Kyoto,ST=Kyoto,C=JP
 
   # メール連携設定
 #  mail_basic_name: '*'  # -> MAIL_BASIC_AUTH_ID

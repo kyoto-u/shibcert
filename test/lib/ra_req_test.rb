@@ -2,7 +2,7 @@ require 'test_helper'
 
 class RaReqTest < ActiveSupport::TestCase
   test "RaReq.generate_tsv_new" do
-    cert = certs(:certs_one)
+    cert = certs(:certs_req_seq_in_cn)
     user = User.find(cert.user_id)
     expected_tsv = [
       cert.dn,
