@@ -269,7 +269,7 @@ class CertsController < ApplicationController
         unless params[:cert]["vlan_id"].blank?
           # VLANのクライアント証明書.
           vlan_id = params[:cert]["vlan_id"].strip
-          if vlan_id.to_i == 0  # to_i return 0 if vlan_id is not Integer
+          unless /^[1-9][0-9]*$/.match(vlan_id)
             flash[:alert] = t('.vlan_err')
             return false
           end

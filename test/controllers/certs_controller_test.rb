@@ -28,6 +28,40 @@ class CertsControllerTest < ActionController::TestCase
     assert_redirected_to request_result_path(Cert.last.id)
   end
 
+  test "post request_post with VLAN-ID" do
+    post :request_post, params:{cert: {purpose_type: Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52.to_s,
+                                       vlan_id: "1234"}}
+    # テストが並列実行されて、他の Cert が追加されてしまうと、下記のテストは失敗する
+    assert_redirected_to request_result_path(Cert.last.id)
+
+    # VLAN-ID の前後に不要な空白を含んでも受け付ける
+    post :request_post, params:{cert: {purpose_type: Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52.to_s,
+                                       vlan_id: " 1234 "}}
+    assert_redirected_to request_result_path(Cert.last.id)
+  end
+
+  test "post request_post with invalid VLAN-ID" do
+    post :request_post, params:{cert: {purpose_type: Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52.to_s,
+                                       vlan_id: "ab1234"}}
+    assert_redirected_to action: "index"
+
+    post :request_post, params:{cert: {purpose_type: Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52.to_s,
+                                       vlan_id: "1234ab"}}
+    assert_redirected_to action: "index"
+
+
+    post :request_post, params:{cert: {purpose_type: Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52.to_s,
+                                       vlan_id: "ab"}}
+    assert_redirected_to action: "index"
+
+
+    post :request_post, params:{cert: {purpose_type: Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52.to_s,
+                                       vlan_id: "12 34"}}
+    assert_redirected_to action: "index"
+
+  end
+
+
   test "post disable_post" do
     c = certs(:certs_will_revoke)
     post :disable_post, params:{id: c.id}
