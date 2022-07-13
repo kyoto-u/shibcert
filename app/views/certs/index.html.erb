@@ -7,12 +7,6 @@
 <br>
 
 <div class="container">
-  <h4><%= t('.req_title') %></h4>
-	<% if flash[:alert] %>
-	<div class="alert alert-danger">
-	  <%= flash[:alert] %>
-	</div>
-	<% end %>
   <ul>
     <li>
 	<%= SHIBCERT_CONFIG['label'][ln]['purpose'][5] if SHIBCERT_CONFIG['label']['ja']['purpose'][5] %>

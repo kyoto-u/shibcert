@@ -65,13 +65,14 @@
 
   <% if flash %>
   <div class="container">
+    <% logger.debug flash.inspect %>
     <% flash.each do |key, value| %>
-    <div id="notice" class="alert">
-      <% if value.is_a?(Array) %>
-      <%= simple_format(value.join("<br/>")) %>
+      <% if key == "alert" %>
+        <div id="alert" class="alert alert-danger">
       <% else %>
-      <%= value %>
+        <div id="alert" class="alert alert-success">
       <% end %>
+      <%= value.is_a?(Array) ? simple_format(value.join("<br/>")) : value %>
     </div>
     <% end %>
   </div>
