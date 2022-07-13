@@ -23,7 +23,7 @@ class IpWhiteListsController < AdminController
   def create
     @ip_white_list = IpWhiteList.new(ip_white_list_params)
     if @ip_white_list.invalid?
-      return redirect_to new_ip_white_list_url, alert: t('.invalid_ip_white_list')
+      return redirect_to new_ip_white_list_url, alert: t('ip_white_list.invalid_ip')
     end
 
     respond_to do |format|
