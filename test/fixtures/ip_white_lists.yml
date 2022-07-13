@@ -6,6 +6,21 @@ one:
   memo: MyString
 
 two:
-  ip: 2.3.4.5
+  ip: 2.3.4.5/24
   expired_at: 2022-07-04 14:21:30
+  memo: MyString
+
+ng1:
+  ip: 1.2.3.4.5
+  expired_at: 2022-07-04 14:21:30
+  memo: MyString
+
+ng2:
+  ip: 1.2.3.4
+  expired_at:
+  memo: MyString
+
+ng3:
+  ip: 1.2.3.4
+  expired_at: 2022-99-99 14:21:30
   memo: MyString

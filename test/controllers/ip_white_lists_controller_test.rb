@@ -39,6 +39,18 @@ class IpWhiteListsControllerTest < ActionController::TestCase
     assert_redirected_to ip_white_list_url(IpWhiteList.last)
   end
 
+  test "should not create invalid ip_white_list by admin" do
+    session[:user_id] = users(:users_one).id
+    [:ng1, :ng2, :ng3].each{|ng_ip_symbol|
+      ng_ip = ip_white_lists(ng_ip_symbol)
+      assert_no_difference('IpWhiteList.count') do
+        post :create, params: { ip_white_list: { expired_at: ng_ip.expired_at, ip: ng_ip.ip, memo: ng_ip.memo } }
+      end
+      assert_redirected_to new_ip_white_list_url
+    }
+  end
+
+
   test "should create ip_white_list by no-admin" do
     session[:user_id] = users(:users_two).id
     assert_no_difference('IpWhiteList.count') do
