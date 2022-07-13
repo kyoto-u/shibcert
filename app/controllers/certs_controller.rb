@@ -3,7 +3,7 @@
 # ========================================================================
 # CertsController: 証明書発行操作クラス.
 class CertsController < ApplicationController
-  before_action :check_user, only: [:index, :request_post, :disable_result, :renew_post]
+  before_action :check_user, only: [:request_post, :disable_result, :renew_post]
   before_action :set_cert_of_user, only: [:show, :edit_memo_remote, :request_result, :disable_post, :disable_result, :renew_post, :renew_result]
 
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
@@ -63,6 +63,8 @@ class CertsController < ApplicationController
   # GET /certs
   # GET /certs.json
   def index
+    return unless current_user
+
     # オプション設定.
     @pass_opt = false
     # S/MIME数
