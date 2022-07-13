@@ -1,0 +1,32 @@
+<%= form_with(model: ip_white_list) do |form| %>
+  <% if ip_white_list.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(ip_white_list.errors.count, "error") %> prohibited this ip_white_list from being saved:</h2>
+
+      <ul>
+        <% ip_white_list.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :ip %>
+    <%= form.text_field :ip %>
+  </div>
+
+  <div class="field">
+    <%= form.label :expired_at %>
+    <%= form.datetime_select :expired_at %>
+  </div>
+
+  <div class="field">
+    <%= form.label :memo %>
+    <%= form.text_field :memo %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

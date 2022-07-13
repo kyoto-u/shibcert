@@ -5,22 +5,8 @@ require 'base64'
 # ========================================================================
 # 管理者クラス.
 class AdminController < ApplicationController
-
+  before_action :is_admin
   skip_before_action :verify_authenticity_token
-
-  # Basic認証定義.
-  before_action :auth
-
-  # ----------------------------------------------------------------------
-  # Basic認証実装.
-  # パスワードはSHA-1ハッシュ値HEXで覚える.
-  def auth
-    name = ENV['ADMIN_BASIC_AUTH_ID']
-    passwd = ENV['ADMIN_BASIC_AUTH_PW']
-    authenticate_or_request_with_http_basic do |user, pass|
-      user == name && pass == passwd
-    end
-  end
 
   # ----------------------------------------------------------------------
   # トップ画面.
@@ -530,17 +516,18 @@ class AdminController < ApplicationController
 
   # ----------------------------------------------------------------------
   # 管理者チェック
-  def self.isAdmin(user)
-    if user.blank? || user.uid.blank?
-      return false
-    elsif SHIBCERT_CONFIG[Rails.env]['admin_uids'].include?(user.uid)
-       return true
-    elsif user.admin == true    # データベース設定フラグ(現在未使用)
-      return false
-#      return true
+  def is_admin
+    if current_user.nil?
+      return redirect_to root_url, :notice => 'need login'
     end
-    return false
-  end
 
+    if current_user.blank? || current_user.uid.blank?
+      return redirect_to root_url, :notice => 'need login'
+    end
+    if current_user.admin == false
+      return redirect_to root_url, :notice => 'need login'
+    end
+    # admin == true
+  end
 end
 # ========================================================================

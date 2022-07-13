@@ -105,6 +105,7 @@ Shibcert::Application.routes.draw do
     #     # (app/controllers/admin/products_controller.rb)
     #     resources :products
     #   end
+    resources :ip_white_lists
   end
 
   # メール連携API

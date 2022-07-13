@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Ip White Lists</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Ip</th>
+      <th>Expired at</th>
+      <th>Memo</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @ip_white_lists.each do |ip_white_list| %>
+      <tr>
+        <td><%= ip_white_list.ip %></td>
+        <td><%= ip_white_list.expired_at %></td>
+        <td><%= ip_white_list.memo %></td>
+        <td><%= link_to 'Show', ip_white_list %></td>
+        <td><%= link_to 'Edit', edit_ip_white_list_path(ip_white_list) %></td>
+        <td><%= link_to 'Destroy', ip_white_list, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Ip White List', new_ip_white_list_path %>
