@@ -18,7 +18,7 @@
 
   <div class="field">
     <%= form.label :expired_at %>
-    <%= form.datetime_select :expired_at %>
+    <%= form.date_select :expired_at, {default: Date.today + 3.days} %>
   </div>
 
   <div class="field">
