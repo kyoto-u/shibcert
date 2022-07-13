@@ -266,6 +266,8 @@ ja:
       title: "レコード削除完了"
       text_html: "証明書のレコード削除を行いました。<br><br>"
       showlink: "所有者情報確認"
+  ip_white_list:
+    invalid_ip: "IPアドレスが正しくありません"
 
 # copy from http://avosalmon.hatenablog.com/entry/2014/06/15/%E3%80%90Rails%E3%80%91date_select%E3%81%A7%22undefined_method_for_translation_missing_ja_date_order_string%22
   date:

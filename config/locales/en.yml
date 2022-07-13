@@ -259,7 +259,8 @@ en:
       title: "Your request has been completed."
       text_html: "We deleted records of certificate.<br><br>"
       showlink: "See the Owner Detail"
-
+  ip_white_list:
+    invalid_ip: "Invalid IP address"
 
   maintenance_mode:
     sorry: "Sorry, maintenance in progress"
