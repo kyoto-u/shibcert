@@ -4,8 +4,10 @@ users_one:
   uid: user1uid
   name: user1 name
   email: user1@mail.com
+  admin: true
 
 users_two:
   uid: user2uid
   name: user2 name
   email: user2@mail.com
+  admin: false
