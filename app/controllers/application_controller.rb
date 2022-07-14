@@ -5,9 +5,21 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  # locale setting
-  # ref. http://ruby-rails.hatenadiary.com/entry/20150226/1424937175
-  before_action :set_locale
+  before_action :check_remote_ip
+  before_action :set_locale       # ref. http://ruby-rails.hatenadiary.com/entry/20150226/1424937175
+
+  def check_remote_ip
+    @remote_ip = request.remote_ip
+    return if IpWhiteList.include?(@remote_ip)
+
+    logger.debug("IpWhiteList.include?(#{@remote_ip}) => false")
+    if Rails.env.production?
+      redirect_to ({controller: :certs, action: :index}), alert: t('ip_white_list.not_allowed_ip')
+    else
+      logger.debug("check_remote_ip: OK because Rails.env == #{Rails.env}")
+    end
+  end
+
   def set_locale
     I18n.locale = params[:locale] || I18n.default_locale
   end

@@ -261,6 +261,7 @@ en:
       showlink: "See the Owner Detail"
   ip_white_list:
     invalid_ip: "Invalid IP address"
+    not_allowed_ip: "Your IP address is not allowed"
 
   maintenance_mode:
     sorry: "Sorry, maintenance in progress"

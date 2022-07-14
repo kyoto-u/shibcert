@@ -5,7 +5,7 @@ class IpWhiteListValidator < ActiveModel::Validator
     end
     begin
       IPAddr.new(record.ip)
-    rescue
+    rescue IPAddr::InvalidAddressError
       record.errors.add :base, "invalid IP address"
     end
     if record.expired_at.blank?
@@ -24,6 +24,19 @@ class IpWhiteList < ApplicationRecord
       return false
     end
     return true
+  end
+
+  private
+  def self.include?(client_ip)
+    self.all.pluck(:ip).each{|allow_ip|
+      begin
+        ip = IPAddr.new(allow_ip)
+        return true if ip.include?(client_ip)
+      rescue IPAddr::InvalidAddressError
+        logger.debug("skip invalid ip_white_list.ip: #{allow_ip}")
+      end
+    }
+    return false
   end
 
 end
