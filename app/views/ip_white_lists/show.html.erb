@@ -1,7 +1,5 @@
-<p id="notice"><%= notice %></p>
-
 <p>
-  <strong>Ip:</strong>
+  <strong>IP:</strong>
   <%= @ip_white_list.ip %>
 </p>
 
@@ -15,5 +13,5 @@
   <%= @ip_white_list.memo %>
 </p>
 
-<%= link_to 'Edit', edit_ip_white_list_path(@ip_white_list) %> |
-<%= link_to 'Back', ip_white_lists_path %>
+<%= link_to 'Edit', edit_ip_white_list_path(@ip_white_list), class: 'btn btn-warning' %> |
+<%= link_to 'Back', ip_white_lists_path, class: 'btn btn-default' %>

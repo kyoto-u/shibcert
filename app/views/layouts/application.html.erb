@@ -65,7 +65,6 @@
 
   <% if flash %>
   <div class="container">
-    <% logger.debug flash.inspect %>
     <% flash.each do |key, value| %>
       <% if key == "alert" %>
         <div id="alert" class="alert alert-danger">

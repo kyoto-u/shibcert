@@ -16,4 +16,14 @@ end
 
 class IpWhiteList < ApplicationRecord
   validates_with IpWhiteListValidator
+
+  def valid_ip?
+    begin
+      IPAddr.new(self.ip)
+    rescue IPAddr::InvalidAddressError
+      return false
+    end
+    return true
+  end
+
 end
