@@ -18,7 +18,6 @@
 	<td><%= ip_white_list.valid_ip? ? 'Yes' : 'No' %></td>
         <td><%= ip_white_list.expired_at %></td>
         <td><%= ip_white_list.memo %></td>
-        <td><%= link_to 'Show', ip_white_list, class: 'btn btn-info' %></td>
         <td><%= link_to 'Edit', edit_ip_white_list_path(ip_white_list), class: 'btn btn-warning' %></td>
         <td><%= link_to 'Destroy', ip_white_list, class: 'btn btn-danger', method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>

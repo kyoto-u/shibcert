@@ -25,7 +25,7 @@ class IpWhiteListsController < AdminController
 
     respond_to do |format|
       if @ip_white_list.save
-        format.html { redirect_to ip_white_list_url(@ip_white_list), notice: "Ip white list was successfully created." }
+        format.html { redirect_to ip_white_lists_url, notice: "IP white list was successfully created." }
         format.json { render :show, status: :created, location: @ip_white_list }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +38,7 @@ class IpWhiteListsController < AdminController
   def update
     respond_to do |format|
       if @ip_white_list.update(ip_white_list_params)
-        format.html { redirect_to ip_white_list_url(@ip_white_list), notice: "Ip white list was successfully updated." }
+        format.html { redirect_to ip_white_lists_url, notice: "IP white list was successfully updated." }
         format.json { render :show, status: :ok, location: @ip_white_list }
       else
         format.html { render :edit, status: :unprocessable_entity }
