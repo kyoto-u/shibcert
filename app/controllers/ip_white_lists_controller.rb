@@ -49,10 +49,17 @@ class IpWhiteListsController < AdminController
 
   # DELETE /ip_white_lists/1 or /ip_white_lists/1.json
   def destroy
+    if @ip_white_list.protect
+      respond_to do |format|
+        format.html { redirect_to ip_white_lists_url, alert: "Can not delete protected record." }
+        format.json { render :index, @ip_white_list.errors, status: :can_not_delete_protected}
+      end
+      return
+    end
     @ip_white_list.destroy
 
     respond_to do |format|
-      format.html { redirect_to ip_white_lists_url, notice: "Ip white list was successfully destroyed." }
+      format.html { redirect_to ip_white_lists_url, notice: "IP white list was successfully destroyed." }
       format.json { head :no_content }
     end
   end
@@ -65,6 +72,6 @@ class IpWhiteListsController < AdminController
 
     # Only allow a list of trusted parameters through.
     def ip_white_list_params
-      params.require(:ip_white_list).permit(:ip, :expired_at, :memo)
+      params.require(:ip_white_list).permit(:ip, :expired_at, :memo, :protect)
     end
 end
