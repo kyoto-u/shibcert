@@ -22,9 +22,6 @@ class IpWhiteListsController < AdminController
   # POST /ip_white_lists or /ip_white_lists.json
   def create
     @ip_white_list = IpWhiteList.new(ip_white_list_params)
-    if @ip_white_list.invalid?
-      return redirect_to new_ip_white_list_url, alert: t('ip_white_list.invalid_ip')
-    end
 
     respond_to do |format|
       if @ip_white_list.save
