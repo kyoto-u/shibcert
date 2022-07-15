@@ -33,7 +33,7 @@ class IpWhiteList < ApplicationRecord
         ip = IPAddr.new(allow_ip)
         return true if ip.include?(client_ip)
       rescue IPAddr::InvalidAddressError
-        logger.debug("skip invalid ip_white_list.ip: #{allow_ip}")
+        logger.debug("#{__method__}: skip invalid ip_white_list.ip: #{allow_ip}")
       end
     }
     return false

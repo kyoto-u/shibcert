@@ -12,12 +12,14 @@ class ApplicationController < ActionController::Base
     @remote_ip = request.remote_ip
     return if IpWhiteList.include?(@remote_ip)
 
-    logger.debug("IpWhiteList.include?(#{@remote_ip}) => false")
-    if Rails.env.production?
-      redirect_to ({controller: :certs, action: :index}), alert: t('ip_white_list.not_allowed_ip')
-    else
-      logger.debug("check_remote_ip: OK because Rails.env == #{Rails.env}")
+    logger.debug("#{__method__}: IpWhiteList.include?(#{@remote_ip}) => false")
+    unless Rails.env.production?
+      if ['127.0.0.1', '::1'].include?(@remote_ip)
+        logger.debug("#{__method__}: allow localhost on #{Rails.env} mode")
+        return
+      end
     end
+    redirect_to ({controller: :certs, action: :index}), alert: t('ip_white_list.not_allowed_ip')
   end
 
   def set_locale
