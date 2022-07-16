@@ -47,7 +47,14 @@ ja:
       t15: "S/MIME証明書"	# 13ヶ月
       t16: "S/MIME証明書"	# 25ヶ月
       t55: "UPKI-PASS証明書" #55
+    vlan: "VLAN固定接続"
   certs:
+    purpose:
+      # 4: Personal Certification SHA1, 5: Client Certification SHA2
+      # 6: S/MIME Certificatino SHA1, 7: S/MIME Certification SHA2
+      5: "学内ネットワーク(KUINS) 接続用"
+      7: "全学メール(KUMAIL,KUMOI) 署名・暗号化用"
+      55: "UPKI-PASS一括用 UPKI-PASS証明書 [UPKI-PASS管理者用]"
     index:
       dashboard_title: "クライアント証明書発行申請ダッシュボード"
       dashboard_text: >-

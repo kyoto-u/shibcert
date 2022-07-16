@@ -9,7 +9,7 @@
 <div class="container">
   <ul>
     <li>
-	<%= SHIBCERT_CONFIG['label'][ln]['purpose'][5] if SHIBCERT_CONFIG['label']['ja']['purpose'][5] %>
+	<%= t('certs.purpose.5') %>
 	  <%= form_tag({controller: "certs", action: "request_post"}, {class: "form-inline"}) do %>
 	  <%= hidden_field :cert, :purpose_type, :value => Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52 %>
 	    <div>
@@ -34,7 +34,7 @@
 	    <% end %>
     </li>
     <li>
-	<%= SHIBCERT_CONFIG['label'][ln]['purpose'][7] if SHIBCERT_CONFIG['label']['ja']['purpose'][7] %>
+	<%= t('certs.purpose.7') %>
 	  <%= form_tag({controller: "certs", action: "request_post"}, {class: "form-inline"}) do  %>
 	  <%= hidden_field :cert, :purpose_type, :value => Cert::PurposeType::SMIME_CERTIFICATE_25 %>
 	  <% unless @smime_num > 0 %>

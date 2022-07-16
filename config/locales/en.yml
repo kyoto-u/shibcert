@@ -47,7 +47,14 @@ en:
       t15: "S/MIME Certification"	# 13 months
       t16: "S/MIME Certification"	# 25 months
       t55: "UPKI-PASS Certification" #55
+    vlan: "Connecting to a Particular VLAN"
   certs:
+    purpose:
+      # 4: Personal Certificate SHA1, 5: Client Certification SHA2
+      # 6: S/MIME Certificate SHA1, 7: S/MIME Certification SHA2
+      5: "for Connecting to Campus Network(KUINS)"
+      7: "for Signing/Encrypting Campus Mail(KUMAIL, KUMOI)"
+      55: "Bulk Client Certificate for UPKI-PASS"
     index:
       dashboard_title: "Dashboard of Client Certification Issue Request"
       dashboard_text: "You can request for issuing personal certification by National Institute of Informatics (NII) here."

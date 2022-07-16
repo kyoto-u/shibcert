@@ -9,26 +9,7 @@ flag:
   admin_page_num: 20        # 管理者ページのページングサイズ(推奨:20)
 #  admin_page_num: 2        # 管理者ページのページングサイズ(試験用:2)
 
-label:
-  ja:
-    purpose:
-      # 4: Personal Certification SHA1, 5: Client Certification SHA2
-      # 6: S/MIME Certificatino SHA1, 7: S/MIME Certification SHA2
-      5: "学内ネットワーク(KUINS) 接続用"
-      7: "全学メール(KUMAIL,KUMOI) 署名・暗号化用"
-      55: "UPKI-PASS一括用 UPKI-PASS証明書 [UPKI-PASS管理者用]"
-    vlan: "VLAN固定接続"
-  en:
-    purpose:
-      # 4: Personal Certificate SHA1, 5: Client Certification SHA2
-      # 6: S/MIME Certificate SHA1, 7: S/MIME Certification SHA2
-      5: "for Connecting to Campus Network(KUINS)"
-      7: "for Signing/Encrypting Campus Mail(KUMAIL, KUMOI)"
-      55: "Bulk Client Certificate for UPKI-PASS"
-    vlan: "Connecting to a Particular VLAN"
-
 production:
-
   certificate_file: "config/certificates/client.cer"
   certificate_key_file:  "config/certificates/client.key"
 
