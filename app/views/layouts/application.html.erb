@@ -1,13 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>
-	<% if params[:locale] == 'ja' %>
-	<%= SHIBCERT_CONFIG['label']['ja']['site_title']  %>
-	<% else %>
-	<%= SHIBCERT_CONFIG['label']['en']['site_title']  %>
-	<% end %>
-  </title>
+  <title><%= t('site.title') %></title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
@@ -22,13 +16,8 @@
   <div class="navbar navbar-default" role="navigation">
 	<div class="container-fluid">
 	  <div class="navbar-header">
-	    <% if params[:locale] == 'ja' %>
-	      <%= link_to SHIBCERT_CONFIG['label']['ja']['site_title'],
+	    <%= link_to t('nav.title'),
 		{controller: "certs", action: "index"}, class: "navbar-brand" %>
-	    <% else %>
-	      <%= link_to SHIBCERT_CONFIG['label']['en']['site_title'],
-		{controller: "certs", action: "index"}, class: "navbar-brand" %>
-	    <% end %>
 	  </div>
 	  <% if current_user %>
 	  <div class="collapse navbar-collapse">
@@ -51,10 +40,10 @@
 	 	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" ><%= t('nav.menu') %><span class="caret"></a>
 	    	<ul class="dropdown-menu">
 		  <li><%= link_to t('nav.logout') + ' (' + (current_user.uid||current_user.name) + ')', signout_path %></li>
-                    <% if current_user.admin %>
-		      <li><%= link_to t('nav.admin'),
+                  <% if current_user.admin %>
+		  <li><%= link_to t('nav.admin'),
 			  {controller: "admin", action: "index"} %></li>
-		    <% end %>
+		  <% end %>
 	 	</ul>
 	      </li>
 	    </ul>

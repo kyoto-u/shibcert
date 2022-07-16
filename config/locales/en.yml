@@ -20,7 +20,10 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  site:
+    title: "Client Certificate Issue Request System of Kyoto University"
   nav:
+    title: "Client Certificate Issue Request System of Kyoto University"
     user: "User"
     menu: "Account Menu"
     help: "Help"

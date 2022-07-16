@@ -20,7 +20,10 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 ja:
+  site:
+    title: "京都大学 クライアント証明書発行申請システム"
   nav:
+    title: "京都大学 クライアント証明書発行申請システム"
     user: "ユーザー"
     menu: "アカウントメニュー"
     help: "ヘルプ"
