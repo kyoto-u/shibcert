@@ -76,7 +76,7 @@
       <%= yield %>
     <% else %>
       <p><%= raw t('certs.index.dashboard_text')%></p>
-      <p><%= SHIBCERT_CONFIG['label'][ln]['intro_text'] %></p>
+      <p><%= t('site.intro_text') %></p>
       <br>
       <div class="omniauth">
       <p><%= link_to t('login.loginlink'), "/auth/saml", class: 'btn btn-primary' %> <%= t('login.logintext')%></p>

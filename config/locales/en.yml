@@ -22,6 +22,7 @@
 en:
   site:
     title: "Client Certificate Issue Request System of Kyoto University"
+    intro_text: "\"Client Certificate\" is a digital certificate for personal identification which can be installed on computers like PCs/tablets/smartphones."
   nav:
     title: "Client Certificate Issue Request System of Kyoto University"
     user: "User"
