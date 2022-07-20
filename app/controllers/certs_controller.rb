@@ -5,7 +5,6 @@
 class CertsController < ApplicationController
   before_action :check_user, only: [:request_post, :disable_result, :renew_post]
   before_action :set_cert_of_user, only: [:show, :edit_memo_remote, :request_result, :disable_post, :disable_result, :renew_post, :renew_result]
-  skip_before_action :check_remote_ip, only: [:index]
 
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 

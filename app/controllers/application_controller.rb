@@ -5,10 +5,22 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
+  before_action :check_logged_in
   before_action :check_remote_ip
   before_action :set_locale       # ref. http://ruby-rails.hatenadiary.com/entry/20150226/1424937175
 
+  def check_logged_in
+    if current_user.nil?
+      return redirect_to controller: :sessions, action: :new
+    end
+  end
+
   def check_remote_ip
+    # session[:kuMfaEnabled] type is unknown 0/1, true/false or "TRUE"/"FALSE"
+    if session[:kuMfaEnabled] == "TRUE"
+      logger.debug("#{__method__}: kuMfaEnabled == true, skip remote_ip check.")
+      return
+    end
     @remote_ip = request.remote_ip
     return if IpWhiteList.include?(@remote_ip)
 
@@ -19,7 +31,7 @@ class ApplicationController < ActionController::Base
         return
       end
     end
-    redirect_to ({controller: :certs, action: :index}), alert: t('ip_white_list.not_allowed_ip')
+    redirect_to ({controller: :sessions, action: :new}), alert: t('ip_white_list.not_allowed_ip')
   end
 
   def set_locale

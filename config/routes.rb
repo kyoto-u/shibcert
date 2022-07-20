@@ -26,6 +26,7 @@ Shibcert::Application.routes.draw do
 
 #    resources :requests
 
+    get '/login', to: 'sessions#new'
     get '/auth/:provider/callback' => 'sessions#create'
     post '/auth/:provider/callback' => 'sessions#create'
     get '/auth/:failure' => 'sessions#failure'

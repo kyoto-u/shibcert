@@ -18,6 +18,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
              uid: [ 'uid' ],
              name: [ 'displayName' ],
              email: [ 'mail' ],
+             kuMfaEnabled: [ 'kuMfaEnabled' ],
            },
            attribute_service_name:              "shibcert"
 end

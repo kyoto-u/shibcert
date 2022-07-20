@@ -3,8 +3,13 @@
 # SessionsController: 認証セッションクラス.
 # protect_from_forgery の設定を分けるため ApplicationController ではなく
 # ActionController::Base を継承
-class SessionsController < ActionController::Base
+class SessionsController < ApplicationController
+  skip_before_action :check_logged_in, only: [:new, :create]
+  skip_before_action :check_remote_ip, only: [:new, :create]
   protect_from_forgery except: [:create], with: :exception
+
+  def new
+  end
 
   # ----------------------------------------------------------------------
   # 生成.
@@ -33,6 +38,7 @@ class SessionsController < ActionController::Base
     logger.info("#{self}.#{__method__} user=#{user.inspect}")
     update_user(user, auth)
     session[:user_id] = user.id
+    session[:kuMfaEnabled] = auth[:info][:kuMfaEnabled]
     Cert.update_from_login(user.id)
     redirect_to root_url, :notice => 'Signed in!'
   end
@@ -52,11 +58,9 @@ class SessionsController < ActionController::Base
   # 更新.
   private
   def update_user(user, auth)
-    user[:name]  = auth[:info][:name]
+    user[:name]  = auth[:info][:name] || auth[:info][:uid]
     user[:email] = auth[:info][:email]
-    number = auth[:info][:number] || user[:uid]
-    printable_number = number.gsub!(/@+|\(+|\)+|'+|:+|\/+|\.+|=+|_+/, '-')
-    user[:number] = printable_number || number
+    user[:number] = auth[:info][:number]
     user.save!
   end
 

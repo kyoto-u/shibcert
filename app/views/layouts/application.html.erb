@@ -8,85 +8,63 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-  <% if request.path.include?("/admin") %>
-    <% control_name = 'admin' %>
-  <% else %>
-    <% control_name = 'certs' %>
-  <% end %>
+  <% request.path.include?("/admin") ? control_name='admin' : control_name='certs' %>
   <div class="navbar navbar-default" role="navigation">
-	<div class="container-fluid">
-	  <div class="navbar-header">
-	    <%= link_to t('nav.title'),
-		{controller: "certs", action: "index"}, class: "navbar-brand" %>
-	  </div>
-	  <% if current_user %>
-	  <div class="collapse navbar-collapse">
-	    <ul class="nav navbar-nav navbar-right">
-	      <% if params[:locale] == 'ja' %>
-	        <li>
-                  <p class="navbar-text">[<%= link_to 'English',
-			{controller: control_name, action: "index", locale: "en"} %>|Japanese]</p>
-	        </li>
-	      <% else %>
-	        <li>
-		  <p class="navbar-text">[English|<%= link_to 'Japanese',
-			{controller: control_name, action: "index", locale: "ja"} %>]</p>
-	        </li>
+    <div class="container-fluid">
+      <div class="navbar-header">
+	<%= link_to t('nav.title'),
+	    {controller: "certs", action: "index"}, class: "navbar-brand" %>
+      </div>
+      <% if current_user %>
+      <div class="collapse navbar-collapse">
+	<ul class="nav navbar-nav navbar-right">
+	  <li>
+            <p class="navbar-text">[
+	      <%= link_to_unless_current 'English', {locale: "en"} %>
+	      |
+	      <%= link_to_unless_current 'Japanese',{locale: "ja"} %>
+	      ]
+	    </p>
+	  </li>
+	  <li>
+            <p class="navbar-text"><%= t('nav.user') + ' ' + current_user.name %></p>
+	  </li>
+	  <li class="dropdown">
+	    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" ><%= t('nav.menu') %><span class="caret"></a>
+	    <ul class="dropdown-menu">
+	      <li><%= link_to t('nav.logout') + ' (' + (current_user.uid||current_user.name) + ')', signout_path %></li>
+              <% if current_user.admin %>
+	      <li><%= link_to t('nav.admin'),
+		      {controller: "admin", action: "index"} %></li>
 	      <% end %>
-	      <li>
-                <p class="navbar-text"><%= t('nav.user') + ' ' + current_user.name %></p>
-	      </li>
-	      <li class="dropdown">
-	 	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" ><%= t('nav.menu') %><span class="caret"></a>
-	    	<ul class="dropdown-menu">
-		  <li><%= link_to t('nav.logout') + ' (' + (current_user.uid||current_user.name) + ')', signout_path %></li>
-                  <% if current_user.admin %>
-		  <li><%= link_to t('nav.admin'),
-			  {controller: "admin", action: "index"} %></li>
-		  <% end %>
-	 	</ul>
-	      </li>
 	    </ul>
-	  </div>
-	  <% end %>
-	</div>
+	  </li>
+	</ul>
+      </div>
+      <% end %>
+    </div>
   </div>
 
   <% if flash %>
   <div class="container">
     <% flash.each do |key, value| %>
-      <% if key == "alert" %>
-        <div id="alert" class="alert alert-danger">
+    <% if key == "alert" %>
+    <div id="alert" class="alert alert-danger">
       <% else %>
-        <div id="alert" class="alert alert-success">
+      <div id="alert" class="alert alert-success">
+	<% end %>
+	<%= value.is_a?(Array) ? simple_format(value.join("<br/>")) : value %>
+      </div>
       <% end %>
-      <%= value.is_a?(Array) ? simple_format(value.join("<br/>")) : value %>
     </div>
     <% end %>
-  </div>
-  <% end %>
 
-  <div class="container">
-   <% if SHIBCERT_CONFIG['maintenance_mode'] == true %>
-    <% ln = params[:locale] == 'ja' ? 'ja': 'en' %>
-    <%= t('maintenance_mode.sorry')%>
-   <% else %>
-    <% ln = params[:locale] == 'ja' ? 'ja': 'en' %>
-    <% if current_user %>
+    <div class="container">
+      <% if SHIBCERT_CONFIG['maintenance_mode'] == true %>
+      <%= t('maintenance_mode.sorry')%>
+      <% else %>
       <%= yield %>
-    <% else %>
-      <p><%= raw t('certs.index.dashboard_text')%></p>
-      <p><%= t('site.intro_text') %></p>
-      <br>
-      <div class="omniauth">
-      <p><%= link_to t('login.loginlink'), "/auth/saml", class: 'btn btn-primary' %> <%= t('login.logintext')%></p>
-      <% if Rails.env == 'development'  %>
-        <p><%= link_to t('login.localloginlink'), "/auth/identity", class: 'btn btn-primary' %> <%= t('login.locallogintext')%></p>
-        <p><%= link_to t('login.otherloginlink'), "/auth/github", class: 'btn btn-primary' %> <%= t('login.otherlogintext')%></p>
       <% end %>
-      </div>
-    <% end %>
-   <% end %>
-  </div>
+    </div>
 </body>
 </html>
