@@ -149,7 +149,14 @@ class RaReq
   # ----------------------------------------------------------------------
   # 支援システムへの要求TSVファイルのアップロード.
   def self.request(applyType, tsv)
-    return true if Rails.env == 'test'
+    if Rails.env.test?
+      return true
+    elsif Rails.env.development?
+      File.open("request-#{applyType}-#{Time.now.strftime('%Y%m%d-%H%M%S')}.tsv","w"){|file|
+        file.write(tsv)
+      }
+      return true
+    end
 
     begin
       form = self.get_upload_form
