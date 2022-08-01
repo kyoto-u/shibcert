@@ -518,14 +518,15 @@ class AdminController < ApplicationController
   # 管理者チェック
   def is_admin
     if current_user.nil?
-      return redirect_to root_url, :notice => 'need login'
+      return redirect_to login_url
     end
 
     if current_user.blank? || current_user.uid.blank?
-      return redirect_to root_url, :notice => 'need login'
+      return redirect_to error_url, :alert => 'your account is something wrong.'
     end
     if current_user.admin == false
-      return redirect_to root_url, :notice => 'need login'
+      Rails.logger.info("Illegal accesss: user.uid #{current_user.uid} (not admin) accesses to #{request.url}.")
+      return redirect_to error_url
     end
     # admin == true
   end

@@ -31,12 +31,12 @@ ja:
     logout: "ログアウト"
     admin: "管理者インタフェイス"
   login:
-    logintext: "学内IDで"
-    locallogintext: "ローカルIDで"
-    otherlogintext: "他のサービスを使って"
     loginlink: "ログイン"
+    logintext: "ECS-ID または SPS-ID でログインできます"
     localloginlink: "ローカルログイン"
+    locallogintext: "ローカルIDで"
     otherloginlink: "開発ログイン"
+    otherlogintext: "他のサービスを使って"
   common:
     backlink: "キャンセルして戻る"
     purpose_type:

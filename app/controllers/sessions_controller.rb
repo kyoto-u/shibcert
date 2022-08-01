@@ -4,11 +4,14 @@
 # protect_from_forgery の設定を分けるため ApplicationController ではなく
 # ActionController::Base を継承
 class SessionsController < ApplicationController
-  skip_before_action :check_logged_in, only: [:new, :create]
-  skip_before_action :check_remote_ip, only: [:new, :create]
+  skip_before_action :check_logged_in, only: [:new, :error, :create]
+  skip_before_action :check_remote_ip, only: [:new, :error, :create]
   protect_from_forgery except: [:create], with: :exception
 
   def new
+  end
+
+  def error
   end
 
   # ----------------------------------------------------------------------
@@ -47,11 +50,11 @@ class SessionsController < ApplicationController
   # 削除.
   def destroy
     session[:user_id] = nil
-    redirect_to root_url, :notice => 'Signed out!'
+    redirect_to login_url, :notice => 'Signed out!'
   end
 
   def failure
-    redirect_to root_url, alert: "Authentication failed."
+    redirect_to login_url, alert: "Authentication failed."
   end
 
   # ----------------------------------------------------------------------

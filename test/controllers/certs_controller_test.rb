@@ -73,13 +73,13 @@ class CertsControllerTest < ActionController::TestCase
   test "post request_post without login" do
     session[:user_id] = nil
     post :request_post
-    assert_redirected_to action: "index"
+    assert_redirected_to login_url
   end
 
   test "post disable_post without login" do
     session[:user_id] = nil
     post :disable_post, params:{id: certs(:certs_one).id}
-    assert_redirected_to action: "index"
+    assert_redirected_to login_url
   end
 
 end

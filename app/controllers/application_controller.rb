@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
 
     logger.info("#{__method__}: IpWhiteList.include?(#{@remote_ip}) => false")
     unless Rails.env.production?
-      if ['127.0.0.1', '::1'].include?(@remote_ip)
+      if ['0.0.0.0', '127.0.0.1', '::1'].include?(@remote_ip)
         logger.debug("#{__method__}: allow localhost on #{Rails.env} mode")
         return
       end

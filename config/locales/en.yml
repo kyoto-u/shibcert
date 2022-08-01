@@ -31,12 +31,12 @@ en:
     logout: "Log Out"
     admin: "Admin Interface"
   login:
-    logintext: "GakuNin Auth [Test Federation]"
-    loginlink: "GakuNin Login"
-    otherlogintext: "Develop Auth [GitHub]"
+    loginlink: "Login"
+    logintext: "with ECS-ID or SPS-ID"
     otherloginlink: "Develop Login"
-    locallogintext: "Develop Auth [Local]"
+    otherlogintext: "Develop Auth [GitHub]"
     localloginlink: "Develop Local Login"
+    locallogintext: "Develop Auth [Local]"
   common:
     backlink: "Cancel and Back"
     purpose_type:
