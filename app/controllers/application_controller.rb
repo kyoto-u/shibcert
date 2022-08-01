@@ -18,13 +18,13 @@ class ApplicationController < ActionController::Base
   def check_remote_ip
     # session[:kuMfaEnabled] type is unknown 0/1, true/false or "TRUE"/"FALSE"
     if session[:kuMfaEnabled] == "TRUE"
-      logger.debug("#{__method__}: kuMfaEnabled == true, skip remote_ip check.")
+      logger.info("#{__method__}: kuMfaEnabled == true, skip remote_ip check.")
       return
     end
     @remote_ip = request.remote_ip
     return if IpWhiteList.include?(@remote_ip)
 
-    logger.debug("#{__method__}: IpWhiteList.include?(#{@remote_ip}) => false")
+    logger.info("#{__method__}: IpWhiteList.include?(#{@remote_ip}) => false")
     unless Rails.env.production?
       if ['127.0.0.1', '::1'].include?(@remote_ip)
         logger.debug("#{__method__}: allow localhost on #{Rails.env} mode")
