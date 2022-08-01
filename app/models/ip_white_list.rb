@@ -15,6 +15,7 @@ class IpWhiteListValidator < ActiveModel::Validator
 end
 
 class IpWhiteList < ApplicationRecord
+  validates :ip, uniqueness: true
   validates_with IpWhiteListValidator
 
   def valid_ip?
