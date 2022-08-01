@@ -37,6 +37,10 @@ ja:
     locallogintext: "ローカルIDで"
     otherloginlink: "開発ログイン"
     otherlogintext: "他のサービスを使って"
+  error:
+    title: "エラーが発生しました。"
+    body: "ご迷惑をおかけして申し訳ありません。システムエラーが発生しました。下記お問い合わせ先までご連絡ください。"
+    contact_infomation: "問い合わせ先: support * iimc.kyoto-u.ac.jp (* を @ に変更してください)"
   common:
     backlink: "キャンセルして戻る"
     purpose_type:

@@ -37,6 +37,10 @@ en:
     otherlogintext: "Develop Auth [GitHub]"
     localloginlink: "Develop Local Login"
     locallogintext: "Develop Auth [Local]"
+  error:
+    title: "Error occurred"
+    body: "We apologize for any inconvenience caused. A system error has occurred. Please contact us following the contact information."
+    contact_infomation: "Contact infomation: support * iimc.kyoto-u.ac.jp (change from * to @)"
   common:
     backlink: "Cancel and Back"
     purpose_type:
