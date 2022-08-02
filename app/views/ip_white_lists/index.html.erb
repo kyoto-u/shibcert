@@ -5,8 +5,8 @@
     <tr>
       <th>IP</th>
       <th>invalid?</th>
-      <th>protect?</th>
-      <th>expired at</th>
+      <th>protected?</th>
+      <th>expires at</th>
       <th>memo</th>
       <th colspan="2">manage</th>
     </tr>
@@ -17,11 +17,11 @@
       <tr>
         <td><%= ip_white_list.ip %></td>
 	<td><%= ip_white_list.valid_ip? ? '-' : 'invalid' %></td>
-        <td><%= ip_white_list.protect ? '✓' : '□' %></td>
-        <td><%= ip_white_list.expired_at %></td>
+        <td><%= ip_white_list.protected ? '✓' : '□' %></td>
+        <td><%= ip_white_list.expires_at %></td>
         <td><%= ip_white_list.memo %></td>
         <td><%= link_to 'Edit', edit_ip_white_list_path(ip_white_list), class: 'btn btn-warning' %></td>
-        <td><%= link_to 'Destroy', ip_white_list, class: "btn btn-danger #{ ip_white_list.protect ? 'disabled' : '' }", method: :delete, data: { confirm: 'Are you sure?' }  %></td>
+        <td><%= link_to 'Destroy', ip_white_list, class: "btn btn-danger #{ ip_white_list.protected ? 'disabled' : '' }", method: :delete, data: { confirm: 'Are you sure?' }  %></td>
       </tr>
     <% end %>
   </tbody>

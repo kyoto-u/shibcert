@@ -49,10 +49,10 @@ class Cert < ApplicationRecord
   end
 
 
-  def self.update_by_tsv(id:, serialnumber:, state:, expire_at:, url_expire_at:)
+  def self.update_by_tsv(id:, serialnumber:, state:, expires_at:, url_expires_at:)
     updated = []
     if !id
-      logger.info("#{__method__}: serialnumber or expire_at is not set")
+      logger.info("#{__method__}: serialnumber or expires_at is not set")
       return nil
     end
     cert = Cert.find(id)
@@ -64,13 +64,13 @@ class Cert < ApplicationRecord
       cert.state = state
       updated << "state"
     end
-    if cert.expire_at.blank? && expire_at.present?
-      cert.expire_at = expire_at
-      updated << "expire_at"
+    if cert.expires_at.blank? && expires_at.present?
+      cert.expires_at = expires_at
+      updated << "expires_at"
     end
-    if cert.url_expire_at.blank? && url_expire_at.present?
-      cert.url_expire_at = url_expire_at
-      updated << "url_expire_at"
+    if cert.url_expires_at.blank? && url_expires_at.present?
+      cert.url_expires_at = url_expires_at
+      updated << "url_expires_at"
     end
     if not updated.empty?
       cert.save
@@ -296,7 +296,7 @@ p dn
     if s == State::NEW_ERROR || s == State::RENEW_ERROR || s == State::REVOKE_ERROR
       return X509State::ERROR
     end
-    if expire_at != nil && expire_at <= Time.now
+    if expires_at != nil && expires_at <= Time.now
       return X509State::EXPIRED
     end
 

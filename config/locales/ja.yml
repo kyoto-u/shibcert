@@ -89,7 +89,7 @@ ja:
       list_type: "証明書の種類"
       list_date: "申請日"
       list_available: "状態"
-      list_expire_at: "有効期限"
+      list_expires_at: "有効期限"
       list_status: "状態"
       list_status_msg:
         - '申請中'

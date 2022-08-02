@@ -97,8 +97,8 @@
   <tr>
 	<td><strong><%= t('certs.show.expire_date') %></strong></td>
 	<td>
-          <% if @cert.expire_at %>
-            <%= I18n.l(@cert.expire_at) %>
+          <% if @cert.expires_at %>
+            <%= I18n.l(@cert.expires_at) %>
           <% else %>
             <%= t('certs.show.cert_not') %>
           <% end %>

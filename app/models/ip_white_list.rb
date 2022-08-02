@@ -8,8 +8,8 @@ class IpWhiteListValidator < ActiveModel::Validator
     rescue IPAddr::InvalidAddressError
       record.errors.add :base, "invalid IP address"
     end
-    if record.expired_at.blank?
-      record.errors.add :base, "empty expired_at"
+    if record.expires_at.blank?
+      record.errors.add :base, "empty expires_at"
     end
   end
 end

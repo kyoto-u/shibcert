@@ -45,13 +45,13 @@ class CertsController < ApplicationController
         Cert::State::RENEW_GOT_SERIAL,
        ].include?(cert[:state])
 
-        if cert[:expire_at].nil?
-          expire_at = cert[:created_at].since(month_to_live[cert[:purpose_type]].month)
-          if now < expire_at
+        if cert[:expires_at].nil?
+          expires_at = cert[:created_at].since(month_to_live[cert[:purpose_type]].month)
+          if now < expires_at
             smime_num += 1
           end
         else
-          if now < cert[:expire_at]
+          if now < cert[:expires_at]
             smime_num += 1
           end
         end
@@ -86,7 +86,7 @@ class CertsController < ApplicationController
       # 有効な証明書のみ抽出.
       now = Time.now
       @certs = @certs.select { |s| \
-                                 (!s.expire_at || s.expire_at > now) && \
+                                 (!s.expires_at || s.expires_at > now) && \
                                s.state != Cert::State::NEW_GOT_TIMEOUT && \
                                s.state != Cert::State::NEW_ERROR && \
                                s.state != Cert::State::RENEW_GOT_TIMEOUT && \
@@ -314,6 +314,6 @@ class CertsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def cert_params
-    params.require(:cert).permit(:vlan_id, :memo, :get_at, :expire_at, :pin, :pin_get_at, :user_id, :purpose_type, pass_id)
+    params.require(:cert).permit(:vlan_id, :memo, :get_at, :expires_at, :pin, :pin_get_at, :user_id, :purpose_type, pass_id)
   end
 end

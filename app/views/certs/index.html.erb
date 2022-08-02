@@ -69,7 +69,7 @@
       <th><%= t('.list_type') %></th>
       <th><%= t('.list_date') %></th>
       <th><%= t('.list_available') %></th>
-      <th><%= t('.list_expire_at') %></th>
+      <th><%= t('.list_expires_at') %></th>
       <% if SHIBCERT_CONFIG['flag']['use_vlan'] == true %>
       <th><%= t('.list_vlan_id') %></th>
       <% end %>
@@ -100,13 +100,13 @@
 	  <%= I18n.l Date.parse(cert.created_at.to_s) %>
 	</td>
 	<td>
-	  <% if cert.expire_at && cert.expire_at < Time.now %>
+	  <% if cert.expires_at && cert.expires_at < Time.now %>
 	  <%= t('.cert_expired') %>
 	  <% else %>
 	  <%= t('certs.show.cert_status_msg')[cert.state] %>
 	  <% end %>
 	</td>
-	<td><% if cert.expire_at %><%= I18n.l Date.parse(cert.expire_at.to_s) %><% end %></td>
+	<td><% if cert.expires_at %><%= I18n.l Date.parse(cert.expires_at.to_s) %><% end %></td>
 	<% if SHIBCERT_CONFIG['flag']['use_vlan'] == true %>
 	<td><%= cert.vlan_id %></td>
 	<% end %>

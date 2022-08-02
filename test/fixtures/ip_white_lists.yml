@@ -1,26 +1,26 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  ip: 1.2.3.4
-  expired_at: 2022-07-04 14:21:30
+  ip: 1.1.1.1
+  expires_at: 2022-07-04 14:21:30
   memo: MyString
 
 two:
-  ip: 2.3.4.5/24
-  expired_at: 2022-07-04 14:21:30
+  ip: 2.2.2.2/24
+  expires_at: 2022-07-04 14:21:30
   memo: MyString
 
 ng1:
-  ip: 1.2.3.4.5
-  expired_at: 2022-07-04 14:21:30
+  ip: 5.5.5.5.5
+  expires_at: 2022-07-04 14:21:30
   memo: MyString
 
 ng2:
-  ip: 1.2.3.4
-  expired_at:
+  ip: 1.1.1.2
+  expires_at:
   memo: MyString
 
 ng3:
-  ip: 1.2.3.4
-  expired_at: 2022-99-99 14:21:30
+  ip: 1.1.1.3
+  expires_at: 2022-99-99 14:21:30
   memo: MyString

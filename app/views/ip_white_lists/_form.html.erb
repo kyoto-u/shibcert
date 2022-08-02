@@ -13,18 +13,18 @@
 
   <div class="field">
     <%= form.label :ip %>
-    <%= form.text_field :ip, class: "form-control", readonly: ip_white_list.protect %>
+    <%= form.text_field :ip, class: "form-control", readonly: ip_white_list.protected %>
   </div>
 
   <div class="field">
-    <%= form.label :expired_at %>
-    <%= form.date_select :expired_at, {default: Date.today + 3.days},
-	{class: "form-control", style: 'display: inline-block;width: auto;', disabled: ip_white_list.protect } %>
+    <%= form.label :expires_at %>
+    <%= form.date_select :expires_at, {default: Date.today + 3.days},
+	{class: "form-control", style: 'display: inline-block;width: auto;', disabled: ip_white_list.protected } %>
   </div>
 
   <div class="field">
     <%= form.label :memo %>
-    <%= form.text_field :memo, class: "form-control", readonly: ip_white_list.protect %>
+    <%= form.text_field :memo, class: "form-control", readonly: ip_white_list.protected %>
   </div>
 
   <div class="field">

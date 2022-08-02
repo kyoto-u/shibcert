@@ -13,7 +13,7 @@ require 'rubygems'
 require 'csv'
 require 'logger'
 
-certs = Cert.where(state: 15).where('expire_at > ?', Date.today)
+certs = Cert.where(state: 15).where(expires_at: Date.today...)
 certs_of = Hash.new{|hash, key| hash[key] = []}
 certs.each do |cert|
     certs_of[cert.user.uid] << [cert.dn, cert.serialnumber]

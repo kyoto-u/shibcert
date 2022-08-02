@@ -3,7 +3,7 @@
 certs_one:
   memo: MyString 1
   get_at: 2015-08-18 13:30:01
-  expire_at: 2115-08-18 13:30:01
+  expires_at: 2115-08-18 13:30:01
   user: users_one
   state: <%= Cert::State::NEW_REQUESTED_FROM_USER %>
   purpose_type: <%= Cert::PurposeType::SMIME_CERTIFICATE %>
@@ -12,7 +12,7 @@ certs_one:
 certs_two:
   memo: MyString 2
   get_at: 2015-08-18 13:30:01
-  expire_at: 2115-08-18 13:30:01
+  expires_at: 2115-08-18 13:30:01
   user: users_one
   state: <%= Cert::State::RENEW_REQUESTED_FROM_USER %>
   purpose_type: <%= Cert::PurposeType::CLIENT_AUTH_CERTIFICATE %>
@@ -21,7 +21,7 @@ certs_two:
 certs_three:
   memo: MyString 3
   get_at: 2015-08-18 13:30:01
-  expire_at: 2115-08-18 13:30:01
+  expires_at: 2115-08-18 13:30:01
   user: users_one
   state: <%= Cert::State::NEW_REQUESTED_TO_NII %>
   purpose_type: <%= Cert::PurposeType::CLIENT_AUTH_CERTIFICATE %>
@@ -30,7 +30,7 @@ certs_three:
 certs_foru:
   memo: MyString 4
   get_at: 2015-08-18 13:30:01
-  expire_at: 2115-08-18 13:30:01
+  expires_at: 2115-08-18 13:30:01
   user: users_one
   state: <%= Cert::State::NEW_DISPLAYED_PIN %>
   purpose_type: <%= Cert::PurposeType::CLIENT_AUTH_CERTIFICATE %>
@@ -39,7 +39,7 @@ certs_foru:
 certs_will_revoke:
   memo: will revoke
   get_at: 2015-08-18 13:30:01
-  expire_at: 2115-08-18 13:30:01
+  expires_at: 2115-08-18 13:30:01
   user: users_one
   state: <%= Cert::State::NEW_GOT_SERIAL %>
   purpose_type: <%= Cert::PurposeType::CLIENT_AUTH_CERTIFICATE %>
@@ -49,7 +49,7 @@ certs_will_revoke:
 certs_old_one:
   memo: MyString old_one
   get_at: 2014-08-18 13:30:01
-  expire_at: 2015-08-18 13:30:01
+  expires_at: 2015-08-18 13:30:01
   pin: MyString
   pin_get_at: 2014-08-18 13:30:01
   user: users_one
@@ -60,7 +60,7 @@ certs_old_one:
 certs_old_two:
   memo: MyString old_two
   get_at: 2014-08-18 13:30:01
-  expire_at: 2015-08-18 13:30:01
+  expires_at: 2015-08-18 13:30:01
   pin: MyString
   pin_get_at: 2014-08-18 13:30:01
   user: users_one
@@ -71,7 +71,7 @@ certs_old_two:
 certs_req_seq_in_cn:
   memo: Req seq in CN
   get_at: 2022-06-29 11:42:00
-  expire_at: 2122-06-29 11:42:00
+  expires_at: 2122-06-29 11:42:00
   user: users_one
   state: <%= Cert::State::NEW_REQUESTED_FROM_USER %>
   purpose_type: <%= Cert::PurposeType::CLIENT_AUTH_CERTIFICATE %>

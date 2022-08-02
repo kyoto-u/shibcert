@@ -33,7 +33,7 @@ class IpWhiteListsControllerTest < ActionController::TestCase
   test "should create ip_white_list by admin" do
     session[:user_id] = users(:users_one).id
     assert_difference('IpWhiteList.count') do
-      post :create, params: { ip_white_list: { expired_at: @ip_white_list.expired_at, ip: @ip_white_list.ip, memo: @ip_white_list.memo } }
+      post :create, params: { ip_white_list: { expires_at:'2022-08-02', ip:'192.168.0.1', memo:'my memo' } }
     end
 
     assert_redirected_to ip_white_lists_url
@@ -44,7 +44,7 @@ class IpWhiteListsControllerTest < ActionController::TestCase
     [:ng1, :ng2, :ng3].each{|ng_ip_symbol|
       ng_ip = ip_white_lists(ng_ip_symbol)
       assert_no_difference('IpWhiteList.count') do
-        post :create, params: { ip_white_list: { expired_at: ng_ip.expired_at, ip: ng_ip.ip, memo: ng_ip.memo } }
+        post :create, params: { ip_white_list: { expires_at: ng_ip.expires_at, ip: ng_ip.ip, memo: ng_ip.memo } }
       end
       assert_response :unprocessable_entity
     }
@@ -54,7 +54,7 @@ class IpWhiteListsControllerTest < ActionController::TestCase
   test "should create ip_white_list by no-admin" do
     session[:user_id] = users(:users_two).id
     assert_no_difference('IpWhiteList.count') do
-      post :create, params: { ip_white_list: { expired_at: @ip_white_list.expired_at, ip: @ip_white_list.ip, memo: @ip_white_list.memo } }
+      post :create, params: { ip_white_list: { expires_at: @ip_white_list.expires_at, ip: @ip_white_list.ip, memo: @ip_white_list.memo } }
     end
     assert_redirected_to error_url
   end
@@ -86,13 +86,13 @@ class IpWhiteListsControllerTest < ActionController::TestCase
 
   test "should update ip_white_list by admin" do
     session[:user_id] = users(:users_one).id
-    patch :update, params: { id: @ip_white_list.id, ip_white_list: { expired_at: @ip_white_list.expired_at, ip: @ip_white_list.ip, memo: @ip_white_list.memo } }
+    patch :update, params: { id: @ip_white_list.id, ip_white_list: { expires_at: @ip_white_list.expires_at, ip: @ip_white_list.ip, memo: @ip_white_list.memo } }
     assert_redirected_to ip_white_lists_url
   end
 
   test "should update ip_white_list by no-admin" do
     session[:user_id] = users(:users_two).id
-    patch :update, params: { id: @ip_white_list.id, ip_white_list: { expired_at: @ip_white_list.expired_at, ip: @ip_white_list.ip, memo: @ip_white_list.memo } }
+    patch :update, params: { id: @ip_white_list.id, ip_white_list: { expires_at: @ip_white_list.expires_at, ip: @ip_white_list.ip, memo: @ip_white_list.memo } }
     assert_redirected_to error_url
   end
 

@@ -29,13 +29,13 @@ class CertExpireAtUpdator
         state = 33
       end
       serialnumber = row[23]
-      expire_at = row[26]
-      url_expire_at = row[27]
+      expires_at = row[26]
+      url_expires_at = row[27]
       certs = Cert.where(dn: dn)
       if certs.count == 1
         cert = certs.first
-        Cert.update_by_tsv(id: cert.id, serialnumber: serialnumber, expire_at: expire_at, url_expire_at: url_expire_at, state: state)
-#        @logger.info("update cert id: #{cert.id}, serialnumber: #{serialnumber}, expire_at: #{expire_at}, url_expire_at: #{url_expire_at}, state: #{state}")
+        Cert.update_by_tsv(id: cert.id, serialnumber: serialnumber, expires_at: expires_at, url_expires_at: url_expires_at, state: state)
+#        @logger.info("update cert id: #{cert.id}, serialnumber: #{serialnumber}, expires_at: #{expires_at}, url_expires_at: #{url_expires_at}, state: #{state}")
       else
         @logger.warn("Can't detect target record for dn: #{dn}")
       end
