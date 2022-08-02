@@ -19,7 +19,7 @@
 
 # Learn more: http://github.com/javan/whenever
 
-set :output, "logs/whenever.log"
+set :output, "log/whenever.log"
 
 every 1.days do
   rake "ip_white_list:show"
