@@ -254,9 +254,10 @@ class CertsController < ApplicationController
     end
 
     if Cert.is_smime(purpose_type)
-      working_smime_num(current_user.id) > 0
-      flash[:alert] = t('.mime_err')
-      return false
+      if working_smime_num(current_user.id) > 0
+        flash[:alert] = t('.mime_err')
+        return false
+      end
     end
 
     # Client Cert
