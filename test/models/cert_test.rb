@@ -47,6 +47,7 @@ class CertTest < ActiveSupport::TestCase
     params = {cert: {"purpose_type" => Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52, "vlan_id" => "1234"}}
     c.set_attributes(params, user: users(:users_one))
     assert c.dn == 'CN=user1uid@1234.0.' + SHIBCERT_CONFIG['test']['base_dn_dev'] + ',' + SHIBCERT_CONFIG['test']['base_dn_auth']
+    assert c.vlan_id == '1234'
   end
 
   test "Cert#set_attributes works for client auth certificate with empty VLAN-ID" do
@@ -54,6 +55,7 @@ class CertTest < ActiveSupport::TestCase
     params = {cert: {"purpose_type" => Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52, "vlan_id" => ""}}
     c.set_attributes(params, user: users(:users_one))
     assert c.dn == 'CN=user1uid.0.' + SHIBCERT_CONFIG['test']['base_dn_dev'] + ',' + SHIBCERT_CONFIG['test']['base_dn_auth']
+    assert c.vlan_id.blank?
   end
 
   test "Cert#set_attributes works for UPKI-pass certificate" do

@@ -24,7 +24,8 @@ class Cert < ApplicationRecord
         cn += user.uid
         if params[:cert].has_key?("vlan_id") and !params[:cert]["vlan_id"].empty?
           # VLANのクライアント証明書.
-          cn += "@" + params[:cert]["vlan_id"].strip
+          self.vlan_id = params[:cert]["vlan_id"].strip
+          cn += "@" + self.vlan_id
         end
       end
     elsif Cert.is_smime(self.purpose_type)
