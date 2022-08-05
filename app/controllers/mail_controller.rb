@@ -8,6 +8,7 @@ class MailController < ApplicationController
   # 定義.
 
   # POSTでBasic認証を使う為に認証をオフにする.
+  skip_before_action :verify_authenticity_token
   skip_before_action :check_logged_in
   skip_before_action :check_remote_ip
 
