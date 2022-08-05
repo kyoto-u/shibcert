@@ -7,8 +7,9 @@ class MailController < ApplicationController
   # ----------------------------------------------------------------------
   # 定義.
 
-  # POSTでBasic認証を使う為に事前認証トークン検証をオフにする.
-  skip_before_action :verify_authenticity_token
+  # POSTでBasic認証を使う為に認証をオフにする.
+  skip_before_action :check_logged_in
+  skip_before_action :check_remote_ip
 
   # Basic認証定義.
   before_action :auth
