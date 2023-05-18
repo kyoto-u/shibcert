@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
         return
       end
     end
-    redirect_to ({controller: :sessions, action: :new}), alert: t('ip_white_list.not_allowed_ip')
+    redirect_to ({controller: :sessions, action: :new}), alert: t('ip_white_list.not_allowed_ip') + " (#{@remote_ip})"
   end
 
   def set_locale
