@@ -176,7 +176,7 @@ class CertsController < ApplicationController
     redirect_to disable_result_path(@cert.id)
   end
 
-  # POST /certs/disable_result [with RPG pattern]
+  # GET /certs/disable_result [with RPG pattern]
   def disable_result
   end
 

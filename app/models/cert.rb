@@ -28,11 +28,11 @@ class Cert < ApplicationRecord
           cn += "@" + self.vlan_id
         end
       end
+      self.dn = cn + ".#{self.req_seq}"
     elsif Cert.is_smime(self.purpose_type)
       cn += user.email
     end
 
-    self.dn = cn + ".#{self.req_seq}"
     if Rails.env != 'production' then
       self.dn += '.' + SHIBCERT_CONFIG[Rails.env]['base_dn_dev']
     end
