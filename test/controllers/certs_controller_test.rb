@@ -2,7 +2,7 @@ require 'test_helper'
 
 class CertsControllerTest < ActionController::TestCase
   setup do
-    session[:user_id] = users(:users_one).id
+    session[:user_id] = users(:user_one).id
 #    @cert = certs(:certs_one)
   end
 

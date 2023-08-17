@@ -31,21 +31,21 @@ class CertTest < ActiveSupport::TestCase
   test "Cert#set_attributes works for S/MIME certificate" do
     c = Cert.new
     params = {cert: {"purpose_type" => Cert::PurposeType::SMIME_CERTIFICATE_13}}
-    c.set_attributes(params, user: users(:users_one))
-    assert c.dn == "CN=#{users(:users_one).email}.#{SHIBCERT_CONFIG['test']['base_dn_dev']},#{SHIBCERT_CONFIG['test']['base_dn_smime']}"
+    c.set_attributes(params, user: users(:user_one))
+    assert c.dn == "CN=#{users(:user_one).email}.#{SHIBCERT_CONFIG['test']['base_dn_dev']},#{SHIBCERT_CONFIG['test']['base_dn_smime']}"
   end
 
   test "Cert#set_attributes works for client auth certificate" do
     c = Cert.new
     params = {cert: {"purpose_type" => Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52}}
-    c.set_attributes(params, user: users(:users_one))
+    c.set_attributes(params, user: users(:user_one))
     assert c.dn == 'CN=user1uid.0.' + SHIBCERT_CONFIG['test']['base_dn_dev'] + ',' + SHIBCERT_CONFIG['test']['base_dn_auth']
   end
 
   test "Cert#set_attributes works for client auth certificate with VLAN-ID" do
     c = Cert.new
     params = {cert: {"purpose_type" => Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52, "vlan_id" => "1234"}}
-    c.set_attributes(params, user: users(:users_one))
+    c.set_attributes(params, user: users(:user_one))
     assert c.dn == 'CN=user1uid@1234.0.' + SHIBCERT_CONFIG['test']['base_dn_dev'] + ',' + SHIBCERT_CONFIG['test']['base_dn_auth']
     assert c.vlan_id == '1234'
   end
@@ -53,7 +53,7 @@ class CertTest < ActiveSupport::TestCase
   test "Cert#set_attributes works for client auth certificate with empty VLAN-ID" do
     c = Cert.new
     params = {cert: {"purpose_type" => Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52, "vlan_id" => ""}}
-    c.set_attributes(params, user: users(:users_one))
+    c.set_attributes(params, user: users(:user_one))
     assert c.dn == 'CN=user1uid.0.' + SHIBCERT_CONFIG['test']['base_dn_dev'] + ',' + SHIBCERT_CONFIG['test']['base_dn_auth']
     assert c.vlan_id.blank?
   end
@@ -62,7 +62,7 @@ class CertTest < ActiveSupport::TestCase
     c = Cert.new
     pass_id = "PASSID"
     params = {cert: {"purpose_type" => Cert::PurposeType::CLIENT_AUTH_CERTIFICATE_52, "pass_opt" => "1", "pass_id" => pass_id}}
-    c.set_attributes(params, user: users(:users_one))
+    c.set_attributes(params, user: users(:user_one))
     assert c.download_type == 2
     assert c.pass_id == pass_id
     assert c.dn == "CN=#{pass_id} user1 name.0." + SHIBCERT_CONFIG['test']['base_dn_dev'] + ',' + SHIBCERT_CONFIG['test']['base_dn_auth']

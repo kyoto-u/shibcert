@@ -1,12 +1,12 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-users_one:
+user_one:
   uid: user1uid
   name: user1 name
   email: user1@mail.com
   admin: true
 
-users_two:
+user_two:
   uid: user2uid
   name: user2 name
   email: user2@mail.com
