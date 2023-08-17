@@ -32,7 +32,7 @@ class CertTest < ActiveSupport::TestCase
     c = Cert.new
     params = {cert: {"purpose_type" => Cert::PurposeType::SMIME_CERTIFICATE_13}}
     c.set_attributes(params, user: users(:users_one))
-    assert c.dn == 'CN=user1@mail.com.0.' + SHIBCERT_CONFIG['test']['base_dn_dev'] + ',' + SHIBCERT_CONFIG['test']['base_dn_smime']
+    assert c.dn == "CN=#{users(:users_one).email}.#{SHIBCERT_CONFIG['test']['base_dn_dev']},#{SHIBCERT_CONFIG['test']['base_dn_smime']}"
   end
 
   test "Cert#set_attributes works for client auth certificate" do
