@@ -43,10 +43,6 @@ class Cert < ApplicationRecord
     elsif Cert.is_smime(self.purpose_type)
       self.dn += SHIBCERT_CONFIG[Rails.env]['base_dn_smime']
     end
-
-    if /OU=/i.match(self.dn)
-      raise RuntimeError, "invalid DN (includes OU): #{self.dn}"
-    end
   end
 
 
