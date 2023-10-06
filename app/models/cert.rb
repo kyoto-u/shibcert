@@ -164,7 +164,7 @@ class Cert < ApplicationRecord
     when :revoked_x509_serialnumber
       # 失効更新
       expectSerial = value
-      cert = Cert.where("dn = ?", dn).find_by(serialnumber: expectSerial)
+      cert = Cert.where("dn LIKE ?", dn + "%").find_by(serialnumber: expectSerial)
       if cert == nil
         logger.info("#{__method__}: not found any record DN=#{dn} and serialnumber=#{expectSerial}")
         return nil
