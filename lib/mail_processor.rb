@@ -20,7 +20,7 @@ class MailProcessor
   # ----------------------------------------------------------------------
   # メンバ.
   @mail = nil
-  
+
   # ----------------------------------------------------------------------
   # 初期化.
   def initialize()
@@ -155,7 +155,7 @@ class MailProcessor
           record = f.read.split("\n")[1] # 2nd line
           name, email, pin, dn = record.split("\t")[0..3]
           @logger.info("PIN: #{pin} for #{dn}, name #{name}, email #{email}")
-          return {update_target: 'upasspin', value: b64pin, dn: dn, name: name, serial: nil}
+          return {update_target: :upasspin, value: b64pin, dn: dn, name: name, serial: nil}
         end
       end
     else
@@ -167,7 +167,7 @@ class MailProcessor
           name, email, pin, dn = record.split("\t")[0..3]
 #          pin, dn = record.split("\t")[2,3]
           @logger.info("PIN: #{pin} for #{dn}")
-          return {update_target: 'pin', value: pin, dn: dn, name: name, serial: nil}
+          return {update_target: :pin, value: pin, dn: dn, name: name, serial: nil}
         end
       end
     end
@@ -231,13 +231,13 @@ class MailProcessor
           record = f.read.split("\n")[1] # 2nd line
           serial, name, email, dn = record.split("\t")[0..3]
           @logger.info("SERIAL: #{serial} for #{dn}, name #{name}, email #{email}")
-          return {update_target: 'upassfile', value: b64file, dn: dn, name: name, serial: serial}
+          return {update_target: :upassfile, value: b64file, dn: dn, name: name, serial: serial}
         end
       end
     end
 
   end
- 
+
   # ----------------------------------------------------------------------
   # シリアル番号他取得: [UPKI] クライアント証明書取得通知.
   def get_serial
@@ -280,7 +280,7 @@ Subject: [UPKI] クライアント証明書取得通知
     if serial
       # シリアル番号があった.
       @logger.info("serial: #{serial} for #{dn}")
-      return {update_target: 'x509_serialnumber', value: serial, dn: dn, name: nil, serial: serial}
+      return {update_target: :x509_serialnumber, value: serial, dn: dn, name: nil, serial: serial}
     else
       @logger.info("serial: not found")
       return nil
@@ -330,7 +330,7 @@ Subject: [UPKI] クライアント証明書更新通知
     if serial
       # シリアル番号があった.
       @logger.info("serial: #{serial} for #{dn}")
-      return {update_target: 'x509_serialnumber', value: serial, dn: dn, name: nil, serial: serial}
+      return {update_target: :x509_serialnumber, value: serial, dn: dn, name: nil, serial: serial}
     else
       @logger.info("serial: not found")
       return nil
@@ -360,7 +360,7 @@ Subject: [UPKI] クライアント証明書更新通知
     if serial
       # シリアル番号があった.
       @logger.info("revoked_serial: #{serial} for #{dn}")
-      return {update_target: 'revoked_x509_serialnumber', value: serial, dn: dn, name: nil, serial: nil}
+      return {update_target: :revoked_x509_serialnumber, value: serial, dn: dn, name: nil, serial: nil}
     else
       @logger.info("revoked_serial: not found")
       return nil

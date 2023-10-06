@@ -101,29 +101,18 @@ class Cert < ApplicationRecord
 
   def self.update_from_mail(update_target:, value:, dn:, name:, serial:)
 
-p dn
-
-    # DNで証明書群取得
-    certs = Cert.where("dn = ?", dn).order(id: :desc)
-    if certs.count == 0
-      logger.info("#{__method__}: not found any record DN=#{dn}")
-      return nil
-    end
+    logger.info("#{__method__} parameters: #{update_target}, #{value}, #{dn}, #{name}, #{serial}")
 
     # ケース毎処理
     case update_target
 
-    when 'pin'
+    when :pin
       # P12個別:PIN更新
       expectState = Cert::State::NEW_REQUESTED_TO_NII
-      cert = certs.find_by(state: expectState)
+      cert = Cert.where("dn = ?", dn).find_by(state: expectState)
       if cert == nil
-        expectState = Cert::State::RENEW_REQUESTED_TO_NII
-        cert = certs.find_by(state: expectState)
-        if cert == nil
-          logger.info("#{__method__}: not found any record DN=#{dn} and state=#{expectState}")
-          return nil
-        end
+        logger.info("#{__method__}: not found any record DN=#{dn} and state=#{expectState}")
+        return nil
       end
       cert.pin = value
       if expectState == Cert::State::NEW_REQUESTED_TO_NII
@@ -136,11 +125,15 @@ p dn
       logger.info("#{__method__}: updated pin and state for DN:#{dn}")
       return true
 
-    when 'x509_serialnumber'
+    when :x509_serialnumber
       # P12個別:シリアル番号更新
+      certs = Cert.where("dn LIKE ?", dn + "%").order(id: :desc)
+      if certs.nil?
+        logger.info("#{__method__}: not found any record dn LIKE #{dn}%")
+        return nil
+      end
       cert = nil
       state = -1
-      certs = Cert.where("dn LIKE ?", dn + "%").order(id: :desc)
       certs.each do |c|
         case c.state
         when Cert::State::NEW_DISPLAYED_PIN, Cert::State::NEW_GOT_PIN
@@ -168,10 +161,10 @@ p dn
       end
       return true
 
-    when 'revoked_x509_serialnumber'
+    when :revoked_x509_serialnumber
       # 失効更新
       expectSerial = value
-      cert = certs.find_by(serialnumber: expectSerial)
+      cert = Cert.where("dn = ?", dn).find_by(serialnumber: expectSerial)
       if cert == nil
         logger.info("#{__method__}: not found any record DN=#{dn} and serialnumber=#{expectSerial}")
         return nil
@@ -193,10 +186,10 @@ p dn
       logger.info("#{__method__}: REVOKED serialnumber=#{expectSerial}, DN:#{dn}")
       return true
 
-    when 'upasspin'
+    when :upasspin
       # P12一括:UPKI-PASS PIN更新
       expectState = Cert::State::NEW_PASS_REQUESTED
-      cert = certs.find_by(state: expectState)
+      cert = certs = Cert.where("dn = ?", dn).find_by(state: expectState)
       if cert == nil
         logger.info("#{__method__}: not found any record DN=#{dn} and state=#{expectState}")
         return nil
@@ -210,10 +203,10 @@ p dn
       logger.info("#{__method__}: updated pass pin and state for DN:#{dn}")
       return true
 
-    when 'upassfile'
+    when :upassfile
       # P12一括:UPKI-PASS P12ファイル更新(先にupasspin実行が必須)
       expectState = Cert::State::NEW_PASS_REQUESTED
-      cert = certs.find_by(state: expectState)
+      cert = Cert.where("dn = ?", dn).find_by(state: expectState)
       if cert == nil
         logger.info("#{__method__}: not found any record DN=#{dn} and state=#{expectState}")
         return nil
