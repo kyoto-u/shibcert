@@ -140,14 +140,17 @@ p dn
       # P12個別:シリアル番号更新
       cert = nil
       state = -1
+      certs = Cert.where("dn LIKE ?", dn + "%").order(id: :desc)
       certs.each do |c|
-        if c.state == Cert::State::NEW_DISPLAYED_PIN || c.state == Cert::State::NEW_GOT_PIN
+        case c.state
+        when Cert::State::NEW_DISPLAYED_PIN, Cert::State::NEW_GOT_PIN
           cert = c
           state = Cert::State::NEW_GOT_SERIAL
-        end
-        if c.state == Cert::State::RENEW_DISPLAYED_PIN || c.state == Cert::State::RENEW_GOT_PIN
+          break
+        when Cert::State::RENEW_DISPLAYED_PIN, Cert::State::RENEW_GOT_PIN
           cert = c
           state = Cert::State::RENEW_GOT_SERIAL
+          break
         end
       end
       if cert == nil
