@@ -30,7 +30,7 @@ class Cert < ApplicationRecord
       end
       self.dn = cn + ".#{self.req_seq}"
     elsif Cert.is_smime(self.purpose_type)
-      self.dn = cn + user.email
+      self.dn = cn + user.email + ",OU=No #{self.req_seq}"
     end
 
     if Rails.env != 'production' then
