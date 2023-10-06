@@ -185,7 +185,7 @@ class RaReq
       return true
     else
       Rails.logger.debug "#{__method__}: upload fail"
-      filename = "log/cert_" + cert.id.to_s + "_error.html"
+      filename = "log/cert_#{DateTime.now}_error.html"
       open(filename, "w") do |fp|
         fp.write submitted_form.body.force_encoding("euc-jp")
       end
